@@ -260,52 +260,137 @@
         </div>
       </div>
 
-      <button id="checkout-button" class="checkout-button" onclick="redirectToInvoice()" disabled>Checkout</button>
+      <button id="checkout-button" class="checkout-button" disabled>Checkout</button>
     </div>
   </main>
 
   <script>
-    let selectedPaymentMethod = '';
-    const cart = {
-      1: { name: 'Produk A', price: 100000, quantity: 2 },
-      2: { name: 'Produk B', price: 150000, quantity: 1 }
-    };
+    // Ambil cart dari localStorage
+    const cart = JSON.parse(localStorage.getItem('cart')) || {};
+    let total = 0;
+    let discount = 0;
+    let shippingCost = 0;
+    let adminFee = 0;
+    let codFee = 0;
+    let selectedPaymentMethod = null;
+
+    // Fungsi untuk menghitung total harga
+    function calculateTotal() {
+      total = 0;
+      for (let id in cart) {
+        total += cart[id].price * cart[id].quantity;
+      }
+      // Hitung ongkir dan biaya admin
+      if (selectedPaymentMethod === 'bca') {
+        adminFee = 2500;
+      } else if (selectedPaymentMethod === 'ewallet') {
+        adminFee = 1500;
+      } else if (selectedPaymentMethod === 'qris') {
+        adminFee = total * 0.01;
+      } else if (selectedPaymentMethod === 'cod') {
+        codFee = total * 0.02;
+      }
+
+      // Generate Ongkir
+      shippingCost = [5000, 7000, 9000, 11000, 13000, 15000][Math.floor(Math.random() * 6)];
+
+      updateTotalPrice();
+    }
+
+    // Update harga total dan diskon
+    function updateTotalPrice() {
+      let finalPrice = total + shippingCost + adminFee + codFee - discount;
+
+      if (discount > 0) {
+        document.getElementById('discount-info').style.display = 'block';
+        document.getElementById('discount-info').textContent = `Diskon: Rp ${discount.toLocaleString()}`;
+      } else {
+        document.getElementById('discount-info').style.display = 'none';
+      }
+
+      document.getElementById('total-price').textContent = `Rp ${finalPrice.toLocaleString()}`;
+      document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingCost.toLocaleString()}`;
+      document.getElementById('admin-fee-info').textContent = `Biaya Admin: Rp ${adminFee.toLocaleString()}`;
+      document.getElementById('cod-fee-info').textContent = `Biaya COD: Rp ${codFee.toLocaleString()}`;
+    }
+
+    // Fungsi untuk menampilkan produk dalam keranjang
+    function renderCartItems() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      cartItemsContainer.innerHTML = '';
+
+      for (let id in cart) {
+        const product = cart[id];
+        cartItemsContainer.innerHTML += `
+          <div class="cart-item">
+            <p>${product.name} x${product.quantity}</p>
+            <p>Rp ${product.price * product.quantity}</p>
+          </div>
+        `;
+      }
+
+      calculateTotal();
+    }
+
+    // Fungsi untuk menerapkan voucher
+    function applyVoucher() {
+      const voucherCode = document.getElementById('voucher-code').value.trim().toUpperCase();
+      const voucherCodes = {
+        'DISKON10': 0.1,
+        'HARGA10000': 10000
+      };
+
+      if (voucherCodes[voucherCode]) {
+        discount = typeof voucherCodes[voucherCode] === 'number' ? voucherCodes[voucherCode] : total * voucherCodes[voucherCode];
+      } else {
+        alert('Voucher tidak valid');
+        discount = 0;
+      }
+
+      calculateTotal();
+    }
 
     // Fungsi untuk memilih metode pembayaran
     function selectPayment(method) {
       selectedPaymentMethod = method;
       calculateTotal();
-      document.getElementById('checkout-button').disabled = false;
     }
 
-    // Fungsi untuk menghitung total harga dan update ke halaman checkout
-    function calculateTotal() {
-      let totalPrice = 0;
-      let shippingFee = Math.floor(Math.random() * (15000 - 5000 + 1) / 2000) * 2000 + 5000;
-      for (let id in cart) {
-        totalPrice += cart[id].price * cart[id].quantity;
+    // Fungsi untuk menyimpan alamat
+    function saveAddress() {
+      const fullName = document.getElementById('full-name').value;
+      const phoneNumber = document.getElementById('phone-number').value;
+      const fullAddress = document.getElementById('full-address').value;
+
+      if (fullName && phoneNumber && fullAddress) {
+        const address = `${fullName}, ${phoneNumber}, ${fullAddress}`;
+        document.getElementById('address-display').textContent = address;
+        document.getElementById('address-display').style.display = 'block';
+        document.getElementById('address-form').style.display = 'none';
+        localStorage.setItem('address', address);
+      } else {
+        alert('Harap isi semua informasi alamat');
       }
-      // Menyimpan rincian pesanan ke localStorage
-      const orderDetails = {
-        cartItems: cart,
-        shippingFee: shippingFee,
-        totalPrice: totalPrice + shippingFee
-      };
-      localStorage.setItem('orderDetails', JSON.stringify(orderDetails));
-      updateTotalPrice(totalPrice, shippingFee);
     }
 
-    // Update harga total dan tampilkan informasi
-    function updateTotalPrice(totalPrice, shippingFee) {
-      document.getElementById('total-price').textContent = `Rp ${totalPrice.toLocaleString()}`;
-      document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingFee.toLocaleString()}`;
+    // Toggle form alamat
+    function toggleAddressForm() {
+      const form = document.getElementById('address-form');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
 
-    // Fungsi untuk mengarahkan ke halaman invoice
-    function redirectToInvoice() {
-      localStorage.setItem('paymentMethod', selectedPaymentMethod);
-      window.location.href = "payment.html"; // Halaman tujuan untuk pembayaran
-    }
+    // Event listeners
+    document.getElementById('apply-voucher-btn').addEventListener('click', applyVoucher);
+    renderCartItems();
+
+    // Checkout button
+    document.getElementById('checkout-button').addEventListener('click', () => {
+      if (selectedPaymentMethod) {
+        alert('Checkout berhasil!');
+      } else {
+        alert('Pilih metode pembayaran terlebih dahulu!');
+      }
+    });
   </script>
 </body>
 </html>
