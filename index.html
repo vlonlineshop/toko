@@ -1,11 +1,225 @@
-<!DOCTYPE html>
+
+   <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VL Online Shop</title>
   <style>
-    /* (CSS Anda tidak diubah, bisa tetap seperti sebelumnya) */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(to right, #003366, #0059b3);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .search-box {
+      display: flex;
+      flex: 1;
+      max-width: 400px;
+      margin-top: 0.5rem;
+      margin-left: auto;
+    }
+    .search-box input {
+      flex: 1;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 5px 0 0 5px;
+    }
+    .search-box button {
+      padding: 0.6rem 1rem;
+      border: none;
+      background: #003366;
+      color: white;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+    main {
+      padding: 1rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .filter-box {
+      margin-bottom: 1rem;
+    }
+    .filter-box select {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .product {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      border: 1px solid #ccc;
+      position: relative;
+    }
+    .product img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .product h3 {
+      margin: 0.5rem 0;
+      color: #003366;
+    }
+    .product p.description {
+      font-size: 0.9rem;
+      color: #555;
+      margin: 0.5rem 0;
+    }
+    .price {
+      font-weight: bold;
+      color: #0059b3;
+    }
+    .original-price {
+      text-decoration: line-through;
+      color: #888;
+      font-size: 0.9rem;
+    }
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .actions button,
+    .actions a {
+      flex: 1;
+      padding: 0.6rem;
+      font-size: 0.9rem;
+      text-align: center;
+      border-radius: 5px;
+      text-decoration: none;
+      color: white;
+    }
+    .actions button {
+      background: #0059b3;
+      border: none;
+      cursor: pointer;
+    }
+    .actions button:hover {
+      background: #003366;
+    }
+    .actions a {
+      background: #28a745;
+    }
+    .actions a:hover {
+      background: #1e7e34;
+    }
+    .keranjang-popup {
+      position: fixed;
+      top: 15%;
+      right: 2%;
+      background: white;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 1.5rem;
+      width: 300px;
+      z-index: 1000;
+      display: none;
+    }
+    .keranjang-popup h2 {
+      text-align: center;
+      color: #003366;
+    }
+    .keranjang-popup ul {
+      list-style: none;
+      padding: 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .keranjang-popup li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .keranjang-popup li span {
+      flex: 1;
+    }
+    .keranjang-popup li button {
+      margin: 0 0.2rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.8rem;
+    }
+    .keranjang-popup .checkout {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .keranjang-popup .checkout button {
+      padding: 0.6rem 1.2rem;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .keranjang-popup .checkout button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .badge {
+      position: absolute;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+    .badge.discount {
+      top: 8px;
+      left: 8px;
+      background: red;
+      color: white;
+    }
+    .badge.best {
+      top: 8px;
+      right: 8px;
+      background: gold;
+      color: black;
+    }
+    .floating-cart {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #28a745;
+      color: white;
+      font-size: 1.2rem;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
