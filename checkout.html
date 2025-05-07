@@ -280,8 +280,8 @@
 
     function applyVoucher() {
       const code = document.getElementById('voucher-code').value.trim().toUpperCase();
-      const vouchers = { 'DISKON10': 0.1, 'HARGA10000': 10000 };
-      discount = vouchers[code] ? (code === 'DISKON10' ? total * 0.1 : 10000) : 0;
+      const vouchers = { 'DISKON10': 10, 'JUMATBERKAH5': 5000 };
+      discount = vouchers[code] ? (code === 'DISKON10' ? total * 10 : 10000) : 0;
       updateTotalPrice();
     }
 
