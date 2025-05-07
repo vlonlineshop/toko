@@ -125,7 +125,7 @@
       padding: 1.5rem;
       width: 300px;
       z-index: 1000;
-      display: none;
+      display: block;
     }
     .keranjang-popup h2 {
       text-align: center;
@@ -142,6 +142,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 0.5rem;
+      flex-wrap: wrap;
     }
     .keranjang-popup li span {
       flex: 1;
@@ -186,6 +187,7 @@
     .badge.discount {
       background: red;
       color: white;
+      top: 35px;
     }
   </style>
 </head>
@@ -208,7 +210,7 @@
       <!-- Item keranjang akan ditampilkan di sini -->
     </ul>
     <div class="checkout">
-      <button id="checkout-button" disabled>Checkout</button>
+      <button id="checkout-button" onclick="window.location.href='checkout.html'" disabled>Checkout</button>
     </div>
   </div>
   <script>
@@ -242,7 +244,7 @@
       }
     ];
 
-    const cart = {};
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
     function renderProducts() {
       const container = document.getElementById('product-list');
@@ -280,6 +282,7 @@
           price: price
         };
       }
+      localStorage.setItem('cart', JSON.stringify(cart));
       updateCart();
     }
 
@@ -294,17 +297,15 @@
         cartItems.innerHTML += `
           <li>
             <span>${cart[id].name} x${cart[id].quantity}</span>
-            <button onclick="removeFromCart(${id})">Hapus</button>
-            <button onclick="updateQuantity(${id}, 1)">+</button>
-            <button onclick="updateQuantity(${id}, -1)">-</button>
+            <div>
+              <button onclick="updateQuantity(${id}, -1)">-</button>
+              <button onclick="updateQuantity(${id}, 1)">+</button>
+              <button onclick="removeFromCart(${id})">Hapus</button>
+            </div>
           </li>
         `;
       }
-      if (!hasItems) {
-        checkoutButton.disabled = true;
-      } else {
-        checkoutButton.disabled = false;
-      }
+      checkoutButton.disabled = !hasItems;
     }
 
     function updateQuantity(productId, delta) {
@@ -316,16 +317,19 @@
         }
       } else {
         cart[productId].quantity = newQuantity;
+        localStorage.setItem('cart', JSON.stringify(cart));
         updateCart();
       }
     }
 
     function removeFromCart(productId) {
       delete cart[productId];
+      localStorage.setItem('cart', JSON.stringify(cart));
       updateCart();
     }
 
     renderProducts();
+    updateCart();
   </script>
 </body>
 </html>
