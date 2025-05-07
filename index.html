@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VL Online Shop - Beranda</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(to right, #003366, #0059b3);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .search-box {
+      max-width: 400px;
+      flex: 1;
+      margin-left: 2rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .search-box button {
+      background: #003366;
+      color: white;
+      padding: 0.6rem;
+      border-radius: 5px;
+      border: none;
+      margin-left: 10px;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .search-box button:hover {
+      background: #0059b3;
+    }
+
+    main {
+      padding: 2rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .product {
+      position: relative;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      overflow: hidden;
+      border: 1px solid #ccc;
+    }
+
+    .product:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      border: 2px solid #0059b3;
+    }
+
+    .product img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .product h3 {
+      margin: 0.5rem 0;
+      color: #003366;
+      font-size: 1.1rem;
+    }
+
+    .product p {
+      margin: 0.3rem 0;
+      font-size: 0.9rem;
+    }
+
+    .product .price {
+      font-weight: bold;
+      color: #0059b3;
+      font-size: 1rem;
+    }
+
+    .product button {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 5px;
+      background: #0059b3;
+      color: white;
+      cursor: pointer;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+    }
+
+    .product button:hover {
+      background: #003366;
+    }
+
+    .product .buy-now {
+      display: inline-block;
+      text-decoration: none;
+      background: #003366;
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 5px;
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .product .buy-now:hover {
+      background: #0059b3;
+    }
+
+    .badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: gold;
+      color: #003366;
+      font-weight: bold;
+      text-align: center;
+      padding: 0.3rem 0.7rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+    }
+
+    /* Keranjang Popup */
+    .cart-popup {
+      position: fixed;
+      top: 15%;
+      right: 2%;
+      background: white;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      padding: 1.5rem;
+      width: 300px;
+      z-index: 1000;
+      display: none;
+      animation: slideUp 0.5s ease-in-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .cart-popup h2 {
+      text-align: center;
+      color: #003366;
+      margin-bottom: 1rem;
+    }
+
+    .cart-popup ul {
+      list-style: none;
+      padding: 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .cart-popup li {
+      background: #eef3fb;
+      margin-bottom: 0.6rem;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-popup button#checkout-btn {
+      display: block;
+      margin: 1rem auto 0;
+      padding: 0.6rem 1.5rem;
+      font-size: 1rem;
+      background-color: #0059b3;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .cart-popup button#checkout-btn:hover {
+      background-color: #003f7f;
+    }
+
+    .cart-popup button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .cart-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #003366;
+      background-color: white;
+      border: 2px solid #003366;
+      padding: 10px;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-icon::after {
+      content: attr(data-count);
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: red;
+      color: white;
+      font-size: 0.8rem;
+      border-radius: 50%;
+      padding: 0.3rem;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .cart-icon:hover {
+      background-color: #f5f7fa;
+    }
+
+    .quantity-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 120px;
+      margin-top: 0.5rem;
+    }
+
+    .quantity-controls button {
+      font-size: 1.5rem;
+      background: #f0f0f0;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .quantity-controls button:hover {
+      background: #003366;
+      color: white;
+    }
+
+    .product-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .product-buttons button, .product-buttons .buy-now {
+      width: 48%;
+      text-align: center;
+    }
+    
+   body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; margin: 0; }
+    header { background: #0059b3; color: white; padding: 1rem; display: flex; align-items: center; justify-content: space-between; }
+    .search-box, .filter-box { display: flex; align-items: center; gap: 10px; }
+    .filter-box select { padding: 0.5rem; border-radius: 5px; border: none; }
+    main { padding: 2rem 1rem; max-width: 1200px; margin: auto; }
+    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+    .product { position: relative; background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 1rem; border: 1px solid #ccc; }
+    .product img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; }
+    .product h3 { color: #003366; font-size: 1.1rem; }
+    .product p.price { color: #0059b3; font-weight: bold; }
+    .product .original-price { text-decoration: line-through; color: gray; margin-left: 8px; }
+    .badge { position: absolute; top: 10px; right: 10px; background: gold; padding: 0.3rem 0.7rem; border-radius: 5px; font-size: 0.8rem; font-weight: bold; color: #003366; }
+    .badge-discount { background: red; color: white; left: 10px; right: auto; }
+    .product-buttons { display: flex; justify-content: space-between; margin-top: 1rem; }
+    .product-buttons button, .product-buttons .buy-now { width: 48%; padding: 0.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+    .product-buttons .buy-now { background: #003366; color: white; text-decoration: none; text-align: center; }
+    .product-buttons button { background: #0059b3; color: white; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VL Online Shop</h1>
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Cari produk...">
+      <button onclick="searchProduct()">🔍</button>
+    </div>
+    <div class="filter-box">
+      <label for="category-filter">Kategori:</label>
+      <select id="category-filter" onchange="filterProducts()">
+        <option value="all">Semua</option>
+        <option value="Elektronik">Elektronik</option>
+        <option value="Baju">Baju</option>
+        <option value="Aksesoris">Aksesoris</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <section class="products" id="product-list"></section>
+  </main>
+
+  <script>
+    const products = [
+      { id: 1, name: 'Produk A', price: 10000, description: 'Deskripsi produk A', image: 'https://via.placeholder.com/200x150?text=A', href: '#', bestSeller: true, category: 'Elektronik' },
+      { id: 2, name: 'Produk B', price: 15000, originalPrice: 25000, description: 'Diskon produk B!', image: 'https://via.placeholder.com/200x150?text=B', href: '#', category: 'Baju' },
+      { id: 3, name: 'Produk C', price: 5000, description: 'Deskripsi produk C', image: 'https://via.placeholder.com/200x150?text=C', href: '#', category: 'Aksesoris' }
+    ];
+
+    function renderProducts(filtered = products) {
+      const container = document.getElementById('product-list');
+      container.innerHTML = '';
+      filtered.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'product';
+        item.innerHTML = `
+          ${p.bestSeller ? '<div class="badge">BEST SELLER</div>' : ''}
+          ${p.originalPrice ? '<div class="badge badge-discount">DISKON</div>' : ''}
+          <img src="${p.image}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p>${p.description}</p>
+          <p class="price">
+            Rp${p.price.toLocaleString()}
+            ${p.originalPrice ? `<span class="original-price">Rp${p.originalPrice.toLocaleString()}</span>` : ''}
+          </p>
+          <div class="product-buttons">
+            <button onclick="addToCart(${p.id})">Tambah</button>
+            <a href="${p.href}" class="buy-now">Beli Sekarang</a>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function filterProducts() {
+      const selected = document.getElementById('category-filter').value;
+      const filtered = selected === 'all' ? products : products.filter(p => p.category === selected);
+      renderProducts(filtered);
+    }
+
+    function searchProduct() {
+      const term = document.getElementById('search').value.toLowerCase();
+      const filtered = products.filter(p => p.name.toLowerCase().includes(term) || p.description.toLowerCase().includes(term));
+      renderProducts(filtered);
+    }
+
+    function addToCart(id) {
+      alert(`Produk ID ${id} ditambahkan ke keranjang!`);
+    }
+
+    // Load awal
+    renderProducts();
+  </script>
+</body>
+</html>
