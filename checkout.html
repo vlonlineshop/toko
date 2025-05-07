@@ -189,7 +189,7 @@
         </div>
         <div class="payment-section">
           <h3>Pilih Metode Pembayaran</h3>
-          <div class="payment-option" onclick="selectPayment('bca', this)">Transfer Bank BCA</div>
+          <div class="payment-option" onclick="selectPayment('bca', this)">Transfer Bank (BCA/SeaBank)</div>
           <div class="payment-option" onclick="selectPayment('qris', this)">QRIS</div>
           <div class="payment-option" onclick="selectPayment('ewallet', this)">E-Wallet</div>
           <div class="payment-option" onclick="selectPayment('cod', this)">Cash On Delivery (COD)</div>
@@ -210,6 +210,19 @@
     let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
     let selectedPaymentMethod = null;
     let shippingCostSet = false;
+
+    // Restore saved address on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedAddress = localStorage.getItem('address');
+      const savedNote = localStorage.getItem('courierNote');
+      if (savedAddress) {
+        document.getElementById('address-display').textContent = savedAddress;
+        document.getElementById('address-display').style.display = 'block';
+        document.getElementById('address-form').style.display = 'none';
+        document.getElementById('courier-note').value = savedNote || '';
+      }
+      renderCartItems();
+    });
 
     function calculateTotal() {
       total = Object.values(cart).reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -288,7 +301,6 @@
       window.location.href = `https://wa.me/6285709458101?text=${message}`;
     });
 
-    renderCartItems();
   </script>
 </body>
 </html>
