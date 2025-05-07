@@ -7,252 +7,140 @@
   <style>
     * { box-sizing: border-box; }
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: #f5f7fa;
       color: #333;
+      margin: 0;
     }
     header {
       background: linear-gradient(to right, #003366, #0059b3);
       color: white;
-      padding: 1rem 2rem;
+      padding: 1rem;
       text-align: center;
     }
-    header h1 {
-      margin: 0;
-    }
-    main {
-      padding: 1rem;
-      max-width: 1200px;
-      margin: auto;
-    }
     .checkout-container {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
-    .checkout-container h2 {
+    h2 {
+      text-align: center;
       color: #003366;
     }
-    .product-list {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 1rem;
-      margin-bottom: 1rem;
+    .cart-items {
+      margin: 1rem 0;
     }
-    .product-list ul {
-      list-style: none;
-      padding: 0;
-    }
-    .product-list li {
+    .cart-item {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       margin-bottom: 1rem;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 1rem;
     }
-    .product-list img {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 10px;
-      margin-right: 1rem;
-    }
-    .product-list span {
-      flex: 1;
-    }
-    .product-list button {
-      padding: 0.3rem 0.8rem;
-      border: none;
-      background-color: #ff4c4c;
-      color: white;
-      font-size: 0.9rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .product-list button:hover {
-      background-color: #d43838;
-    }
-    .summary {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    .summary p {
-      margin: 0.5rem 0;
+    .cart-item span {
       font-size: 1rem;
     }
-    .summary .total {
+    .cart-item span.price {
       font-weight: bold;
-      font-size: 1.2rem;
-      color: #0059b3;
     }
-    .summary button {
-      width: 100%;
-      padding: 1rem;
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .summary button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-    .voucher-section {
+    .total {
       margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: right;
+      color: #003366;
+    }
+    .invoice-id {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #28a745;
+      margin-bottom: 1.5rem;
+    }
+    .actions {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      margin-top: 2rem;
     }
-    .voucher-section input {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      flex: 1;
-      margin-right: 1rem;
-    }
-    .voucher-section button {
-      padding: 0.5rem 1rem;
-      background-color: #0059b3;
+    .actions button {
+      padding: 0.8rem 1.5rem;
+      background: #0059b3;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
-    .voucher-section button:hover {
-      background-color: #003366;
+    .actions button:hover {
+      background: #003366;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>Checkout - VL Online Shop</h1>
+    <h1>VL Online Shop - Checkout</h1>
   </header>
-  <main>
-    <div class="checkout-container">
-      <div class="product-list" id="checkout-products">
-        <h2>Daftar Produk</h2>
-        <ul id="product-list">
-          <!-- Produk keranjang akan ditampilkan di sini -->
-        </ul>
-      </div>
 
-      <!-- Kolom untuk memasukkan kode voucher -->
-      <div class="voucher-section">
-        <input type="text" id="voucher-code" placeholder="Masukkan kode voucher" />
-        <button onclick="applyVoucher()">Terapkan Voucher</button>
-      </div>
+  <div class="checkout-container">
+    <h2>Detail Keranjang</h2>
+    <div id="invoice-id" class="invoice-id"></div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="total" id="total"></div>
 
-      <div class="summary">
-        <h2>Ringkasan Pembelian</h2>
-        <p id="total-items">Total Produk: 0</p>
-        <p id="total-price" class="total">Total Harga: Rp0</p>
-        <p id="discounted-price" class="total" style="display:none;">Harga Setelah Diskon: Rp0</p>
-        <button id="checkout-btn" disabled>Bayar Sekarang</button>
-      </div>
+    <div class="actions">
+      <button onclick="goBack()">Kembali ke Belanja</button>
+      <button onclick="completePurchase()">Selesaikan Pembayaran</button>
     </div>
-  </main>
+  </div>
+
   <script>
-    // Voucher yang valid dan diskonnya
-    const vouchers = {
-      "DISKON50": { type: "flat", value: 50000 },  // Potongan harga tetap
-      "DISKON10": { type: "percentage", value: 10 } // Diskon persentase 10%
-    };
-
-    // Mengambil data keranjang dari localStorage (dalam skenario nyata bisa menggunakan session atau database)
+    // Ambil data keranjang dari localStorage
     const cart = JSON.parse(localStorage.getItem('cart')) || {};
+    const cartItemsElement = document.getElementById('cart-items');
+    const totalElement = document.getElementById('total');
+    const invoiceIdElement = document.getElementById('invoice-id');
 
+    // Fungsi untuk menghasilkan ID invoice acak
+    function generateInvoiceId() {
+      return 'INV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+    }
+
+    // Fungsi untuk menampilkan produk dalam keranjang dan total harga
     function renderCheckout() {
-      const productList = document.getElementById('product-list');
-      const totalItems = document.getElementById('total-items');
-      const totalPrice = document.getElementById('total-price');
-      const discountedPrice = document.getElementById('discounted-price');
-      const checkoutBtn = document.getElementById('checkout-btn');
-      
-      productList.innerHTML = '';
       let total = 0;
-      let itemCount = 0;
-
-      for (let id in cart) {
-        const product = cart[id];
-        const price = product.price * product.quantity;
-        total += price;
-        itemCount += product.quantity;
-        productList.innerHTML += `
-          <li>
-            <div style="display: flex; align-items: center;">
-              <img src="${product.image}" alt="${product.name}">
-              <span>${product.name} x${product.quantity}</span>
-            </div>
-            <span>Rp${price.toLocaleString()}</span>
-            <button onclick="removeProduct(${id})">Hapus</button>
-          </li>
+      let itemsHtml = '';
+      for (let productId in cart) {
+        const product = cart[productId];
+        const productTotal = product.price * product.quantity;
+        total += productTotal;
+        itemsHtml += `
+          <div class="cart-item">
+            <span>${product.name} x${product.quantity}</span>
+            <span class="price">Rp${productTotal.toLocaleString()}</span>
+          </div>
         `;
       }
-
-      totalItems.textContent = `Total Produk: ${itemCount}`;
-      totalPrice.textContent = `Total Harga: Rp${total.toLocaleString()}`;
-      discountedPrice.style.display = 'none';
-      checkoutBtn.disabled = itemCount === 0;
+      cartItemsElement.innerHTML = itemsHtml;
+      totalElement.textContent = `Total: Rp${total.toLocaleString()}`;
+      invoiceIdElement.textContent = `Invoice ID: ${generateInvoiceId()}`;
     }
 
-    function removeProduct(productId) {
-      delete cart[productId];
-      localStorage.setItem('cart', JSON.stringify(cart));
-      renderCheckout();
+    // Fungsi untuk kembali ke halaman utama
+    function goBack() {
+      window.location.href = 'index.html';
     }
 
-    // Fungsi untuk menerapkan kode voucher
-    function applyVoucher() {
-      const voucherCode = document.getElementById('voucher-code').value;
-      const totalPriceElement = document.getElementById('total-price');
-      const discountedPriceElement = document.getElementById('discounted-price');
-
-      if (vouchers[voucherCode]) {
-        const voucher = vouchers[voucherCode];
-        let total = 0;
-        let itemCount = 0;
-
-        // Hitung total harga
-        for (let id in cart) {
-          const product = cart[id];
-          const price = product.price * product.quantity;
-          total += price;
-          itemCount += product.quantity;
-        }
-
-        // Terapkan diskon
-        if (voucher.type === 'flat') {
-          total -= voucher.value;
-          discountedPriceElement.textContent = `Harga Setelah Diskon: Rp${total.toLocaleString()}`;
-        } else if (voucher.type === 'percentage') {
-          total -= total * (voucher.value / 100);
-          discountedPriceElement.textContent = `Harga Setelah Diskon: Rp${total.toLocaleString()}`;
-        }
-
-        discountedPriceElement.style.display = 'block';
-        totalPriceElement.textContent = `Total Harga: Rp${total.toLocaleString()}`;
-      } else {
-        alert("Kode voucher tidak valid!");
-      }
+    // Fungsi untuk menyelesaikan pembayaran
+    function completePurchase() {
+      // Hapus keranjang setelah pembayaran selesai
+      localStorage.removeItem('cart');
+      alert('Pembayaran berhasil! Terima kasih telah berbelanja.');
+      window.location.href = 'index.html'; // Redirect ke halaman utama setelah pembayaran
     }
 
-    // Menambahkan event listener untuk tombol bayar
-    document.getElementById('checkout-btn').addEventListener('click', () => {
-      if (confirm('Apakah Anda yakin ingin menyelesaikan pembayaran?')) {
-        alert('Pembayaran berhasil!');
-        localStorage.removeItem('cart');  // Menghapus keranjang setelah transaksi selesai
-        renderCheckout();
-      }
-    });
-
-    // Render checkout
+    // Render halaman checkout
     renderCheckout();
   </script>
+
 </body>
 </html>
