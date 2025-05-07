@@ -5,36 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout - VL Online Shop</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f5f7fa;
       color: #333;
       margin: 0;
     }
-
     header {
       background: linear-gradient(to right, #003366, #0059b3);
       color: white;
       padding: 1rem 1.5rem;
       text-align: center;
     }
-
     main {
       padding: 1rem;
       max-width: 1200px;
       margin: auto;
     }
-
     .checkout-container {
       display: flex;
       flex-direction: column;
       gap: 1rem;
     }
-
     .address-container {
       background-color: #ffffff;
       padding: 1rem;
@@ -42,13 +35,11 @@
       margin-bottom: 1rem;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-
     .address-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-
     .add-address-btn {
       background-color: #0059b3;
       color: white;
@@ -58,38 +49,33 @@
       cursor: pointer;
       transition: background-color 0.3s, transform 0.3s;
     }
-
     .add-address-btn:hover {
       background-color: #003366;
       transform: scale(1.05);
     }
-
     .address-form {
       margin-top: 1rem;
       display: none;
       animation: slideDown 0.3s ease-out forwards;
     }
-
-    .address-form input {
+    .address-form input,
+    .address-form textarea {
       width: 100%;
       margin-bottom: 0.5rem;
       padding: 0.5rem;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
-
     @keyframes slideDown {
       from { opacity: 0; transform: scaleY(0); transform-origin: top; }
       to { opacity: 1; transform: scaleY(1); }
     }
-
     .address-display {
       margin-top: 0.5rem;
       background-color: #f1f1f1;
       padding: 0.8rem;
       border-radius: 5px;
     }
-
     .checkout-box {
       background-color: #ffffff;
       padding: 1rem;
@@ -97,7 +83,6 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       border: 1px solid #ccc;
     }
-
     .cart-item {
       display: flex;
       justify-content: space-between;
@@ -107,21 +92,18 @@
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-
     .voucher-section {
       margin-top: 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-
     .voucher-section input {
       padding: 0.5rem;
       border-radius: 5px;
       border: 1px solid #ccc;
       width: 60%;
     }
-
     .voucher-section button {
       padding: 0.6rem;
       background-color: #0059b3;
@@ -130,15 +112,12 @@
       border-radius: 5px;
       cursor: pointer;
     }
-
     .voucher-section button:hover {
       background-color: #003366;
     }
-
     .payment-section {
       margin-top: 1rem;
     }
-
     .payment-option {
       background-color: #f1f1f1;
       padding: 1rem;
@@ -147,12 +126,10 @@
       cursor: pointer;
       transition: all 0.3s ease-in-out;
     }
-
     .payment-option:hover, .payment-option.selected {
       background-color: #dbe9ff;
       border-left: 5px solid #0059b3;
     }
-
     .total-section {
       margin-top: 1rem;
       padding: 1rem;
@@ -160,18 +137,13 @@
       border-radius: 5px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
-    .total-section p {
-      margin: 0.5rem 0;
-    }
-
+    .total-section p { margin: 0.5rem 0; }
     .total-section .total-price {
       font-size: 1.8rem;
       font-weight: bold;
       color: #0059b3;
       font-family: 'Courier New', Courier, monospace;
     }
-
     .checkout-button {
       background-color: #28a745;
       color: white;
@@ -183,7 +155,6 @@
       cursor: pointer;
       margin-top: 1rem;
     }
-
     .checkout-button:disabled {
       background-color: #ccc;
     }
@@ -205,27 +176,24 @@
           <input type="text" id="full-name" placeholder="Nama Lengkap" />
           <input type="text" id="phone-number" placeholder="Nomor HP" />
           <input type="text" id="full-address" placeholder="Alamat Lengkap" />
+          <textarea id="courier-note" placeholder="Catatan untuk kurir (opsional)" rows="3"></textarea>
           <button class="add-address-btn" onclick="saveAddress()">Simpan Alamat</button>
         </div>
       </div>
-
       <div class="checkout-box">
         <h2>Keranjang Anda</h2>
         <div id="cart-items"></div>
-
         <div class="voucher-section">
           <input type="text" id="voucher-code" placeholder="Masukkan kode voucher..." />
           <button id="apply-voucher-btn">Terapkan Voucher</button>
         </div>
-
         <div class="payment-section">
           <h3>Pilih Metode Pembayaran</h3>
-          <div class="payment-option" onclick="selectPayment('bca', this)">Transfer Bank (BCA/SeaBank)</div>
+          <div class="payment-option" onclick="selectPayment('bca', this)">Transfer Bank BCA</div>
           <div class="payment-option" onclick="selectPayment('qris', this)">QRIS</div>
           <div class="payment-option" onclick="selectPayment('ewallet', this)">E-Wallet</div>
           <div class="payment-option" onclick="selectPayment('cod', this)">Cash On Delivery (COD)</div>
         </div>
-
         <div class="total-section">
           <p class="total-price" id="total-price">Rp 0</p>
           <p id="discount-info" style="color: green; display: none;">Diskon: Rp 0</p>
@@ -233,7 +201,6 @@
           <p id="admin-fee-info">Biaya Admin: Rp 0</p>
           <p id="cod-fee-info">Biaya COD: Rp 0</p>
         </div>
-
         <button id="checkout-button" class="checkout-button" disabled>Checkout</button>
       </div>
     </div>
@@ -246,15 +213,12 @@
 
     function calculateTotal() {
       total = Object.values(cart).reduce((acc, item) => acc + item.price * item.quantity, 0);
-      if (selectedPaymentMethod === 'cod') codFee = Math.round(total * 0.02);
-      else codFee = 0;
-
+      codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
       if (!shippingCostSet) {
         shippingCost = [5000, 7000, 9000, 11000, 13000, 15000][Math.floor(Math.random() * 6)];
         shippingCostSet = true;
         localStorage.setItem('ongkir', shippingCost);
       }
-
       updateTotalPrice();
     }
 
@@ -280,8 +244,8 @@
 
     function applyVoucher() {
       const code = document.getElementById('voucher-code').value.trim().toUpperCase();
-      const vouchers = { 'DISKON10': 10, 'JUMATBERKAH5': 5000 };
-      discount = vouchers[code] ? (code === 'DISKON10' ? total * 10 : 10000) : 0;
+      const vouchers = { 'DISKON10': 0.1, 'HARGA10000': 10000 };
+      discount = vouchers[code] ? (code === 'DISKON10' ? total * 0.1 : 10000) : 0;
       updateTotalPrice();
     }
 
@@ -289,10 +253,7 @@
       selectedPaymentMethod = method;
       document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
       element.classList.add('selected');
-      adminFee = 0;
-      if (method === 'bca') adminFee = 2500;
-      else if (method === 'ewallet') adminFee = 1500;
-      else if (method === 'qris') adminFee = Math.round(total * 0.01);
+      adminFee = method === 'bca' ? 2500 : method === 'ewallet' ? 1500 : method === 'qris' ? Math.round(total * 0.01) : 0;
       calculateTotal();
       document.getElementById('checkout-button').disabled = false;
     }
@@ -301,12 +262,14 @@
       const name = document.getElementById('full-name').value;
       const phone = document.getElementById('phone-number').value;
       const addr = document.getElementById('full-address').value;
+      const note = document.getElementById('courier-note').value;
       if (name && phone && addr) {
         const fullAddr = `${name}, ${phone}, ${addr}`;
         document.getElementById('address-display').textContent = fullAddr;
         document.getElementById('address-display').style.display = 'block';
         document.getElementById('address-form').style.display = 'none';
         localStorage.setItem('address', fullAddr);
+        localStorage.setItem('courierNote', note);
       } else alert('Harap isi semua informasi alamat');
     }
 
@@ -318,8 +281,10 @@
     document.getElementById('apply-voucher-btn').addEventListener('click', applyVoucher);
     document.getElementById('checkout-button').addEventListener('click', () => {
       if (!selectedPaymentMethod) return alert('Pilih metode pembayaran!');
-      const address = localStorage.getItem('address') || '-';
-      const message = encodeURIComponent(`🧾 *Checkout Order*\n\n📦 Produk:\n${Object.values(cart).map(p => `- ${p.name} x${p.quantity}`).join('\n')}\n\n🏠 Alamat: ${address}\n💳 Metode: ${selectedPaymentMethod}\n📦 Ongkir: Rp ${shippingCost.toLocaleString()}\n💰 Total: Rp ${(total + adminFee + codFee + shippingCost - discount).toLocaleString()}`);
+      const address = localStorage.getItem('address');
+      if (!address) return alert('Harap tambahkan alamat terlebih dahulu!');
+      const note = localStorage.getItem('courierNote') || '-';
+      const message = encodeURIComponent(`🧾 *Checkout Order*\n\n📦 Produk:\n${Object.values(cart).map(p => `- ${p.name} x${p.quantity}`).join('\n')}\n\n🏠 Alamat: ${address}\n🏷️ Catatan: ${note}\n💳 Metode: ${selectedPaymentMethod}\n📦 Ongkir: Rp ${shippingCost.toLocaleString()}\n💰 Total: Rp ${(total + adminFee + codFee + shippingCost - discount).toLocaleString()}`);
       window.location.href = `https://wa.me/6285709458101?text=${message}`;
     });
 
