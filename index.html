@@ -266,6 +266,7 @@
         bestSeller: true,
         checkoutUrl: 'https://example.com/checkoutA',
         available: true
+        category: 'Fashion'
       },
       {
         id: 2,
@@ -277,6 +278,7 @@
         bestSeller: false,
         checkoutUrl: 'https://vlonlineshop.github.io/toko/index.html',
         available: false
+        category: 'makanan'
       },
       {
         id: 3,
@@ -288,6 +290,19 @@
         bestSeller: true,
         checkoutUrl: 'https://example.com/checkoutC',
         available: true
+        category: 'sembako'
+      }
+    {
+        id: 4,
+        name: 'Produk D',
+        description: 'Produk C dirancang khusus untuk memenuhi kebutuhan Anda.',
+        price: 30000,
+        discount: 5,
+        image: 'https://via.placeholder.com/200x150?text=Produk+C',
+        bestSeller: true,
+        checkoutUrl: 'https://example.com/checkoutC',
+        available: true
+        category: 'jajanan'
       }
     ];
 
@@ -299,11 +314,12 @@
       container.innerHTML = '';
       products.forEach(p => {
         const discountPrice = p.price - (p.price * p.discount / 100);
-        if (
-          filter === 'best' && !p.bestSeller ||
-          filter === 'discount' && p.discount === 0 ||
-          filter === 'available' && !p.available
-        ) return;
+       if (
+  (filter === 'Makanan' && !p.makanan) ||
+  (filter === 'Jajanan' && !p.jajanan === 0) ||
+  (filter === 'Fashion' && !p.fashion) ||
+  (!['all', 'makanan', 'jajanan', 'fashion'].includes(filter) && p.category !== filter)
+) return;
 
         let addButton = p.available ? `<button onclick="addToCart(${p.id})">Tambah</button>` : '';
         let buyNowButton = p.checkoutUrl ? `<a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>` : '';
