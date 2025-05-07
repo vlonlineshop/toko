@@ -88,24 +88,50 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    #address-form {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease;
-    }
-
-    #address-form.open {
-      max-height: 500px;
-      margin-top: 1rem;
-    }
-
-    .address-section select,
-    .address-section input {
+    #saved-addresses,
+    .address-form input,
+    .address-form button {
       width: 100%;
-      padding: 0.5rem;
+      padding: 0.6rem;
       margin-top: 0.5rem;
       border-radius: 5px;
       border: 1px solid #ccc;
+    }
+
+    .address-form button {
+      background-color: #0059b3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .address-form button:hover {
+      background-color: #003366;
+    }
+
+    /* Toggle address form animation */
+    #toggle-address {
+      display: none;
+    }
+
+    .address-label {
+      display: inline-block;
+      background-color: #e0e0e0;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+
+    .address-form {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-in-out;
+    }
+
+    #toggle-address:checked + .address-label + .address-form {
+      max-height: 500px;
+      margin-top: 1rem;
     }
 
     .checkout-button {
@@ -151,9 +177,11 @@
         <select id="saved-addresses">
           <option value="">-- Pilih alamat Anda --</option>
         </select>
-        <button onclick="toggleAddressForm()">+ Tambah Alamat</button>
 
-        <div id="address-form">
+        <input type="checkbox" id="toggle-address" />
+        <label for="toggle-address" class="address-label">+ Tambah Alamat</label>
+
+        <div class="address-form">
           <input type="text" id="full-name" placeholder="Nama Lengkap" />
           <input type="text" id="phone-number" placeholder="Nomor HP" />
           <input type="text" id="address" placeholder="Alamat Lengkap" />
@@ -221,10 +249,6 @@
       updateTotalPrice();
     }
 
-    function toggleAddressForm() {
-      document.getElementById('address-form').classList.toggle('open');
-    }
-
     function saveAddress() {
       const name = document.getElementById('full-name').value.trim();
       const phone = document.getElementById('phone-number').value.trim();
@@ -236,7 +260,7 @@
         saved.push(address);
         localStorage.setItem('savedAddresses', JSON.stringify(saved));
         loadAddresses();
-        toggleAddressForm();
+        document.getElementById('toggle-address').checked = false;
       }
     }
 
