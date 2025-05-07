@@ -242,7 +242,8 @@
       }
     ];
 
-    const cart = {};
+    // Ambil keranjang dari localStorage jika ada
+    const cart = JSON.parse(localStorage.getItem('cart')) || {};
 
     function renderProducts() {
       const container = document.getElementById('product-list');
@@ -274,6 +275,8 @@
       } else {
         cart[productId] = { ...product, quantity: 1, price: price };
       }
+      // Simpan keranjang ke localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
       updateCart();
       document.getElementById('cart-popup').style.display = 'block';
     }
@@ -307,12 +310,16 @@
         }
       } else {
         cart[productId].quantity = newQuantity;
+        // Simpan kembali ke localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
         updateCart();
       }
     }
 
     function removeFromCart(productId) {
       delete cart[productId];
+      // Simpan perubahan ke localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
       updateCart();
     }
 
