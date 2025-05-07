@@ -1,132 +1,230 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #f5f7fa;
-      color: #333;
-    }
-    header {
-      position: sticky;
-      top: 0;
-      background: linear-gradient(to right, #003366, #0059b3);
-      color: white;
-      padding: 0.8rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
-    .back-button {
-      background: white;
-      color: #003366;
-      padding: 0.4rem 1rem;
-      border-radius: 5px;
-      border: none;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-    .back-button:hover {
-      background: #eef3fb;
-    }
-    .container {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 600px;
-      margin: 2rem auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-      color: #003366;
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button[type="submit"] {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #003366;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VL Online Shop - Checkout</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(to right, #003366, #0059b3);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            color: #003366;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #0059b3;
+            outline: none;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 1rem;
+            background: #0059b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background: #003366;
+        }
+
+        .summary-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f5f7fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-container h3 {
+            font-size: 1.2rem;
+            color: #003366;
+            margin-bottom: 1rem;
+        }
+
+        .summary-container p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .summary-container .total {
+            font-weight: bold;
+            color: #003366;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+    </style>
 </head>
+
 <body>
-  <header>
-    <h1>VL Online Shop</h1>
-    <button class="back-button" onclick="window.location.href='index.html'">← Kembali ke Beranda</button>
-  </header>
 
-  <div class="container">
-    <h2>Isi Data Pengiriman</h2>
-    <form id="checkout-form">
-      <label for="nama">*Nama Lengkap:</label>
-      <input type="text" id="nama" required>
+    <header>
+        <h1>VL Online Shop</h1>
+    </header>
 
-      <label for="alamat">*Alamat Lengkap:</label>
-      <input type="text" id="alamat" required>
+    <div class="form-container">
+        <h2>Formulir Alamat Pengiriman</h2>
+        <form id="checkout-form">
+            <div class="form-group">
+                <label for="full-name">Nama Lengkap</label>
+                <input type="text" id="full-name" required>
+            </div>
 
-      <label for="telepon">*Nomor Telepon:</label>
-      <input type="tel" id="telepon" required>
+            <div class="form-group">
+                <label for="address">Alamat Pengiriman</label>
+                <textarea id="address" rows="4" required></textarea>
+            </div>
 
-      <label for="patokan">*Patokan / Titik:</label>
-      <input type="text" id="patokan" required>
+            <div class="form-group">
+                <label for="city">Kota</label>
+                <input type="text" id="city" required>
+            </div>
 
-      <button type="submit">Lanjutkan ke Checkout Detail</button>
-    </form>
-  </div>
+            <div class="form-group">
+                <label for="postal-code">Kode Pos</label>
+                <input type="text" id="postal-code" required>
+            </div>
 
-  <script>
-    // Pre-fill if already saved (for revisiting users)
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('nama').value = localStorage.getItem('nama') || '';
-      document.getElementById('alamat').value = localStorage.getItem('alamat') || '';
-      document.getElementById('telepon').value = localStorage.getItem('telepon') || '';
-      document.getElementById('patokan').value = localStorage.getItem('patokan') || '';
-    });
+            <div class="form-group">
+                <label for="phone">Nomor Telepon</label>
+                <input type="tel" id="phone" required>
+            </div>
 
-    document.getElementById('checkout-form').addEventListener('submit', function(e) {
-      e.preventDefault();
+            <div class="form-group">
+                <button type="submit">Simpan Alamat dan Checkout</button>
+            </div>
+        </form>
+    </div>
 
-      // Simpan data ke localStorage
-      localStorage.setItem('nama', document.getElementById('nama').value);
-      localStorage.setItem('alamat', document.getElementById('alamat').value);
-      localStorage.setItem('telepon', document.getElementById('telepon').value);
-      localStorage.setItem('patokan', document.getElementById('patokan').value);
+    <div class="summary-container">
+        <h3>Ringkasan Belanja</h3>
+        <div id="cart-summary">
+            <p>Belum ada produk dalam keranjang.</p>
+        </div>
+        <div id="total-price" class="total">
+            <p>Total: Rp0</p>
+        </div>
+    </div>
 
-      // Generate ongkir acak kelipatan 2000 antara 5000 - 15000
-      const ongkirValues = [5000, 7000, 9000, 11000, 13000, 15000];
-      const ongkir = ongkirValues[Math.floor(Math.random() * ongkirValues.length)];
-      localStorage.setItem('ongkir', ongkir);
+    <script>
+        // Mendapatkan data keranjang dari localStorage
+        const cart = JSON.parse(localStorage.getItem('vl_cart')) || {};
+        const products = [
+            { id: 1, name: 'Produk A', price: 10000, description: 'Deskripsi produk A', image: 'https://via.placeholder.com/200x150?text=Produk+A', category: 'makanan', delivery: false, discount: 10, bestSeller: false },
+            { id: 2, name: 'Produk B', price: 20000, description: 'Deskripsi produk B', image: 'https://via.placeholder.com/200x150?text=Produk+B', category: 'makanan', delivery: true, discount: 0, bestSeller: false },
+            { id: 3, name: 'Produk C', price: 30000, description: 'Deskripsi produk C', image: 'https://via.placeholder.com/200x150?text=Produk+C', category: 'elektronik', delivery: false, discount: 0, bestSeller: false }
+        ];
 
-      // Pindah ke halaman checkout-detail
-      window.location.href = 'checkout-detail.html';
-    });
-  </script>
+        function renderCartSummary() {
+            const cartSummary = document.getElementById('cart-summary');
+            const totalPriceElement = document.getElementById('total-price');
+            let total = 0;
+            cartSummary.innerHTML = '';
+
+            // Menghitung total harga produk dalam keranjang
+            Object.keys(cart).forEach(id => {
+                const product = products.find(p => p.id == id);
+                if (product) {
+                    const productTotal = product.price * cart[id].qty;
+                    const itemSummary = document.createElement('p');
+                    itemSummary.textContent = `${product.name} (x${cart[id].qty}) - Rp${productTotal.toLocaleString()}`;
+                    cartSummary.appendChild(itemSummary);
+                    total += productTotal;
+                }
+            });
+
+            totalPriceElement.innerHTML = `Total: Rp${total.toLocaleString()}`;
+        }
+
+        // Menyimpan data alamat ke localStorage dan mengarahkan ke halaman selesai
+        document.getElementById('checkout-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Mengambil data dari formulir
+            const fullName = document.getElementById('full-name').value;
+            const address = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+            const postalCode = document.getElementById('postal-code').value;
+            const phone = document.getElementById('phone').value;
+
+            // Menyimpan data alamat di localStorage
+            const shippingInfo = {
+                fullName,
+                address,
+                city,
+                postalCode,
+                phone
+            };
+            localStorage.setItem('shippingInfo', JSON.stringify(shippingInfo));
+
+            // Redirect ke halaman selesai (misalnya halaman konfirmasi)
+            alert('Alamat pengiriman berhasil disimpan! Anda akan diarahkan ke halaman konfirmasi.');
+            window.location.href = 'checkout-detail.html'; // Ganti dengan halaman konfirmasi yang sesuai
+        });
+
+        // Render ringkasan keranjang
+        renderCartSummary();
+    </script>
 </body>
+
 </html>
