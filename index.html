@@ -189,6 +189,26 @@
       background: gold;
       color: black;
     }
+
+    /* Styling for Floating Cart Button */
+    .floating-cart {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #28a745;
+      color: white;
+      font-size: 1.2rem;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+
   </style>
 </head>
 <body>
@@ -209,6 +229,11 @@
     <div class="checkout">
       <button id="checkout-button" disabled>Checkout</button>
     </div>
+  </div>
+
+  <!-- Floating Cart Button -->
+  <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
+    <span>🛒</span>
   </div>
 
   <script>
@@ -347,6 +372,11 @@
       }
       localStorage.setItem('cart', JSON.stringify(cart));
       window.location.href = 'checkout.html'; 
+    }
+
+    function toggleCartPopup() {
+      const cartPopup = document.getElementById('cart-popup');
+      cartPopup.style.display = (cartPopup.style.display === 'block') ? 'none' : 'block';
     }
 
     document.getElementById('checkout-button').addEventListener('click', goToCheckout);
