@@ -3,253 +3,176 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout - Detail Pembayaran</title>
+  <title>Checkout Detail</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f5f7fa;
-      color: #333;
-      margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
     }
-
-    header {
-      background: linear-gradient(to right, #003366, #0059b3);
-      color: white;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 {
-      margin: 0;
-    }
-
-    main {
-      padding: 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .checkout-container {
-      background: white;
+    .container {
+      background-color: #fff;
+      padding: 20px;
       border-radius: 10px;
-      padding: 2rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    .checkout-container h2 {
+    h2 {
       text-align: center;
       color: #003366;
-      margin-bottom: 1rem;
     }
-
-    .checkout-container .address {
-      margin-top: 1.5rem;
-      font-size: 1rem;
+    label {
+      display: block;
+      margin-top: 15px;
     }
-
-    .checkout-container .product-list {
-      margin-top: 2rem;
-    }
-
-    .checkout-container .product-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.8rem;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .checkout-container .total-price {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-top: 1rem;
-    }
-
-    .checkout-container button {
+    input, select {
       width: 100%;
-      padding: 1rem;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .voucher-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .voucher-input-group input {
+      flex: 1;
+    }
+    .voucher-input-group button {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
       background-color: #0059b3;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 1.1rem;
-      margin-top: 2rem;
+      white-space: nowrap;
     }
-
-    .checkout-container button:hover {
+    .voucher-input-group button:hover {
       background-color: #003366;
     }
-
-    .back-btn {
-      background: #f39c12;
-      color: white;
-      border-radius: 5px;
-      padding: 0.8rem 1rem;
-      text-align: center;
-      margin-top: 1rem;
+    .payment-methods {
+      margin-top: 20px;
+    }
+    .payment-methods label {
       display: block;
-      text-decoration: none;
+      margin: 5px 0;
     }
-
-    .back-btn:hover {
-      background: #e67e22;
-    }
-
-    .voucher-section {
-      margin-top: 2rem;
-    }
-
-    .voucher-section input {
-      width: 70%;
-      padding: 0.8rem;
-      font-size: 1rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    .voucher-section button {
-      padding: 0.8rem 1.5rem;
-      font-size: 1rem;
-      background-color: #f39c12;
+    button[type="submit"] {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #003366;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
-
-    .voucher-section button:hover {
-      background-color: #e67e22;
-    }
-
-    .voucher-section .error-message {
-      color: red;
-      margin-top: 1rem;
-    }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Checkout</h2>
+    <form id="checkout-form">
+      <label for="nama">*Nama Lengkap:</label>
+      <input type="text" id="nama" required>
 
-  <header>
-    <h1>VL Online Shop - Checkout</h1>
-  </header>
+      <label for="alamat">*Alamat Lengkap:</label>
+      <input type="text" id="alamat" required>
 
-  <main>
-    <div class="checkout-container">
-      <h2>Detail Pembayaran</h2>
+      <label for="telepon">*Nomor Telepon:</label>
+      <input type="tel" id="telepon" required>
 
-      <div class="address">
-        <h3>Alamat Pengiriman</h3>
-        <p id="address-details"></p>
+      <label for="patokan">*Patokan / Titik:</label>
+      <input type="text" id="patokan" required>
+
+      <label for="voucher-code">Kode Voucher:</label>
+      <div class="voucher-input-group">
+        <input type="text" id="voucher-code" placeholder="Masukkan kode voucher">
+        <button type="button" id="check-voucher">Cek</button>
+      </div>
+      <p id="voucher-message"></p>
+
+      <div class="payment-methods">
+        <label><input type="radio" name="metode" value="seabank" required> SeaBank</label>
+        <label><input type="radio" name="metode" value="bca"> BCA</label>
+        <label><input type="radio" name="metode" value="qris"> QRIS</label>
+        <label><input type="radio" name="metode" value="dana"> DANA</label>
+        <label><input type="radio" name="metode" value="cod"> COD (maks Rp150.000)</label>
       </div>
 
-      <div class="product-list">
-        <h3>Produk yang Dipesan</h3>
-        <div id="product-list"></div>
-      </div>
+      <p id="ongkir-info">Menghitung ongkir...</p>
+      <p id="total-harga"></p>
 
-      <div class="total-price">
-        <p id="shipping-cost">Biaya Ongkir: Rp 0</p>
-        <p id="total-price">Total: Rp 0</p>
-      </div>
-
-      <div class="voucher-section">
-        <label for="voucher-code">Kode Voucher (Opsional):</label>
-        <input type="text" id="voucher-code" placeholder="Masukkan kode voucher...">
-        <button id="check-voucher">Cek Voucher</button>
-        <p id="voucher-error" class="error-message"></p>
-      </div>
-
-      <button id="place-order">Konfirmasi Pembayaran</button>
-
-      <a href="index.html" class="back-btn">Kembali ke Halaman Utama</a>
-    </div>
-  </main>
+      <button type="submit">Bayar</button>
+    </form>
+  </div>
 
   <script>
-    // Mengambil data alamat pengiriman dari localStorage
-    const userAddress = JSON.parse(localStorage.getItem('userAddress'));
+    let ongkir = localStorage.getItem('ongkir') ? parseInt(localStorage.getItem('ongkir')) : null;
+    let voucherDiskon = 0;
+    const totalBelanja = 200000; // Misal, total belanja default Rp200.000
 
-    // Menampilkan alamat pengiriman di halaman checkout
-    const addressDetails = document.getElementById('address-details');
-    if (userAddress) {
-      addressDetails.innerHTML = `
-        <strong>Nama Lengkap:</strong> ${userAddress.fullName} <br>
-        <strong>Alamat:</strong> ${userAddress.address} <br>
-        <strong>Nomor Telepon:</strong> ${userAddress.phone} <br>
-        <strong>Patokan:</strong> ${userAddress.landmark}
-      `;
-    } else {
-      addressDetails.innerHTML = 'Data alamat tidak ditemukan.';
+    function updateHarga() {
+      const totalSetelahDiskon = totalBelanja - voucherDiskon + (ongkir || 0);
+      document.getElementById('total-harga').textContent = `Total: Rp${totalSetelahDiskon.toLocaleString()}`;
     }
 
-    // Menampilkan daftar produk yang ada di keranjang
-    const productList = document.getElementById('product-list');
-    // Simulasi data produk di keranjang
-    const productsInCart = [
-      { name: "Makanan 1", price: 20000, quantity: 1 },
-      { name: "Makanan 2", price: 15000, quantity: 2 }
-    ];
+    document.addEventListener('DOMContentLoaded', () => {
+      if (ongkir === null && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          const userLat = pos.coords.latitude;
+          const userLng = pos.coords.longitude;
 
-    let totalPrice = 0;
+          const tokoLat = -1.6409491;
+          const tokoLng = 105.771176;
 
-    productsInCart.forEach(product => {
-      const productItem = document.createElement('div');
-      productItem.classList.add('product-item');
-      productItem.innerHTML = `
-        <span>${product.name} (x${product.quantity})</span>
-        <span>Rp ${product.price * product.quantity}</span>
-      `;
-      productList.appendChild(productItem);
-      totalPrice += product.price * product.quantity;
-    });
+          const R = 6371e3;
+          const toRad = deg => deg * Math.PI / 180;
 
-    // Mengambil ongkir acak yang sudah dihitung sebelumnya
-    const shippingCost = Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000;
+          const dLat = toRad(userLat - tokoLat);
+          const dLng = toRad(userLng - tokoLng);
+          const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(tokoLat)) * Math.cos(toRad(userLat)) * Math.sin(dLng / 2) ** 2;
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          const distance = R * c;
 
-    // Menampilkan ongkir dan total harga
-    document.getElementById('shipping-cost').textContent = `Biaya Ongkir: Rp ${shippingCost.toLocaleString()}`;
-    document.getElementById('total-price').textContent = `Total: Rp ${(totalPrice + shippingCost).toLocaleString()}`;
+          let calculatedOngkir = 5000 + Math.floor(Math.max(0, distance - 1000) / 1000) * 2000;
+          calculatedOngkir = Math.round(calculatedOngkir / 1000) * 1000;
+          calculatedOngkir = Math.min(15000, Math.max(5000, calculatedOngkir));
 
-    // Fungsi untuk memeriksa kode voucher
-    const validVouchers = {
-      'DISKON5': 5000,      // Voucher diskon Rp 5000
-      'DISKON10': 0.1,      // Voucher diskon 10%
-    };
-
-    document.getElementById('check-voucher').addEventListener('click', function() {
-      const voucherCode = document.getElementById('voucher-code').value.toUpperCase();
-      const voucherError = document.getElementById('voucher-error');
-
-      voucherError.textContent = ''; // Reset error message
-
-      if (validVouchers[voucherCode]) {
-        let discount = validVouchers[voucherCode];
-
-        // Cek apakah diskon berupa nominal atau persentase
-        if (discount > 1) {  // Diskon nominal
-          discount = Math.min(discount, shippingCost);
-          document.getElementById('shipping-cost').textContent = `Biaya Ongkir Setelah Diskon: Rp ${(shippingCost - discount).toLocaleString()}`;
-        } else {  // Diskon persentase
-          discount = totalPrice * discount;
-          totalPrice -= discount;
-          document.getElementById('total-price').textContent = `Total Setelah Diskon: Rp ${totalPrice.toLocaleString()}`;
-        }
-        alert('Voucher berhasil diterapkan!');
-      } else {
-        voucherError.textContent = 'Kode voucher tidak valid.';
+          ongkir = calculatedOngkir;
+          localStorage.setItem('ongkir', ongkir);
+          document.getElementById('ongkir-info').textContent = `Ongkir: Rp${ongkir.toLocaleString()}`;
+          updateHarga();
+        });
+      } else if (ongkir !== null) {
+        document.getElementById('ongkir-info').textContent = `Ongkir: Rp${ongkir.toLocaleString()}`;
+        updateHarga();
       }
-    });
 
-    // Event listener untuk tombol konfirmasi
-    document.getElementById('place-order').addEventListener('click', function() {
-      alert('Pesanan telah dikonfirmasi!');
-      // Reset localStorage setelah pesanan dikonfirmasi
-      localStorage.removeItem('userAddress');
-      // Redirect ke halaman konfirmasi pembayaran atau halaman terima kasih
-      window.location.href = 'thank-you.html';
+      document.getElementById('check-voucher').addEventListener('click', () => {
+        const code = document.getElementById('voucher-code').value.trim().toLowerCase();
+        const msg = document.getElementById('voucher-message');
+
+        if (code === 'diskon10') {
+          voucherDiskon = totalBelanja * 0.10;
+          msg.textContent = 'Voucher berhasil digunakan! Diskon 10%.';
+          msg.style.color = 'green';
+        } else if (code === 'ongkir5k') {
+          voucherDiskon = Math.min(ongkir, 5000);
+          msg.textContent = 'Voucher berhasil digunakan! Potongan ongkir Rp5.000.';
+          msg.style.color = 'green';
+        } else {
+          voucherDiskon = 0;
+          msg.textContent = 'Kode voucher tidak valid.';
+          msg.style.color = 'red';
+        }
+
+        updateHarga();
+      });
     });
   </script>
 </body>
