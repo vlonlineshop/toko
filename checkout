@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VL Online Shop - Checkout</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(to right, #003366, #0059b3);
+      color: white;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .checkout-container {
+      padding: 2rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .cart-items {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .cart-items h2 {
+      margin-top: 0;
+      color: #003366;
+    }
+
+    .cart-items ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .cart-items li {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .cart-items .price {
+      color: #0059b3;
+      font-weight: bold;
+    }
+
+    .cart-summary {
+      margin-top: 2rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .cart-summary p {
+      font-size: 1.2rem;
+      color: #003366;
+    }
+
+    .cart-summary .total {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #0059b3;
+    }
+
+    .checkout-btn {
+      display: block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.5rem;
+      background-color: #0059b3;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.2rem;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .checkout-btn:hover {
+      background-color: #003366;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      text-decoration: none;
+      padding: 0.6rem 1.5rem;
+      background-color: #f0f0f0;
+      color: #003366;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.1rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    .back-btn:hover {
+      background-color: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VL Online Shop - Checkout</h1>
+  </header>
+
+  <div class="checkout-container">
+    <div class="cart-items">
+      <h2>Ringkasan Keranjang</h2>
+      <ul id="cart-items-list"></ul>
+    </div>
+
+    <div class="cart-summary">
+      <p class="total">Total: Rp 0</p>
+      <button class="checkout-btn" onclick="proceedToPayment()">Lanjutkan ke Pembayaran</button>
+      <a href="index.html" class="back-btn">Kembali ke Belanja</a>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      {
+        id: 1,
+        name: 'Produk A',
+        price: 10000
+      },
+      {
+        id: 2,
+        name: 'Produk B',
+        price: 20000
+      },
+      {
+        id: 3,
+        name: 'Produk C',
+        price: 30000
+      }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('vl_cart')) || {};
+
+    function renderCartItems() {
+      const cartItemsList = document.getElementById('cart-items-list');
+      cartItemsList.innerHTML = '';
+      let total = 0;
+
+      Object.keys(cart).forEach(id => {
+        const product = products.find(p => p.id === parseInt(id));
+        if (cart[id].qty > 0) {
+          const li = document.createElement('li');
+          li.innerHTML = `${product.name} - ${cart[id].qty} x Rp${product.price.toLocaleString()} <span class="price">Rp${(cart[id].qty * product.price).toLocaleString()}</span>`;
+          cartItemsList.appendChild(li);
+          total += cart[id].qty * product.price;
+        }
+      });
+
+      document.querySelector('.total').innerText = `Total: Rp ${total.toLocaleString()}`;
+    }
+
+    function proceedToPayment() {
+      alert('Melanjutkan ke halaman pembayaran...');
+    }
+
+    renderCartItems();
+  </script>
+</body>
+</html>
