@@ -189,20 +189,26 @@
       background: gold;
       color: black;
     }
-    /* Floating Cart Button */
+
+    /* Styling for Floating Cart Button */
     .floating-cart {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #93c47d;
+      bottom: 30px;
+      right: 30px;
+      background-color: #28a745;
       color: white;
-      padding: 0.8rem 1.5rem;
       font-size: 1.2rem;
-      border-radius: 50px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       z-index: 1000;
     }
+
   </style>
 </head>
 <body>
@@ -226,8 +232,8 @@
   </div>
 
   <!-- Floating Cart Button -->
-  <div class="floating-cart" id="floating-cart">
-    <span>Keranjang</span>
+  <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
+    <span>🛒</span>
   </div>
 
   <script>
@@ -241,8 +247,7 @@
         image: 'https://via.placeholder.com/200x150?text=Produk+A',
         bestSeller: true,
         checkoutUrl: 'https://example.com/checkoutA',
-        available: true,
-        canAddToCart: true
+        available: true
       },
       {
         id: 2,
@@ -253,8 +258,7 @@
         image: 'https://via.placeholder.com/200x150?text=Produk+B',
         bestSeller: false,
         checkoutUrl: 'https://vlonlineshop.github.io/toko/index.html',
-        available: false,
-        canAddToCart: false
+        available: false
       },
       {
         id: 3,
@@ -265,8 +269,7 @@
         image: 'https://via.placeholder.com/200x150?text=Produk+C',
         bestSeller: true,
         checkoutUrl: 'https://example.com/checkoutC',
-        available: true,
-        canAddToCart: true
+        available: true
       }
     ];
 
@@ -277,13 +280,13 @@
       container.innerHTML = '';
       products.forEach(p => {
         const discountPrice = p.price - (p.price * p.discount / 100);
-        let addButton = '';
-        let buyNowButton = '';
+        let addButton = ''; 
+        let buyNowButton = ''; 
 
-        if (p.canAddToCart) {
+        if (p.available) {
           addButton = `<button onclick="addToCart(${p.id})">Tambah</button>`;
         } else {
-          addButton = '<button disabled>Stok Habis</button>';
+          addButton = '<button disabled>Stok Habis</button>'; 
         }
 
         if (p.checkoutUrl) {
@@ -362,10 +365,21 @@
       updateCart();
     }
 
-    function goToCheckout(productId) {
-      const product = products.find(p => p.id === productId);
-      window.location.href = product.checkoutUrl;
+    function goToCheckout() {
+      if (Object.keys(cart).length === 0) {
+        alert('Keranjang Anda kosong!');
+        return;
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      window.location.href = 'checkout.html'; 
     }
+
+    function toggleCartPopup() {
+      const cartPopup = document.getElementById('cart-popup');
+      cartPopup.style.display = (cartPopup.style.display === 'block') ? 'none' : 'block';
+    }
+
+    document.getElementById('checkout-button').addEventListener('click', goToCheckout);
 
     renderProducts();
     updateCart();
