@@ -33,35 +33,6 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
-    .voucher-input-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .voucher-input-group input {
-      flex: 1;
-    }
-    .voucher-input-group button {
-      padding: 0.5rem 1rem;
-      font-size: 0.9rem;
-      background-color: #0059b3;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .voucher-input-group button:hover {
-      background-color: #003366;
-    }
-    .payment-methods {
-      margin-top: 20px;
-    }
-    .payment-methods label {
-      display: block;
-      margin: 5px 0;
-    }
     button[type="submit"] {
       margin-top: 20px;
       padding: 10px 20px;
@@ -71,105 +42,66 @@
       border-radius: 5px;
       cursor: pointer;
     }
+    .invoice-id {
+      text-align: center;
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Checkout</h2>
-    <form id="checkout-form">
-      <label for="nama">*Nama Lengkap:</label>
-      <input type="text" id="nama" required>
+    <h2>Checkout Detail</h2>
 
-      <label for="alamat">*Alamat Lengkap:</label>
-      <input type="text" id="alamat" required>
+    <!-- Display Invoice ID -->
+    <div class="invoice-id" id="invoice-id">Invoice ID: </div>
 
-      <label for="telepon">*Nomor Telepon:</label>
-      <input type="tel" id="telepon" required>
+    <form id="checkout-detail-form">
+      <!-- Form fields to show user data and continue checkout -->
+      <label for="nama">Nama Lengkap: </label>
+      <input type="text" id="nama" disabled value="">
 
-      <label for="patokan">*Patokan / Titik:</label>
-      <input type="text" id="patokan" required>
+      <label for="alamat">Alamat Lengkap: </label>
+      <input type="text" id="alamat" disabled value="">
 
-      <label for="voucher-code">Kode Voucher:</label>
-      <div class="voucher-input-group">
-        <input type="text" id="voucher-code" placeholder="Masukkan kode voucher">
-        <button type="button" id="check-voucher">Cek</button>
-      </div>
-      <p id="voucher-message"></p>
+      <label for="telepon">Nomor Telepon: </label>
+      <input type="text" id="telepon" disabled value="">
 
-      <div class="payment-methods">
-        <label><input type="radio" name="metode" value="seabank" required> SeaBank</label>
-        <label><input type="radio" name="metode" value="bca"> BCA</label>
-        <label><input type="radio" name="metode" value="qris"> QRIS</label>
-        <label><input type="radio" name="metode" value="dana"> DANA</label>
-        <label><input type="radio" name="metode" value="cod"> COD (maks Rp150.000)</label>
-      </div>
+      <label for="patokan">Patokan: </label>
+      <input type="text" id="patokan" disabled value="">
 
-      <p id="total-harga"></p>
+      <label for="ongkir">Ongkir: </label>
+      <input type="text" id="ongkir" disabled value="">
 
-      <button type="submit">Bayar</button>
+      <button type="submit">Lanjutkan Pembayaran</button>
     </form>
   </div>
 
   <script>
-    let ongkir = localStorage.getItem('ongkir') ? parseInt(localStorage.getItem('ongkir')) : null;
-    let voucherDiskon = 0;
-    const totalBelanja = 200000; // Misal, total belanja default Rp200.000
+    // Pre-fill if already saved (for revisiting users)
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('nama').value = localStorage.getItem('nama') || '';
+      document.getElementById('alamat').value = localStorage.getItem('alamat') || '';
+      document.getElementById('telepon').value = localStorage.getItem('telepon') || '';
+      document.getElementById('patokan').value = localStorage.getItem('patokan') || '';
+      
+      // Generate and display Invoice ID
+      const invoiceId = 'INV-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+      document.getElementById('invoice-id').innerText = 'Invoice ID: ' + invoiceId;
+      localStorage.setItem('invoice-id', invoiceId);
+      
+      // Set the ongkir from localStorage
+      document.getElementById('ongkir').value = localStorage.getItem('ongkir') || 'Rp5,000'; // Default if not set
+    });
 
-    function updateHarga() {
-      const totalSetelahDiskon = totalBelanja - voucherDiskon + (ongkir || 0);
-      document.getElementById('total-harga').textContent = `Total: Rp${totalSetelahDiskon.toLocaleString()}`;
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      if (ongkir === null && navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(pos => {
-          const userLat = pos.coords.latitude;
-          const userLng = pos.coords.longitude;
-
-          const tokoLat = -1.6409491;
-          const tokoLng = 105.771176;
-
-          const R = 6371e3;
-          const toRad = deg => deg * Math.PI / 180;
-
-          const dLat = toRad(userLat - tokoLat);
-          const dLng = toRad(userLng - tokoLng);
-          const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(tokoLat)) * Math.cos(toRad(userLat)) * Math.sin(dLng / 2) ** 2;
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          const distance = R * c;
-
-          let calculatedOngkir = 5000 + Math.floor(Math.max(0, distance - 1000) / 1000) * 2000;
-          calculatedOngkir = Math.round(calculatedOngkir / 1000) * 1000;
-          calculatedOngkir = Math.min(15000, Math.max(5000, calculatedOngkir));
-
-          ongkir = calculatedOngkir;
-          localStorage.setItem('ongkir', ongkir);
-          updateHarga();
-        });
-      } else if (ongkir !== null) {
-        updateHarga();
-      }
-
-      document.getElementById('check-voucher').addEventListener('click', () => {
-        const code = document.getElementById('voucher-code').value.trim().toLowerCase();
-        const msg = document.getElementById('voucher-message');
-
-        if (code === 'diskon10') {
-          voucherDiskon = totalBelanja * 0.10;
-          msg.textContent = 'Voucher berhasil digunakan! Diskon 10%.';
-          msg.style.color = 'green';
-        } else if (code === 'ongkir5k') {
-          voucherDiskon = Math.min(ongkir, 5000);
-          msg.textContent = 'Voucher berhasil digunakan! Potongan ongkir Rp5.000.';
-          msg.style.color = 'green';
-        } else {
-          voucherDiskon = 0;
-          msg.textContent = 'Kode voucher tidak valid.';
-          msg.style.color = 'red';
-        }
-
-        updateHarga();
-      });
+    document.getElementById('checkout-detail-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Proceed to payment step or further processing
+      window.location.href = 'payment.html'; // Example: transition to payment page
     });
   </script>
 </body>
