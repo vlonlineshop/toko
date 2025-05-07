@@ -55,6 +55,14 @@
       max-width: 1200px;
       margin: auto;
     }
+    .filter-box {
+      margin-bottom: 1rem;
+    }
+    .filter-box select {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
     .products {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -86,6 +94,11 @@
     .price {
       font-weight: bold;
       color: #0059b3;
+    }
+    .original-price {
+      text-decoration: line-through;
+      color: #888;
+      font-size: 0.9rem;
     }
     .actions {
       display: flex;
@@ -189,8 +202,6 @@
       background: gold;
       color: black;
     }
-
-    /* Styling for Floating Cart Button */
     .floating-cart {
       position: fixed;
       bottom: 30px;
@@ -208,7 +219,6 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       z-index: 1000;
     }
-
   </style>
 </head>
 <body>
@@ -220,6 +230,15 @@
     </div>
   </header>
   <main>
+    <div class="filter-box">
+      <label for="categoryFilter">Filter Kategori: </label>
+      <select id="categoryFilter" onchange="renderProducts()">
+        <option value="all">Semua</option>
+        <option value="best">Best Seller</option>
+        <option value="discount">Diskon</option>
+        <option value="available">Tersedia</option>
+      </select>
+    </div>
     <div class="products" id="product-list"></div>
   </main>
 
@@ -231,7 +250,6 @@
     </div>
   </div>
 
-  <!-- Floating Cart Button -->
   <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
     <span>🛒</span>
   </div>
@@ -277,22 +295,18 @@
 
     function renderProducts() {
       const container = document.getElementById('product-list');
+      const filter = document.getElementById('categoryFilter').value;
       container.innerHTML = '';
       products.forEach(p => {
         const discountPrice = p.price - (p.price * p.discount / 100);
-        let addButton = ''; 
-        let buyNowButton = ''; 
+        if (
+          filter === 'best' && !p.bestSeller ||
+          filter === 'discount' && p.discount === 0 ||
+          filter === 'available' && !p.available
+        ) return;
 
-        if (p.available) {
-          addButton = `<button onclick="addToCart(${p.id})">Tambah</button>`;
-        }
-
-        if (p.checkoutUrl) {
-          buyNowButton = `
-            <a href="javascript:void(0)" onclick="goTocheckoutUrl" class="buy-now">Beli Sekarang</a>
-          `;
-        }
-
+        let addButton = p.available ? `<button onclick="addToCart(${p.id})">Tambah</button>` : '';
+        let buyNowButton = p.checkoutUrl ? `<a href="javascript:void(0)" onclick="goTocheckoutUrl">Beli Sekarang</a>` : '';
         container.innerHTML += `
           <div class="product">
             ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
@@ -300,7 +314,10 @@
             <img src="${p.image}" alt="${p.name}">
             <h3>${p.name}</h3>
             <p class="description">${p.description}</p>
-            <p class="price">Rp${discountPrice.toLocaleString()}</p>
+            <p>
+              ${p.discount > 0 ? `<span class="original-price">Rp${p.price.toLocaleString()}</span><br>` : ''}
+              <span class="price">Rp${discountPrice.toLocaleString()}</span>
+            </p>
             <div class="actions">
               ${addButton}
               ${buyNowButton}
@@ -369,7 +386,7 @@
         return;
       }
       localStorage.setItem('cart', JSON.stringify(cart));
-      window.location.href = 'checkout.html'; 
+      window.location.href = 'checkout.html';
     }
 
     function toggleCartPopup() {
