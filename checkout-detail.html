@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout Detail - VL Online Shop</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(to right, #003366, #0059b3);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .address-container {
+      background: white;
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .address-container h2 {
+      text-align: center;
+      color: #003366;
+      margin-bottom: 1rem;
+    }
+
+    .address-container p {
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
+
+    .back-btn {
+      background: #f39c12;
+      color: white;
+      border-radius: 5px;
+      padding: 0.8rem 1rem;
+      text-align: center;
+      margin-top: 1rem;
+      display: block;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      background: #e67e22;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>VL Online Shop - Checkout Detail</h1>
+  </header>
+
+  <main>
+    <div class="address-container">
+      <h2>Alamat Pengiriman</h2>
+      <p><strong>Nama Lengkap:</strong> <span id="full-name"></span></p>
+      <p><strong>Alamat Lengkap:</strong> <span id="address"></span></p>
+      <p><strong>Nomor Telepon:</strong> <span id="phone"></span></p>
+      <p><strong>Patokan:</strong> <span id="landmark"></span></p>
+
+      <a href="index.html" class="back-btn">Kembali ke Halaman Utama</a>
+    </div>
+  </main>
+
+  <script>
+    // Mengambil data alamat dari localStorage
+    const savedAddress = JSON.parse(localStorage.getItem('userAddress'));
+
+    if (savedAddress) {
+      // Tampilkan data alamat yang disimpan
+      document.getElementById('full-name').textContent = savedAddress.fullName;
+      document.getElementById('address').textContent = savedAddress.address;
+      document.getElementById('phone').textContent = savedAddress.phone;
+      document.getElementById('landmark').textContent = savedAddress.landmark;
+    } else {
+      // Jika tidak ada data alamat, arahkan kembali ke halaman utama
+      window.location.href = 'index.html';
+    }
+  </script>
+
+</body>
+</html>
