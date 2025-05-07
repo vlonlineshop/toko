@@ -307,7 +307,6 @@
 
         let addButton = p.available ? `<button onclick="addToCart(${p.id})">Tambah</button>` : '';
         let buyNowButton = p.checkoutUrl ? `<a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>` : '';
-
         container.innerHTML += `
           <div class="product">
             ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
@@ -342,7 +341,6 @@
     }
 
     function updateCart() {
-      const cartPopup = document.getElementById('cart-popup');
       const cartItems = document.getElementById('cart-items');
       const checkoutButton = document.getElementById('checkout-button');
       cartItems.innerHTML = '';
