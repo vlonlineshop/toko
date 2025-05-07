@@ -168,7 +168,6 @@
       background: #ccc;
       cursor: not-allowed;
     }
-
     .badge {
       position: absolute;
       font-size: 0.7rem;
@@ -273,11 +272,7 @@
       if (cart[productId]) {
         cart[productId].quantity += 1;
       } else {
-        cart[productId] = {
-          ...product,
-          quantity: 1,
-          price: price
-        };
+        cart[productId] = { ...product, quantity: 1, price: price };
       }
       updateCart();
       document.getElementById('cart-popup').style.display = 'block';
