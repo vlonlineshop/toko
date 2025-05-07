@@ -50,19 +50,16 @@
       border-radius: 0 5px 5px 0;
       cursor: pointer;
     }
-
     main {
       padding: 1rem;
       max-width: 1200px;
       margin: auto;
     }
-
     .products {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1.5rem;
     }
-
     .product {
       background: white;
       border-radius: 10px;
@@ -70,30 +67,30 @@
       padding: 1rem;
       border: 1px solid #ccc;
     }
-
     .product img {
       width: 100%;
       height: 150px;
       object-fit: cover;
       border-radius: 10px;
     }
-
     .product h3 {
       margin: 0.5rem 0;
       color: #003366;
     }
-
+    .product p.description {
+      font-size: 0.9rem;
+      color: #555;
+      margin: 0.5rem 0;
+    }
     .price {
       font-weight: bold;
       color: #0059b3;
     }
-
     .actions {
       display: flex;
       gap: 0.5rem;
       margin-top: 0.5rem;
     }
-
     .actions button,
     .actions a {
       flex: 1;
@@ -104,25 +101,20 @@
       text-decoration: none;
       color: white;
     }
-
     .actions button {
       background: #0059b3;
       border: none;
       cursor: pointer;
     }
-
     .actions button:hover {
       background: #003366;
     }
-
     .actions a {
       background: #28a745;
     }
-
     .actions a:hover {
       background: #1e7e34;
     }
-
     .keranjang-popup {
       position: fixed;
       top: 15%;
@@ -135,130 +127,122 @@
       z-index: 1000;
       display: none;
     }
-
     .keranjang-popup h2 {
       text-align: center;
       color: #003366;
     }
-
     .keranjang-popup ul {
       list-style: none;
       padding: 0;
       max-height: 300px;
       overflow-y: auto;
     }
-
     .keranjang-popup li {
-      background: #eef3fb;
-      margin-bottom: 0.6rem;
-      padding: 0.6rem;
-      border-radius: 10px;
-    }
-
-    .cart-controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
     }
-
-    .cart-controls button {
-      padding: 0.3rem 0.6rem;
-      font-size: 0.9rem;
-      border: none;
-      background: #0059b3;
+    .keranjang-popup li span {
+      flex: 1;
+    }
+    .keranjang-popup li button {
+      margin: 0 0.2rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.8rem;
+    }
+    .keranjang-popup .checkout {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .keranjang-popup .checkout button {
+      padding: 0.6rem 1.2rem;
+      background: #28a745;
       color: white;
+      border: none;
       border-radius: 5px;
       cursor: pointer;
     }
-
-    .keranjang-popup button {
-      display: block;
-      margin: 1rem auto 0;
-      padding: 0.6rem 1.5rem;
-      font-size: 1rem;
-      background-color: #0059b3;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .keranjang-popup button:hover {
-      background-color: #003f7f;
-    }
-
-    .keranjang-popup button:disabled {
-      opacity: 0.5;
+    .keranjang-popup .checkout button:disabled {
+      background: #ccc;
       cursor: not-allowed;
     }
-
-    .cart-icon {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      font-size: 2rem;
-      background: white;
-      border: 2px solid #003366;
-      color: #003366;
-      padding: 10px;
-      border-radius: 50%;
-      cursor: pointer;
+    .badge-container {
+      position: relative;
     }
-
-    .cart-icon::after {
-      content: attr(data-count);
+    .badge {
       position: absolute;
-      top: -5px;
-      right: -5px;
+      top: 8px;
+      left: 8px;
+      background: gold;
+      color: black;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+    .badge.discount {
       background: red;
       color: white;
-      font-size: 0.8rem;
-      border-radius: 50%;
-      padding: 0.3rem;
-      min-width: 20px;
-      text-align: center;
-    }
-
-    @media (max-width: 600px) {
-      .search-box {
-        margin-top: 1rem;
-        width: 100%;
-      }
     }
   </style>
 </head>
 <body>
-
   <header>
     <h1>VL Online Shop</h1>
     <div class="search-box">
-      <input type="text" placeholder="Cari produk..." />
-      <button>🔍</button>
+      <input type="text" placeholder="Cari produk...">
+      <button>Cari</button>
     </div>
   </header>
-
   <main>
-    <section class="products" id="product-list"></section>
+    <div class="products" id="product-list">
+      <!-- Produk akan ditampilkan di sini -->
+    </div>
   </main>
-
   <div class="keranjang-popup" id="cart-popup">
     <h2>Keranjang</h2>
-    <ul id="cart-items"></ul>
-    <p id="cart-total"></p>
-    <button id="checkout-btn" onclick="location.href='checkout.html'" disabled>Lanjut ke Checkout</button>
+    <ul id="cart-items">
+      <!-- Item keranjang akan ditampilkan di sini -->
+    </ul>
+    <div class="checkout">
+      <button id="checkout-button" disabled>Checkout</button>
+    </div>
   </div>
-
-  <div class="cart-icon" id="cart-icon" onclick="toggleCartPopup()" data-count="0">🛒</div>
-
   <script>
     const products = [
-      { id: 1, name: 'Rendang', price: 10000, discount: 10, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjOduCCH4USjGTQgLsio_0QHHfGEj-lTneLw&s' },
-      { id: 2, name: 'Produk B', price: 20000, discount: 0, image: 'https://via.placeholder.com/200x150?text=Produk+B' },
-      { id: 3, name: 'Produk C', price: 30000, discount: 5, image: 'https://via.placeholder.com/200x150?text=Produk+C' },
+      {
+        id: 1,
+        name: 'Produk A',
+        description: 'Produk A adalah pilihan terbaik untuk kebutuhan sehari-hari Anda.',
+        price: 10000,
+        discount: 10,
+        image: 'https://via.placeholder.com/200x150?text=Produk+A',
+        bestSeller: true
+      },
+      {
+        id: 2,
+        name: 'Produk B',
+        description: 'Produk B menawarkan kualitas unggul dengan harga terjangkau.',
+        price: 20000,
+        discount: 0,
+        image: 'https://via.placeholder.com/200x150?text=Produk+B',
+        bestSeller: false
+      },
+      {
+        id: 3,
+        name: 'Produk C',
+        description: 'Produk C dirancang khusus untuk memenuhi kebutuhan Anda.',
+        price: 30000,
+        discount: 5,
+        image: 'https://via.placeholder.com/200x150?text=Produk+C',
+        bestSeller: true
+      }
     ];
 
-    let cart = JSON.parse(localStorage.getItem('vl_cart')) || {};
+    const cart = {};
 
     function renderProducts() {
       const container = document.getElementById('product-list');
@@ -267,8 +251,13 @@
         const discountPrice = p.price - (p.price * p.discount / 100);
         container.innerHTML += `
           <div class="product">
-            <img src="${p.image}" alt="${p.name}">
+            <div class="badge-container">
+              ${p.bestSeller ? '<span class="badge">Best Seller</span>' : ''}
+              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
+              <img src="${p.image}" alt="${p.name}">
+            </div>
             <h3>${p.name}</h3>
+            <p class="description">${p.description}</p>
             <p class="price">Rp${discountPrice.toLocaleString()}</p>
             <div class="actions">
               <button onclick="addToCart(${p.id})">Tambah</button>
@@ -279,87 +268,64 @@
       });
     }
 
-    function addToCart(id) {
-      const p = products.find(x => x.id === id);
-      const price = p.price - (p.price * p.discount / 100);
-      if (!cart[id]) {
-        cart[id] = { qty: 1, price };
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      const price = product.price - (product.price * product.discount / 100);
+      if (cart[productId]) {
+        cart[productId].quantity += 1;
       } else {
-        cart[id].qty++;
+        cart[productId] = {
+          ...product,
+          quantity: 1,
+          price: price
+        };
       }
-      localStorage.setItem('vl_cart', JSON.stringify(cart));
-      updateCartIcon();
-      renderCartPopup();
+      updateCart();
     }
 
-    function updateCartIcon() {
-      const icon = document.getElementById('cart-icon');
-      const count = Object.values(cart).reduce((acc, cur) => acc + cur.qty, 0);
-      icon.setAttribute('data-count', count);
-    }
-
-    function toggleCartPopup() {
-      const popup = document.getElementById('cart-popup');
-      popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
-      renderCartPopup();
-    }
-
-    function renderCartPopup() {
-      const container = document.getElementById('cart-items');
-      const totalEl = document.getElementById('cart-total');
-      const btn = document.getElementById('checkout-btn');
-      container.innerHTML = '';
-      let total = 0;
-      let itemCount = 0;
-
-      for (const id in cart) {
-        const p = products.find(x => x.id == id);
-        const item = cart[id];
-        total += item.price * item.qty;
-        itemCount += item.qty;
-
-        container.innerHTML += `
+    function updateCart() {
+      const cartPopup = document.getElementById('cart-popup');
+      const cartItems = document.getElementById('cart-items');
+      const checkoutButton = document.getElementById('checkout-button');
+      cartItems.innerHTML = '';
+      let hasItems = false;
+      for (let id in cart) {
+        hasItems = true;
+        cartItems.innerHTML += `
           <li>
-            ${p.name} - Rp${item.price.toLocaleString()} x ${item.qty}
-            <div class="cart-controls">
-              <button onclick="decreaseQty(${id})">-</button>
-              <button onclick="increaseQty(${id})">+</button>
-            </div>
+            <span>${cart[id].name} x${cart[id].quantity}</span>
+            <button onclick="removeFromCart(${id})">Hapus</button>
+            <button onclick="updateQuantity(${id}, 1)">+</button>
+            <button onclick="updateQuantity(${id}, -1)">-</button>
           </li>
         `;
       }
-
-      totalEl.textContent = `Total: Rp${total.toLocaleString()}`;
-      btn.disabled = itemCount === 0;
-    }
-
-    function increaseQty(id) {
-      cart[id].qty++;
-      saveCart();
-    }
-
-    function decreaseQty(id) {
-      if (cart[id].qty > 1) {
-        cart[id].qty--;
+      if (!hasItems) {
+        checkoutButton.disabled = true;
       } else {
-        if (confirm('Anda yakin ingin menghapus produk ini?')) {
-          delete cart[id];
-        } else {
-          return;
-        }
+        checkoutButton.disabled = false;
       }
-      saveCart();
     }
 
-    function saveCart() {
-      localStorage.setItem('vl_cart', JSON.stringify(cart));
-      updateCartIcon();
-      renderCartPopup();
+    function updateQuantity(productId, delta) {
+      const product = cart[productId];
+      const newQuantity = product.quantity + delta;
+      if (newQuantity <= 0) {
+        if (confirm('Anda yakin ingin menghapus produk ini?')) {
+          removeFromCart(productId);
+        }
+      } else {
+        cart[productId].quantity = newQuantity;
+        updateCart();
+      }
+    }
+
+    function removeFromCart(productId) {
+      delete cart[productId];
+      updateCart();
     }
 
     renderProducts();
-    updateCartIcon();
   </script>
-
 </body>
 </html>
