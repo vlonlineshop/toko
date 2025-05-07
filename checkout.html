@@ -35,21 +35,6 @@
       gap: 1rem;
     }
 
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-      background: white;
-      border-radius: 5px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .cart-item p {
-      margin: 0;
-    }
-
-    /* Address Section Styling */
     .address-container {
       background-color: #ffffff;
       padding: 1rem;
@@ -94,15 +79,8 @@
     }
 
     @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: scaleY(0);
-        transform-origin: top;
-      }
-      to {
-        opacity: 1;
-        transform: scaleY(1);
-      }
+      from { opacity: 0; transform: scaleY(0); transform-origin: top; }
+      to { opacity: 1; transform: scaleY(1); }
     }
 
     .address-display {
@@ -112,13 +90,22 @@
       border-radius: 5px;
     }
 
-    /* Container untuk Keranjang, Voucher dan Metode Pembayaran */
     .checkout-box {
       background-color: #ffffff;
       padding: 1rem;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       border: 1px solid #ccc;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      background: white;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .voucher-section {
@@ -148,9 +135,26 @@
       background-color: #003366;
     }
 
-    /* Total Price Section */
+    .payment-section {
+      margin-top: 1rem;
+    }
+
+    .payment-option {
+      background-color: #f1f1f1;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .payment-option:hover, .payment-option.selected {
+      background-color: #dbe9ff;
+      border-left: 5px solid #0059b3;
+    }
+
     .total-section {
-      margin-top: 2rem;
+      margin-top: 1rem;
       padding: 1rem;
       background: white;
       border-radius: 5px;
@@ -162,12 +166,12 @@
     }
 
     .total-section .total-price {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: bold;
       color: #0059b3;
+      font-family: 'Courier New', Courier, monospace;
     }
 
-    /* Checkout Button */
     .checkout-button {
       background-color: #28a745;
       color: white;
@@ -177,27 +181,11 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      margin-top: 1rem;
     }
 
     .checkout-button:disabled {
       background-color: #ccc;
-    }
-
-    /* Payment Section */
-    .payment-section {
-      margin-top: 1rem;
-    }
-
-    .payment-option {
-      background-color: #f1f1f1;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .payment-option:hover {
-      background-color: #ddd;
     }
   </style>
 </head>
@@ -205,10 +193,8 @@
   <header>
     <h1>Checkout - VL Online Shop</h1>
   </header>
-
   <main>
     <div class="checkout-container">
-      <!-- Alamat Pengiriman -->
       <div class="address-container">
         <div class="address-header">
           <h3>Alamat Pengiriman</h3>
@@ -223,7 +209,6 @@
         </div>
       </div>
 
-      <!-- Keranjang Anda, Kode Voucher, dan Metode Pembayaran dalam satu border -->
       <div class="checkout-box">
         <h2>Keranjang Anda</h2>
         <div id="cart-items"></div>
@@ -233,164 +218,112 @@
           <button id="apply-voucher-btn">Terapkan Voucher</button>
         </div>
 
+        <div class="payment-section">
+          <h3>Pilih Metode Pembayaran</h3>
+          <div class="payment-option" onclick="selectPayment('bca', this)">Transfer Bank (BCA/SeaBank)</div>
+          <div class="payment-option" onclick="selectPayment('qris', this)">QRIS</div>
+          <div class="payment-option" onclick="selectPayment('ewallet', this)">E-Wallet</div>
+          <div class="payment-option" onclick="selectPayment('cod', this)">Cash On Delivery (COD)</div>
+        </div>
+
         <div class="total-section">
-          <p>Total Harga:</p>
-          <p id="total-price">Rp 0</p>
+          <p class="total-price" id="total-price">Rp 0</p>
           <p id="discount-info" style="color: green; display: none;">Diskon: Rp 0</p>
           <p id="shipping-info">Ongkir: Rp 0</p>
           <p id="admin-fee-info">Biaya Admin: Rp 0</p>
           <p id="cod-fee-info">Biaya COD: Rp 0</p>
         </div>
 
-        <!-- Payment Options -->
-        <div class="payment-section">
-          <h3>Pilih Metode Pembayaran</h3>
-          <div class="payment-option" onclick="selectPayment('bca')">
-            Pembayaran melalui Bank (BCA/SeaBank)
-          </div>
-          <div class="payment-option" onclick="selectPayment('qris')">
-            Pembayaran menggunakan QRIS
-          </div>
-          <div class="payment-option" onclick="selectPayment('ewallet')">
-            Pembayaran menggunakan E-Wallet
-          </div>
-          <div class="payment-option" onclick="selectPayment('cod')">
-            Pembayaran Cash On Delivery (COD)
-          </div>
-        </div>
+        <button id="checkout-button" class="checkout-button" disabled>Checkout</button>
       </div>
-
-      <button id="checkout-button" class="checkout-button" disabled>Checkout</button>
     </div>
   </main>
-
   <script>
-    // Ambil cart dari localStorage
     const cart = JSON.parse(localStorage.getItem('cart')) || {};
-    let total = 0;
-    let discount = 0;
-    let shippingCost = 0;
-    let adminFee = 0;
-    let codFee = 0;
+    let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
     let selectedPaymentMethod = null;
+    let shippingCostSet = false;
 
-    // Fungsi untuk menghitung total harga
     function calculateTotal() {
-      total = 0;
-      for (let id in cart) {
-        total += cart[id].price * cart[id].quantity;
-      }
-      // Hitung ongkir dan biaya admin
-      if (selectedPaymentMethod === 'bca') {
-        adminFee = 2500;
-      } else if (selectedPaymentMethod === 'ewallet') {
-        adminFee = 1500;
-      } else if (selectedPaymentMethod === 'qris') {
-        adminFee = total * 0.01;
-      } else if (selectedPaymentMethod === 'cod') {
-        codFee = total * 0.02;
-      }
+      total = Object.values(cart).reduce((acc, item) => acc + item.price * item.quantity, 0);
+      if (selectedPaymentMethod === 'cod') codFee = Math.round(total * 0.02);
+      else codFee = 0;
 
-      // Generate Ongkir
-      shippingCost = [5000, 7000, 9000, 11000, 13000, 15000][Math.floor(Math.random() * 6)];
+      if (!shippingCostSet) {
+        shippingCost = [5000, 7000, 9000, 11000, 13000, 15000][Math.floor(Math.random() * 6)];
+        shippingCostSet = true;
+        localStorage.setItem('ongkir', shippingCost);
+      }
 
       updateTotalPrice();
     }
 
-    // Update harga total dan diskon
     function updateTotalPrice() {
-      let finalPrice = total + shippingCost + adminFee + codFee - discount;
-
-      if (discount > 0) {
-        document.getElementById('discount-info').style.display = 'block';
-        document.getElementById('discount-info').textContent = `Diskon: Rp ${discount.toLocaleString()}`;
-      } else {
-        document.getElementById('discount-info').style.display = 'none';
-      }
-
-      document.getElementById('total-price').textContent = `Rp ${finalPrice.toLocaleString()}`;
+      let final = total + shippingCost + adminFee + codFee - discount;
+      document.getElementById('total-price').textContent = `Rp ${final.toLocaleString()}`;
       document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingCost.toLocaleString()}`;
       document.getElementById('admin-fee-info').textContent = `Biaya Admin: Rp ${adminFee.toLocaleString()}`;
-      document.getElementById('cod-fee-info').textContent = `Biaya COD: Rp ${codFee.toLocaleString()}`;
+      document.getElementById('cod-fee-info').textContent = selectedPaymentMethod === 'cod' ? `Biaya COD: Rp ${codFee.toLocaleString()}` : '';
+      document.getElementById('discount-info').style.display = discount ? 'block' : 'none';
+      document.getElementById('discount-info').textContent = `Diskon: Rp ${discount.toLocaleString()}`;
     }
 
-    // Fungsi untuk menampilkan produk dalam keranjang
     function renderCartItems() {
-      const cartItemsContainer = document.getElementById('cart-items');
-      cartItemsContainer.innerHTML = '';
-
+      const container = document.getElementById('cart-items');
+      container.innerHTML = '';
       for (let id in cart) {
-        const product = cart[id];
-        cartItemsContainer.innerHTML += `
-          <div class="cart-item">
-            <p>${product.name} x${product.quantity}</p>
-            <p>Rp ${product.price * product.quantity}</p>
-          </div>
-        `;
+        const p = cart[id];
+        container.innerHTML += `<div class="cart-item"><p>${p.name} x${p.quantity}</p><p>Rp ${p.price * p.quantity}</p></div>`;
       }
-
       calculateTotal();
     }
 
-    // Fungsi untuk menerapkan voucher
     function applyVoucher() {
-      const voucherCode = document.getElementById('voucher-code').value.trim().toUpperCase();
-      const voucherCodes = {
-        'DISKON10': 0.1,
-        'HARGA10000': 10000
-      };
-
-      if (voucherCodes[voucherCode]) {
-        discount = typeof voucherCodes[voucherCode] === 'number' ? voucherCodes[voucherCode] : total * voucherCodes[voucherCode];
-      } else {
-        alert('Voucher tidak valid');
-        discount = 0;
-      }
-
-      calculateTotal();
+      const code = document.getElementById('voucher-code').value.trim().toUpperCase();
+      const vouchers = { 'DISKON10': 0.1, 'HARGA10000': 10000 };
+      discount = vouchers[code] ? (code === 'DISKON10' ? total * 0.1 : 10000) : 0;
+      updateTotalPrice();
     }
 
-    // Fungsi untuk memilih metode pembayaran
-    function selectPayment(method) {
+    function selectPayment(method, element) {
       selectedPaymentMethod = method;
+      document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+      element.classList.add('selected');
+      adminFee = 0;
+      if (method === 'bca') adminFee = 2500;
+      else if (method === 'ewallet') adminFee = 1500;
+      else if (method === 'qris') adminFee = Math.round(total * 0.01);
       calculateTotal();
+      document.getElementById('checkout-button').disabled = false;
     }
 
-    // Fungsi untuk menyimpan alamat
     function saveAddress() {
-      const fullName = document.getElementById('full-name').value;
-      const phoneNumber = document.getElementById('phone-number').value;
-      const fullAddress = document.getElementById('full-address').value;
-
-      if (fullName && phoneNumber && fullAddress) {
-        const address = `${fullName}, ${phoneNumber}, ${fullAddress}`;
-        document.getElementById('address-display').textContent = address;
+      const name = document.getElementById('full-name').value;
+      const phone = document.getElementById('phone-number').value;
+      const addr = document.getElementById('full-address').value;
+      if (name && phone && addr) {
+        const fullAddr = `${name}, ${phone}, ${addr}`;
+        document.getElementById('address-display').textContent = fullAddr;
         document.getElementById('address-display').style.display = 'block';
         document.getElementById('address-form').style.display = 'none';
-        localStorage.setItem('address', address);
-      } else {
-        alert('Harap isi semua informasi alamat');
-      }
+        localStorage.setItem('address', fullAddr);
+      } else alert('Harap isi semua informasi alamat');
     }
 
-    // Toggle form alamat
     function toggleAddressForm() {
       const form = document.getElementById('address-form');
       form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
 
-    // Event listeners
     document.getElementById('apply-voucher-btn').addEventListener('click', applyVoucher);
-    renderCartItems();
-
-    // Checkout button
     document.getElementById('checkout-button').addEventListener('click', () => {
-      if (selectedPaymentMethod) {
-        alert('Checkout berhasil!');
-      } else {
-        alert('Pilih metode pembayaran terlebih dahulu!');
-      }
+      if (!selectedPaymentMethod) return alert('Pilih metode pembayaran!');
+      const address = localStorage.getItem('address') || '-';
+      const message = encodeURIComponent(`🧾 *Checkout Order*\n\n📦 Produk:\n${Object.values(cart).map(p => `- ${p.name} x${p.quantity}`).join('\n')}\n\n🏠 Alamat: ${address}\n💳 Metode: ${selectedPaymentMethod}\n📦 Ongkir: Rp ${shippingCost.toLocaleString()}\n💰 Total: Rp ${(total + adminFee + codFee + shippingCost - discount).toLocaleString()}`);
+      window.location.href = `https://wa.me/6285709458101?text=${message}`;
     });
+
+    renderCartItems();
   </script>
 </body>
 </html>
