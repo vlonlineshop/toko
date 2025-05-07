@@ -90,6 +90,13 @@
       background: #e67e22;
     }
 
+    .shipping-cost {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #003366;
+    }
+
   </style>
 </head>
 <body>
@@ -117,20 +124,41 @@
         <button type="submit">Simpan dan Lanjutkan</button>
       </form>
 
+      <p class="shipping-cost" id="shipping-cost">Biaya Ongkir: Rp 0</p>
+
       <a href="index.html" class="back-btn">Kembali ke Halaman Utama</a>
     </div>
   </main>
 
   <script>
-    // Cek jika ada data alamat di localStorage
-    const savedAddress = JSON.parse(localStorage.getItem('userAddress'));
+    // Titik pusat toko (koordinat Latitude, Longitude)
+    const storeLocation = {
+      lat: -1.6409437,
+      lng: 105.7686011
+    };
 
-    if (savedAddress) {
-      // Jika ada data, langsung tampilkan di form
-      document.getElementById('full-name').value = savedAddress.fullName;
-      document.getElementById('address').value = savedAddress.address;
-      document.getElementById('phone').value = savedAddress.phone;
-      document.getElementById('landmark').value = savedAddress.landmark;
+    // Fungsi untuk menghitung jarak antara dua titik menggunakan Haversine formula
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Radius bumi dalam kilometer
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      const distance = R * c * 1000; // Convert to meters
+      return distance;
+    }
+
+    // Fungsi untuk menghasilkan ongkir acak
+    function getRandomShippingCost() {
+      const min = 5000;
+      const max = 15000;
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
     // Fungsi untuk menangani form submit
@@ -152,10 +180,30 @@
       // Simpan data alamat pengiriman ke localStorage
       localStorage.setItem('userAddress', JSON.stringify(userAddress));
 
-      // Setelah disimpan, lanjutkan ke halaman checkout
-      window.location.href = 'checkout-detail.html';  // Arahkan ke halaman checkout detail
+      // Mengambil koordinat lokasi pengguna menggunakan Geolocation API
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const userLat = position.coords.latitude;
+          const userLng = position.coords.longitude;
+
+          // Menghitung jarak antara toko dan alamat pengiriman
+          const distance = calculateDistance(storeLocation.lat, storeLocation.lng, userLat, userLng);
+
+          // Menghasilkan ongkir acak
+          const shippingCost = getRandomShippingCost();
+
+          // Tampilkan biaya ongkir
+          document.getElementById('shipping-cost').textContent = `Biaya Ongkir: Rp ${shippingCost.toLocaleString()}`;
+
+          // Setelah disimpan, lanjutkan ke halaman checkout
+          window.location.href = 'checkout-detail.html';  // Arahkan ke halaman checkout detail
+        }, function(error) {
+          alert('Lokasi tidak dapat diakses. Periksa pengaturan lokasi Anda.');
+        });
+      } else {
+        alert('Geolocation tidak didukung oleh browser ini.');
+      }
     });
   </script>
-
 </body>
 </html>
