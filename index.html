@@ -13,191 +13,315 @@
       color: #333;
     }
     header {
+      position: sticky;
+      top: 0;
       background: linear-gradient(to right, #003366, #0059b3);
       color: white;
-      padding: 1rem 2rem;
-      text-align: center;
+      padding: 0.8rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      z-index: 1000;
+      flex-wrap: wrap;
     }
     header h1 {
       margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
     }
-    .cart-btn {
-      background-color: #0059b3;
-      color: white;
-      padding: 0.8rem 1.2rem;
-      font-size: 1rem;
+    .search-box {
+      display: flex;
+      flex: 1;
+      max-width: 400px;
+      margin-top: 0.5rem;
+      margin-left: auto;
+    }
+    .search-box input {
+      flex: 1;
+      padding: 0.6rem;
       border: none;
-      border-radius: 5px;
+      border-radius: 5px 0 0 5px;
+    }
+    .search-box button {
+      padding: 0.6rem 1rem;
+      border: none;
+      background: #003366;
+      color: white;
+      border-radius: 0 5px 5px 0;
       cursor: pointer;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 100;
     }
-    .cart-btn:hover {
-      background-color: #003366;
+    main {
+      padding: 1rem;
+      max-width: 1200px;
+      margin: auto;
     }
-    .popup-cart {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
     }
-    .popup-cart-content {
+    .product {
       background: white;
-      padding: 2rem;
       border-radius: 10px;
-      width: 80%;
-      max-width: 500px;
-      overflow-y: auto;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      border: 1px solid #ccc;
+      position: relative;
     }
-    .popup-cart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .popup-cart-header h2 {
-      margin: 0;
-    }
-    .popup-cart-header button {
-      background-color: #ff4c4c;
-      color: white;
-      border: none;
-      padding: 0.5rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .popup-cart-header button:hover {
-      background-color: #d43838;
-    }
-    .product-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .product-list li {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 1rem;
-    }
-    .product-list img {
-      width: 60px;
-      height: 60px;
+    .product img {
+      width: 100%;
+      height: 150px;
       object-fit: cover;
       border-radius: 10px;
-      margin-right: 1rem;
     }
-    .popup-cart-footer {
+    .product h3 {
+      margin: 0.5rem 0;
+      color: #003366;
+    }
+    .product p.description {
+      font-size: 0.9rem;
+      color: #555;
+      margin: 0.5rem 0;
+    }
+    .price {
+      font-weight: bold;
+      color: #0059b3;
+    }
+    .actions {
       display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-      margin-top: 1rem;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
     }
-    .popup-cart-footer button {
-      padding: 1rem;
+    .actions button,
+    .actions a {
+      flex: 1;
+      padding: 0.6rem;
+      font-size: 0.9rem;
+      text-align: center;
+      border-radius: 5px;
+      text-decoration: none;
+      color: white;
+    }
+    .actions button {
+      background: #0059b3;
+      border: none;
+      cursor: pointer;
+    }
+    .actions button:hover {
+      background: #003366;
+    }
+    .actions a {
+      background: #28a745;
+    }
+    .actions a:hover {
+      background: #1e7e34;
+    }
+    .keranjang-popup {
+      position: fixed;
+      top: 15%;
+      right: 2%;
+      background: white;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 1.5rem;
+      width: 300px;
+      z-index: 1000;
+      display: none;
+    }
+    .keranjang-popup h2 {
+      text-align: center;
+      color: #003366;
+    }
+    .keranjang-popup ul {
+      list-style: none;
+      padding: 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .keranjang-popup li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .keranjang-popup li span {
+      flex: 1;
+    }
+    .keranjang-popup li button {
+      margin: 0 0.2rem;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.8rem;
+    }
+    .keranjang-popup .checkout {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .keranjang-popup .checkout button {
+      padding: 0.6rem 1.2rem;
       background: #28a745;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
-    .popup-cart-footer button:hover {
-      background-color: #218838;
+    .keranjang-popup .checkout button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .badge {
+      position: absolute;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+    .badge.discount {
+      top: 8px;
+      left: 8px;
+      background: red;
+      color: white;
+    }
+    .badge.best {
+      top: 8px;
+      right: 8px;
+      background: gold;
+      color: black;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>VL Online Shop</h1>
+    <div class="search-box">
+      <input type="text" placeholder="Cari produk...">
+      <button>Cari</button>
+    </div>
   </header>
-
   <main>
-    <!-- Konten utama lainnya disini -->
-    <h2>Selamat datang di VL Online Shop!</h2>
-    <p>Browse dan pilih produk favorit Anda.</p>
+    <div class="products" id="product-list"></div>
   </main>
 
-  <!-- Popup Cart -->
-  <div class="popup-cart" id="popup-cart">
-    <div class="popup-cart-content">
-      <div class="popup-cart-header">
-        <h2>Keranjang Belanja</h2>
-        <button id="close-popup-cart">Tutup</button>
-      </div>
-      <ul class="product-list" id="cart-items">
-        <!-- Produk yang ada di cart akan muncul di sini -->
-      </ul>
-      <div class="popup-cart-footer">
-        <button onclick="window.location.href='checkout.html'">Lanjut ke Checkout</button>
-      </div>
+  <div class="keranjang-popup" id="cart-popup">
+    <h2>Keranjang</h2>
+    <ul id="cart-items"></ul>
+    <div class="checkout">
+      <button id="checkout-button" disabled>Checkout</button>
     </div>
   </div>
 
-  <!-- Tombol Cart di bawah kanan -->
-  <button class="cart-btn" id="cart-btn">Cart</button>
-
   <script>
-    const cart = JSON.parse(localStorage.getItem('cart')) || {};
-    const cartBtn = document.getElementById('cart-btn');
-    const popupCart = document.getElementById('popup-cart');
-    const closePopupCart = document.getElementById('close-popup-cart');
-    const cartItemsList = document.getElementById('cart-items');
+    const products = [
+      {
+        id: 1,
+        name: 'Produk A',
+        description: 'Produk A adalah pilihan terbaik untuk kebutuhan sehari-hari Anda.',
+        price: 10000,
+        discount: 10,
+        image: 'https://via.placeholder.com/200x150?text=Produk+A',
+        bestSeller: true
+      },
+      {
+        id: 2,
+        name: 'Produk B',
+        description: 'Produk B menawarkan kualitas unggul dengan harga terjangkau.',
+        price: 20000,
+        discount: 0,
+        image: 'https://via.placeholder.com/200x150?text=Produk+B',
+        bestSeller: false
+      },
+      {
+        id: 3,
+        name: 'Produk C',
+        description: 'Produk C dirancang khusus untuk memenuhi kebutuhan Anda.',
+        price: 30000,
+        discount: 5,
+        image: 'https://via.placeholder.com/200x150?text=Produk+C',
+        bestSeller: true
+      }
+    ];
 
-    // Fungsi untuk menampilkan popup cart
-    function openCartPopup() {
-      popupCart.style.display = 'flex';
-      renderCartItems();
-    }
+    const cart = {};
 
-    // Fungsi untuk menutup popup cart
-    function closeCartPopup() {
-      popupCart.style.display = 'none';
-    }
-
-    // Fungsi untuk merender item cart
-    function renderCartItems() {
-      cartItemsList.innerHTML = '';
-      let total = 0;
-      let itemCount = 0;
-
-      for (let id in cart) {
-        const product = cart[id];
-        const price = product.price * product.quantity;
-        total += price;
-        itemCount += product.quantity;
-
-        cartItemsList.innerHTML += `
-          <li>
-            <div style="display: flex; align-items: center;">
-              <img src="${product.image}" alt="${product.name}">
-              <span>${product.name} x${product.quantity}</span>
+    function renderProducts() {
+      const container = document.getElementById('product-list');
+      container.innerHTML = '';
+      products.forEach(p => {
+        const discountPrice = p.price - (p.price * p.discount / 100);
+        container.innerHTML += `
+          <div class="product">
+            ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
+            ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
+            <img src="${p.image}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p class="description">${p.description}</p>
+            <p class="price">Rp${discountPrice.toLocaleString()}</p>
+            <div class="actions">
+              <button onclick="addToCart(${p.id})">Tambah</button>
+              <a href="checkout.html" onclick="addToCart(${p.id})">Beli Sekarang</a>
             </div>
-            <span>Rp${price.toLocaleString()}</span>
+          </div>
+        `;
+      });
+    }
+
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      const price = product.price - (product.price * product.discount / 100);
+      if (cart[productId]) {
+        cart[productId].quantity += 1;
+      } else {
+        cart[productId] = {
+          ...product,
+          quantity: 1,
+          price: price
+        };
+      }
+      updateCart();
+      document.getElementById('cart-popup').style.display = 'block';
+    }
+
+    function updateCart() {
+      const cartPopup = document.getElementById('cart-popup');
+      const cartItems = document.getElementById('cart-items');
+      const checkoutButton = document.getElementById('checkout-button');
+      cartItems.innerHTML = '';
+      let hasItems = false;
+      for (let id in cart) {
+        hasItems = true;
+        cartItems.innerHTML += `
+          <li>
+            <span>${cart[id].name} x${cart[id].quantity}</span>
+            <button onclick="removeFromCart(${id})">Hapus</button>
+            <button onclick="updateQuantity(${id}, 1)">+</button>
+            <button onclick="updateQuantity(${id}, -1)">-</button>
           </li>
         `;
       }
+      checkoutButton.disabled = !hasItems;
     }
 
-    // Event listener untuk tombol cart
-    cartBtn.addEventListener('click', openCartPopup);
+    function updateQuantity(productId, delta) {
+      const product = cart[productId];
+      const newQuantity = product.quantity + delta;
+      if (newQuantity <= 0) {
+        if (confirm('Anda yakin ingin menghapus produk ini?')) {
+          removeFromCart(productId);
+        }
+      } else {
+        cart[productId].quantity = newQuantity;
+        updateCart();
+      }
+    }
 
-    // Event listener untuk tombol tutup popup
-    closePopupCart.addEventListener('click', closeCartPopup);
+    function removeFromCart(productId) {
+      delete cart[productId];
+      updateCart();
+    }
 
-    // Render cart items ketika halaman dimuat
-    renderCartItems();
+    renderProducts();
   </script>
 </body>
 </html>
