@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -103,19 +104,48 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      margin-top: 1rem;
     }
 
     .checkout-button:disabled {
       background-color: #ccc;
     }
 
-    .voucher-optional {
-      font-size: 0.9rem;
-      color: #777;
+    .address-section {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 5px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .address-section input,
+    .address-section textarea,
+    .address-section select {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
       margin-top: 0.5rem;
     }
+
+    .address-section button {
+      margin-top: 1rem;
+      padding: 0.6rem;
+      background-color: #0059b3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .address-section button:hover {
+      background-color: #003366;
+    }
+
   </style>
 </head>
+
 <body>
   <header>
     <h1>Checkout - VL Online Shop</h1>
@@ -127,11 +157,9 @@
       <div id="cart-items"></div>
 
       <div class="voucher-section">
-        <input type="text" id="voucher-code" placeholder="Masukkan kode voucher (Opsional)" />
+        <input type="text" id="voucher-code" placeholder="Masukkan kode voucher..." />
         <button id="apply-voucher-btn">Terapkan Voucher</button>
       </div>
-
-      <p class="voucher-optional">Voucher tidak wajib digunakan. Cukup biarkan kosong jika Anda tidak memiliki kode voucher.</p>
 
       <div class="total-section">
         <p>Total Harga:</p>
@@ -139,6 +167,31 @@
         <p id="discount-info" style="color: green; display: none;">Diskon: Rp 0</p>
       </div>
 
+      <!-- Alamat Pengiriman -->
+      <div class="address-section">
+        <h3>Alamat Pengiriman</h3>
+        <div>
+          <label for="address">Pilih Alamat:</label>
+          <select id="address-select">
+            <option value="">Pilih alamat...</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="new-address-name">Nama Lengkap:</label>
+          <input type="text" id="new-address-name" placeholder="Masukkan nama lengkap..." />
+
+          <label for="new-address-phone">Nomor HP:</label>
+          <input type="text" id="new-address-phone" placeholder="Masukkan nomor HP..." />
+
+          <label for="new-address">Alamat Lengkap:</label>
+          <textarea id="new-address" placeholder="Masukkan alamat lengkap..." rows="4"></textarea>
+        </div>
+
+        <button id="save-address-btn">Simpan Alamat</button>
+      </div>
+
+      <!-- Tombol Selesaikan Pembayaran -->
       <button id="checkout-button" class="checkout-button" disabled>Selesaikan Pembayaran</button>
     </div>
   </main>
@@ -212,31 +265,57 @@
     // Event listener untuk tombol terapkan voucher
     document.getElementById('apply-voucher-btn').addEventListener('click', applyVoucher);
 
-    // Fungsi untuk menyelesaikan pembayaran
-    function completePayment() {
-      // Validasi bahwa keranjang tidak kosong
-      if (Object.keys(cart).length === 0) {
-        alert('Keranjang Anda kosong. Silakan tambah barang sebelum checkout.');
-        return;
-      }
-
-      const finalPrice = total - discount;
-      alert(`Pembayaran berhasil! Total yang harus dibayar: Rp ${finalPrice.toLocaleString()}.`);
-      
-      // Simulasikan pengalihan ke halaman pembayaran
-      // window.location.href = "halaman-pembayaran.html"; // Gantilah dengan halaman pembayaran sesungguhnya
-
-      // Kosongkan keranjang setelah pembayaran berhasil
-      localStorage.removeItem('cart');
-      // Redirect atau ubah halaman setelah pembayaran
-      window.location.href = "thank-you.html"; // Redirect ke halaman terima kasih
+    // Fungsi untuk menyimpan alamat ke localStorage
+    function saveAddressToLocalStorage(name, phone, address) {
+      let addresses = JSON.parse(localStorage.getItem('addresses')) || [];
+      const newAddress = { name, phone, address };
+      addresses.push(newAddress);
+      localStorage.setItem('addresses', JSON.stringify(addresses));
+      updateAddressSelect();
     }
 
-    // Event listener untuk tombol selesaikan pembayaran
-    document.getElementById('checkout-button').addEventListener('click', completePayment);
+    // Fungsi untuk memperbarui dropdown alamat
+    function updateAddressSelect() {
+      const addressSelect = document.getElementById('address-select');
+      const addresses = JSON.parse(localStorage.getItem('addresses')) || [];
+      addressSelect.innerHTML = '<option value="">Pilih alamat...</option>';
+      addresses.forEach((address, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${address.name} - ${address.phone} - ${address.address}`;
+        addressSelect.appendChild(option);
+      });
 
-    // Render produk di keranjang saat halaman dimuat
+      // Aktifkan tombol jika ada alamat yang dipilih
+      document.getElementById('checkout-button').disabled = !addresses.length || !document.getElementById('address-select').value;
+    }
+
+    // Fungsi untuk menangani penyimpanan alamat baru
+    document.getElementById('save-address-btn').addEventListener('click', function () {
+      const name = document.getElementById('new-address-name').value.trim();
+      const phone = document.getElementById('new-address-phone').value.trim();
+      const address = document.getElementById('new-address').value.trim();
+
+      if (name && phone && address) {
+        saveAddressToLocalStorage(name, phone, address);
+        document.getElementById('new-address-name').value = '';
+        document.getElementById('new-address-phone').value = '';
+        document.getElementById('new-address').value = '';
+        alert('Alamat berhasil disimpan!');
+      } else {
+        alert('Mohon masukkan nama lengkap, nomor HP, dan alamat lengkap.');
+      }
+    });
+
+    // Event listener untuk memilih alamat
+    document.getElementById('address-select').addEventListener('change', function () {
+      document.getElementById('checkout-button').disabled = !this.value;
+    });
+
+    // Render produk di keranjang dan alamat saat halaman dimuat
     renderCartItems();
+    updateAddressSelect();
   </script>
 </body>
+
 </html>
