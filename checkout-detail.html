@@ -104,7 +104,6 @@
         <label><input type="radio" name="metode" value="cod"> COD (maks Rp150.000)</label>
       </div>
 
-      <p id="ongkir-info">Menghitung ongkir...</p>
       <p id="total-harga"></p>
 
       <button type="submit">Bayar</button>
@@ -145,11 +144,9 @@
 
           ongkir = calculatedOngkir;
           localStorage.setItem('ongkir', ongkir);
-          document.getElementById('ongkir-info').textContent = `Ongkir: Rp${ongkir.toLocaleString()}`;
           updateHarga();
         });
       } else if (ongkir !== null) {
-        document.getElementById('ongkir-info').textContent = `Ongkir: Rp${ongkir.toLocaleString()}`;
         updateHarga();
       }
 
