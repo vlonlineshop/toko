@@ -109,6 +109,11 @@
       background-color: #ccc;
     }
 
+    .voucher-optional {
+      font-size: 0.9rem;
+      color: #777;
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -122,9 +127,11 @@
       <div id="cart-items"></div>
 
       <div class="voucher-section">
-        <input type="text" id="voucher-code" placeholder="Masukkan kode voucher..." />
+        <input type="text" id="voucher-code" placeholder="Masukkan kode voucher (Opsional)" />
         <button id="apply-voucher-btn">Terapkan Voucher</button>
       </div>
+
+      <p class="voucher-optional">Voucher tidak wajib digunakan. Cukup biarkan kosong jika Anda tidak memiliki kode voucher.</p>
 
       <div class="total-section">
         <p>Total Harga:</p>
@@ -132,7 +139,7 @@
         <p id="discount-info" style="color: green; display: none;">Diskon: Rp 0</p>
       </div>
 
-      <button id="checkout-button" class="checkout-button" disabled>Checkout</button>
+      <button id="checkout-button" class="checkout-button" disabled>Selesaikan Pembayaran</button>
     </div>
   </main>
 
@@ -204,6 +211,29 @@
 
     // Event listener untuk tombol terapkan voucher
     document.getElementById('apply-voucher-btn').addEventListener('click', applyVoucher);
+
+    // Fungsi untuk menyelesaikan pembayaran
+    function completePayment() {
+      // Validasi bahwa keranjang tidak kosong
+      if (Object.keys(cart).length === 0) {
+        alert('Keranjang Anda kosong. Silakan tambah barang sebelum checkout.');
+        return;
+      }
+
+      const finalPrice = total - discount;
+      alert(`Pembayaran berhasil! Total yang harus dibayar: Rp ${finalPrice.toLocaleString()}.`);
+      
+      // Simulasikan pengalihan ke halaman pembayaran
+      // window.location.href = "halaman-pembayaran.html"; // Gantilah dengan halaman pembayaran sesungguhnya
+
+      // Kosongkan keranjang setelah pembayaran berhasil
+      localStorage.removeItem('cart');
+      // Redirect atau ubah halaman setelah pembayaran
+      window.location.href = "thank-you.html"; // Redirect ke halaman terima kasih
+    }
+
+    // Event listener untuk tombol selesaikan pembayaran
+    document.getElementById('checkout-button').addEventListener('click', completePayment);
 
     // Render produk di keranjang saat halaman dimuat
     renderCartItems();
