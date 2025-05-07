@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout Detail - VL Online Shop</title>
+  <title>Checkout - Detail Pembayaran</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -32,22 +32,55 @@
       margin: 0 auto;
     }
 
-    .address-container {
+    .checkout-container {
       background: white;
       border-radius: 10px;
       padding: 2rem;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .address-container h2 {
+    .checkout-container h2 {
       text-align: center;
       color: #003366;
       margin-bottom: 1rem;
     }
 
-    .address-container p {
+    .checkout-container .address {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .checkout-container .product-list {
+      margin-top: 2rem;
+    }
+
+    .checkout-container .product-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .checkout-container .total-price {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+    .checkout-container button {
+      width: 100%;
+      padding: 1rem;
+      background-color: #0059b3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
       font-size: 1.1rem;
-      margin: 0.5rem 0;
+      margin-top: 2rem;
+    }
+
+    .checkout-container button:hover {
+      background-color: #003366;
     }
 
     .back-btn {
@@ -65,41 +98,159 @@
       background: #e67e22;
     }
 
+    .voucher-section {
+      margin-top: 2rem;
+    }
+
+    .voucher-section input {
+      width: 70%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .voucher-section button {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      background-color: #f39c12;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .voucher-section button:hover {
+      background-color: #e67e22;
+    }
+
+    .voucher-section .error-message {
+      color: red;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>VL Online Shop - Checkout Detail</h1>
+    <h1>VL Online Shop - Checkout</h1>
   </header>
 
   <main>
-    <div class="address-container">
-      <h2>Alamat Pengiriman</h2>
-      <p><strong>Nama Lengkap:</strong> <span id="full-name"></span></p>
-      <p><strong>Alamat Lengkap:</strong> <span id="address"></span></p>
-      <p><strong>Nomor Telepon:</strong> <span id="phone"></span></p>
-      <p><strong>Patokan:</strong> <span id="landmark"></span></p>
+    <div class="checkout-container">
+      <h2>Detail Pembayaran</h2>
+
+      <div class="address">
+        <h3>Alamat Pengiriman</h3>
+        <p id="address-details"></p>
+      </div>
+
+      <div class="product-list">
+        <h3>Produk yang Dipesan</h3>
+        <div id="product-list"></div>
+      </div>
+
+      <div class="total-price">
+        <p id="shipping-cost">Biaya Ongkir: Rp 0</p>
+        <p id="total-price">Total: Rp 0</p>
+      </div>
+
+      <div class="voucher-section">
+        <label for="voucher-code">Kode Voucher (Opsional):</label>
+        <input type="text" id="voucher-code" placeholder="Masukkan kode voucher...">
+        <button id="check-voucher">Cek Voucher</button>
+        <p id="voucher-error" class="error-message"></p>
+      </div>
+
+      <button id="place-order">Konfirmasi Pembayaran</button>
 
       <a href="index.html" class="back-btn">Kembali ke Halaman Utama</a>
     </div>
   </main>
 
   <script>
-    // Mengambil data alamat dari localStorage
-    const savedAddress = JSON.parse(localStorage.getItem('userAddress'));
+    // Mengambil data alamat pengiriman dari localStorage
+    const userAddress = JSON.parse(localStorage.getItem('userAddress'));
 
-    if (savedAddress) {
-      // Tampilkan data alamat yang disimpan
-      document.getElementById('full-name').textContent = savedAddress.fullName;
-      document.getElementById('address').textContent = savedAddress.address;
-      document.getElementById('phone').textContent = savedAddress.phone;
-      document.getElementById('landmark').textContent = savedAddress.landmark;
+    // Menampilkan alamat pengiriman di halaman checkout
+    const addressDetails = document.getElementById('address-details');
+    if (userAddress) {
+      addressDetails.innerHTML = `
+        <strong>Nama Lengkap:</strong> ${userAddress.fullName} <br>
+        <strong>Alamat:</strong> ${userAddress.address} <br>
+        <strong>Nomor Telepon:</strong> ${userAddress.phone} <br>
+        <strong>Patokan:</strong> ${userAddress.landmark}
+      `;
     } else {
-      // Jika tidak ada data alamat, arahkan kembali ke halaman utama
-      window.location.href = 'index.html';
+      addressDetails.innerHTML = 'Data alamat tidak ditemukan.';
     }
-  </script>
 
+    // Menampilkan daftar produk yang ada di keranjang
+    const productList = document.getElementById('product-list');
+    // Simulasi data produk di keranjang
+    const productsInCart = [
+      { name: "Makanan 1", price: 20000, quantity: 1 },
+      { name: "Makanan 2", price: 15000, quantity: 2 }
+    ];
+
+    let totalPrice = 0;
+
+    productsInCart.forEach(product => {
+      const productItem = document.createElement('div');
+      productItem.classList.add('product-item');
+      productItem.innerHTML = `
+        <span>${product.name} (x${product.quantity})</span>
+        <span>Rp ${product.price * product.quantity}</span>
+      `;
+      productList.appendChild(productItem);
+      totalPrice += product.price * product.quantity;
+    });
+
+    // Mengambil ongkir acak yang sudah dihitung sebelumnya
+    const shippingCost = Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000;
+
+    // Menampilkan ongkir dan total harga
+    document.getElementById('shipping-cost').textContent = `Biaya Ongkir: Rp ${shippingCost.toLocaleString()}`;
+    document.getElementById('total-price').textContent = `Total: Rp ${(totalPrice + shippingCost).toLocaleString()}`;
+
+    // Fungsi untuk memeriksa kode voucher
+    const validVouchers = {
+      'DISKON5': 5000,      // Voucher diskon Rp 5000
+      'DISKON10': 0.1,      // Voucher diskon 10%
+    };
+
+    document.getElementById('check-voucher').addEventListener('click', function() {
+      const voucherCode = document.getElementById('voucher-code').value.toUpperCase();
+      const voucherError = document.getElementById('voucher-error');
+
+      voucherError.textContent = ''; // Reset error message
+
+      if (validVouchers[voucherCode]) {
+        let discount = validVouchers[voucherCode];
+
+        // Cek apakah diskon berupa nominal atau persentase
+        if (discount > 1) {  // Diskon nominal
+          discount = Math.min(discount, shippingCost);
+          document.getElementById('shipping-cost').textContent = `Biaya Ongkir Setelah Diskon: Rp ${(shippingCost - discount).toLocaleString()}`;
+        } else {  // Diskon persentase
+          discount = totalPrice * discount;
+          totalPrice -= discount;
+          document.getElementById('total-price').textContent = `Total Setelah Diskon: Rp ${totalPrice.toLocaleString()}`;
+        }
+        alert('Voucher berhasil diterapkan!');
+      } else {
+        voucherError.textContent = 'Kode voucher tidak valid.';
+      }
+    });
+
+    // Event listener untuk tombol konfirmasi
+    document.getElementById('place-order').addEventListener('click', function() {
+      alert('Pesanan telah dikonfirmasi!');
+      // Reset localStorage setelah pesanan dikonfirmasi
+      localStorage.removeItem('userAddress');
+      // Redirect ke halaman konfirmasi pembayaran atau halaman terima kasih
+      window.location.href = 'thank-you.html';
+    });
+  </script>
 </body>
 </html>
