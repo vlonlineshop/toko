@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Checkout - VL Online Shop</title>
+  <title>Keranjang Belanja - VL Online Shop</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -17,7 +17,7 @@
       padding: 1rem;
       text-align: center;
     }
-    .checkout-container {
+    .cart-container {
       max-width: 600px;
       margin: 2rem auto;
       background: white;
@@ -42,23 +42,11 @@
       font-weight: bold;
       margin-bottom: 0.25rem;
     }
-    input, textarea {
+    input, select {
       width: 100%;
       padding: 0.5rem;
       border: 1px solid #ccc;
       border-radius: 4px;
-    }
-    .payment-option {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      margin: 0.25rem;
-      border: 2px solid #ccc;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .payment-option.selected {
-      border-color: green;
-      background-color: #e6ffe6;
     }
     .btn {
       display: block;
@@ -75,184 +63,152 @@
     .btn:hover {
       background: darkgreen;
     }
-    .info-text {
-      font-size: 0.9rem;
-      color: #666;
-      margin: 0.5rem 0;
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .warning {
-      color: red;
-      margin-top: 1rem;
+    .quantity-button {
+      padding: 0.5rem 1rem;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .quantity-button:disabled {
+      background-color: #ccc;
+    }
+    .quantity-input {
+      width: 50px;
+      text-align: center;
+      font-size: 1rem;
+    }
+    .remove-item {
+      background: red;
+      color: white;
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .remove-item:hover {
+      background: darkred;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Checkout - VL Online Shop</h1>
+    <h1>Keranjang Belanja - VL Online Shop</h1>
   </header>
   <main>
-    <div class="checkout-container">
-      <h2>Alamat Pengiriman</h2>
-      <div id="address-display" style="margin-bottom:1rem; display:none;"></div>
-      <button onclick="toggleAddressForm()">Ubah Alamat</button>
-      <div id="address-form">
-        <div class="form-group">
-          <label>Nama Lengkap</label>
-          <input type="text" id="full-name" />
-        </div>
-        <div class="form-group">
-          <label>No. HP</label>
-          <input type="text" id="phone-number" />
-        </div>
-        <div class="form-group">
-          <label>Alamat Lengkap</label>
-          <textarea id="full-address"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Catatan Kurir</label>
-          <input type="text" id="courier-note" placeholder="Contoh: depan gang, rumah hijau" />
-        </div>
-        <button class="btn" onclick="saveAddress()">Simpan Alamat</button>
-      </div>
-
+    <div class="cart-container">
       <h2>Keranjang Belanja</h2>
       <div id="cart-items"></div>
 
-      <h2>Voucher</h2>
-      <input type="text" id="voucher-code" placeholder="Kode voucher" />
-      <button onclick="applyVoucher()">Terapkan</button>
-
-      <h2>Metode Pembayaran</h2>
-      <div>
-        <div class="payment-option" onclick="selectPayment('bca', this)">Transfer BCA</div>
-        <div class="payment-option" onclick="selectPayment('ewallet', this)">E-Wallet</div>
-        <div class="payment-option" onclick="selectPayment('qris', this)">QRIS</div>
-        <div class="payment-option" onclick="selectPayment('cod', this)">COD</div>
-      </div>
-
-      <h2>Ringkasan</h2>
-      <div class="info-text" id="shipping-info">Ongkir: -</div>
-      <div class="info-text" id="admin-fee-info">Biaya Admin: -</div>
-      <div class="info-text" id="cod-fee-info"></div>
-      <div class="info-text" id="discount-info" style="display:none;"></div>
-      <h3 id="total-price">Total: Rp 0</h3>
-      <div class="warning" id="payment-warning" style="display:none;">COD tidak berlaku untuk produk digital</div>
-      <button class="btn" id="checkout-button">Checkout via WhatsApp</button>
+      <h3>Total Harga: Rp <span id="total-price">0</span></h3>
+      <button class="btn" onclick="checkout()">Checkout</button>
     </div>
   </main>
 
   <script>
     const cart = JSON.parse(localStorage.getItem('cart')) || {};
-    let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
-    let selectedPaymentMethod = null;
-    let shippingCostSet = false;
+    let total = 0;
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedAddress = localStorage.getItem('address');
-      const savedNote = localStorage.getItem('courierNote');
-      const savedShippingCost = localStorage.getItem('shippingCost');
-      if (savedAddress) {
-        document.getElementById('address-display').textContent = savedAddress;
-        document.getElementById('address-display').style.display = 'block';
-        document.getElementById('address-form').style.display = 'none';
-        document.getElementById('courier-note').value = savedNote || '';
-      }
-      if (savedShippingCost) {
-        shippingCost = parseInt(savedShippingCost);
-        shippingCostSet = true;
-      }
-      renderCartItems();
-    });
-
-    function calculateTotal() {
+    // Fungsi untuk memperbarui total harga dan merender keranjang
+    function updateTotalPrice() {
       total = 0;
-      let hasDigital = false;
       for (let id in cart) {
         const item = cart[id];
         total += item.price * item.quantity;
-        if (item.category !== 'digital' && !shippingCostSet) {
-          const ongkirOptions = [5000, 7000, 9000, 11000, 13000, 15000];
-          const randomIndex = Math.floor(Math.random() * ongkirOptions.length);
-          shippingCost = ongkirOptions[randomIndex];
-          shippingCostSet = true;
-          localStorage.setItem('shippingCost', shippingCost);
-        } else if (item.category === 'digital') {
-          hasDigital = true;
-        }
       }
-      codFee = (selectedPaymentMethod === 'cod') ? Math.round(total * 0.02) : 0;
-      if (selectedPaymentMethod === 'cod' && hasDigital) {
-        document.getElementById('payment-warning').style.display = 'block';
-        document.getElementById('checkout-button').disabled = true;
-      } else {
-        document.getElementById('payment-warning').style.display = 'none';
-        document.getElementById('checkout-button').disabled = false;
-      }
-      updateTotalPrice();
+      document.getElementById('total-price').textContent = total.toLocaleString();
     }
 
-    function updateTotalPrice() {
-      let final = total + shippingCost + adminFee + codFee - discount;
-      document.getElementById('total-price').textContent = `Rp ${final.toLocaleString()}`;
-      document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingCost.toLocaleString()}`;
-      document.getElementById('admin-fee-info').textContent = `Biaya Admin: Rp ${adminFee.toLocaleString()}`;
-      document.getElementById('cod-fee-info').textContent = selectedPaymentMethod === 'cod' ? `Biaya COD: Rp ${codFee.toLocaleString()}` : '';
-      document.getElementById('discount-info').style.display = discount ? 'block' : 'none';
-      document.getElementById('discount-info').textContent = `Diskon: Rp ${discount.toLocaleString()}`;
-    }
-
+    // Fungsi untuk merender item di keranjang belanja
     function renderCartItems() {
       const container = document.getElementById('cart-items');
       container.innerHTML = '';
-      for (let id in cart) {
-        const p = cart[id];
-        container.innerHTML += `<div class="cart-item"><p>${p.name} x${p.quantity}</p><p>Rp ${p.price * p.quantity}</p></div>`;
-      }
-      calculateTotal();
-    }
 
-    function applyVoucher() {
-      const code = document.getElementById('voucher-code').value.trim().toUpperCase();
-      const vouchers = { 'DISKON10': 0.1, 'HARGA10000': 10000 };
-      discount = vouchers[code] ? (code === 'DISKON10' ? total * 0.1 : 10000) : 0;
+      for (let id in cart) {
+        const item = cart[id];
+        container.innerHTML += `
+          <div class="cart-item">
+            <div>
+              <p>${item.name} x${item.quantity}</p>
+              <p>Rp ${item.price * item.quantity}</p>
+              <label>Warna:</label>
+              <select onchange="updateItemColor('${id}', this)">
+                <option value="red" ${item.color === 'red' ? 'selected' : ''}>Merah</option>
+                <option value="blue" ${item.color === 'blue' ? 'selected' : ''}>Biru</option>
+                <option value="green" ${item.color === 'green' ? 'selected' : ''}>Hijau</option>
+              </select>
+              <label>Varian:</label>
+              <select onchange="updateItemVariant('${id}', this)">
+                <option value="small" ${item.variant === 'small' ? 'selected' : ''}>Kecil</option>
+                <option value="medium" ${item.variant === 'medium' ? 'selected' : ''}>Sedang</option>
+                <option value="large" ${item.variant === 'large' ? 'selected' : ''}>Besar</option>
+              </select>
+
+              <div class="quantity-controls">
+                <button class="quantity-button" onclick="decreaseQuantity('${id}')">-</button>
+                <input class="quantity-input" type="number" value="${item.quantity}" min="1" disabled />
+                <button class="quantity-button" onclick="increaseQuantity('${id}')">+</button>
+              </div>
+              <button class="remove-item" onclick="removeItem('${id}')">Hapus</button>
+            </div>
+          </div>
+        `;
+      }
       updateTotalPrice();
     }
 
-    function selectPayment(method, element) {
-      selectedPaymentMethod = method;
-      document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
-      element.classList.add('selected');
-      adminFee = method === 'bca' ? 2500 : method === 'ewallet' ? 1500 : method === 'qris' ? Math.round(total * 0.01) : 0;
-      calculateTotal();
+    // Fungsi untuk menambah jumlah produk
+    function increaseQuantity(id) {
+      cart[id].quantity += 1;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCartItems();
     }
 
-    function saveAddress() {
-      const name = document.getElementById('full-name').value;
-      const phone = document.getElementById('phone-number').value;
-      const addr = document.getElementById('full-address').value;
-      const note = document.getElementById('courier-note').value;
-      if (name && phone && addr) {
-        const fullAddr = `${name}, ${phone}, ${addr}`;
-        document.getElementById('address-display').textContent = fullAddr;
-        document.getElementById('address-display').style.display = 'block';
-        document.getElementById('address-form').style.display = 'none';
-        localStorage.setItem('address', fullAddr);
-        localStorage.setItem('courierNote', note);
-      } else alert('Harap isi semua informasi alamat');
+    // Fungsi untuk mengurangi jumlah produk
+    function decreaseQuantity(id) {
+      if (cart[id].quantity > 1) {
+        cart[id].quantity -= 1;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCartItems();
+      }
     }
 
-    function toggleAddressForm() {
-      const form = document.getElementById('address-form');
-      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    // Fungsi untuk menghapus item dari keranjang
+    function removeItem(id) {
+      delete cart[id];
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCartItems();
     }
 
-    document.getElementById('checkout-button').addEventListener('click', () => {
-      if (!selectedPaymentMethod) return alert('Pilih metode pembayaran!');
-      const address = localStorage.getItem('address');
-      if (!address) return alert('Harap tambahkan alamat terlebih dahulu!');
-      const note = localStorage.getItem('courierNote') || '-';
-      const message = encodeURIComponent(`🧾 *Checkout Order*\n\n📦 Produk:\n${Object.values(cart).map(p => `- ${p.name} x${p.quantity}`).join('\n')}\n\n🏠 Alamat: ${address}\n🏷️ Catatan: ${note}\n💳 Metode: ${selectedPaymentMethod}\n📦 Ongkir: Rp ${shippingCost.toLocaleString()}\n💰 Total: Rp ${(total + adminFee + codFee + shippingCost - discount).toLocaleString()}`);
-      window.location.href = `https://wa.me/6285709458101?text=${message}`;
+    // Fungsi untuk memperbarui pilihan warna
+    function updateItemColor(id, select) {
+      const color = select.value;
+      cart[id].color = color;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCartItems();
+    }
+
+    // Fungsi untuk memperbarui pilihan varian
+    function updateItemVariant(id, select) {
+      const variant = select.value;
+      cart[id].variant = variant;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCartItems();
+    }
+
+    // Fungsi untuk checkout
+    function checkout() {
+      alert('Checkout dilakukan!');
+      // Proses checkout bisa disesuaikan dengan kebutuhan
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCartItems();
     });
   </script>
 </body>
