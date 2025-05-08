@@ -104,7 +104,23 @@
         category: 'fashion',
         colors: ['Merah', 'Hitam'],
       },
-      { id: 2, name: 'Produk B', description: 'Produk B berkualitas.', price: 20000, discount: 0, image: 'https://via.placeholder.com/200x150?text=Produk+B', bestSeller: false, checkoutUrl: '#', available: false, category: 'makanan', variants: ['Rasa Coklat'], colors: ['Coklat'] },
+         {
+        id: 2,
+        name: 'Canva Pro',
+        description: 'Editing.',
+        variants: ['1 Bulan', '1 Tahun', 'Lifetime'],
+        variantPrices: {
+          '1 Bulan': 40000,
+          '1 Tahun': 39000,
+          'Lifetime': 35000,
+        },
+        image: 'https://via.placeholder.com/200x150?text=Produk+A',
+        discount: 10,
+        bestSeller: true,
+        available: false,
+        category: 'fashion',
+        colors: ['No Garansi', 'Full Garansi'],
+      },
     ];
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
