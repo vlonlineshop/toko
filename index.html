@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VL Online Shop</title>
   <style>
-  * { box-sizing: border-box; }
+    * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
     header { position: sticky; top: 0; background: linear-gradient(to right, #003366, #0059b3); color: white; padding: 1rem; z-index: 1000; }
     header h1 { margin: 0; font-size: 1.4rem; font-weight: bold; }
@@ -28,36 +28,62 @@
     .actions button:hover { background: #003366; }
     .actions a { background: #28a745; color: white; text-align: center; text-decoration: none; }
     .actions a:hover { background: #1e7e34; }
-    .badge { position: absolute; font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 10; }
-    .badge.discount { top: 8px; left: 8px; background: red; color: white; }
-    .badge.delivery { top: 30px; left: 8px; background: #00bcd4; color: white; }
-    .badge.best { top: 52px; left: 8px; background: gold; color: black; }
+
+    .badge-container {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .badge.discount { background: red; color: white; }
+    .badge.delivery { background: #00bcd4; color: white; }
+    .badge.best { background: gold; color: black; }
+
     .rating-stars { color: #ffc107; font-size: 0.9rem; margin-top: 0.3rem; }
     .sold-info { font-size: 0.8rem; color: #888; }
+
     .keranjang-popup {
       display: none;
       position: fixed;
-      top: 80px;
       right: 20px;
+      bottom: 60px;
       background: white;
       border: 1px solid #ccc;
-      padding: 1rem;
       border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       width: 300px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      z-index: 2000;
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 999;
     }
+
     .floating-cart {
       position: fixed;
-      bottom: 20px;
+      bottom: 10px;
       right: 20px;
-      background: #003366;
+      background: #0059b3;
       color: white;
-      padding: 1rem;
+      padding: 12px;
       border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      font-size: 1.4rem;
       cursor: pointer;
-      z-index: 2000;
+      z-index: 1000;
     }
+
     .live-reviews {
       position: fixed;
       bottom: 10px;
@@ -73,10 +99,20 @@
       animation: slideUpFade 1s ease forwards, fadeOut 1s ease 5s forwards;
       max-width: 280px;
     }
+
+    .live-reviews img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
     @keyframes slideUpFade {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     @keyframes fadeOut {
       to { opacity: 0; transform: translateY(-10px); }
     }
@@ -108,6 +144,7 @@
   <main>
     <div class="products" id="product-list"></div>
   </main>
+
   <div class="keranjang-popup" id="cart-popup">
     <h2>Keranjang</h2>
     <ul id="cart-items"></ul>
@@ -179,11 +216,18 @@
       const highRated = products.filter(p => p.rating > 4.2);
       if (highRated.length === 0) return;
       const p = getRandomItem(highRated);
+      const name = getRandomItem(names);
       const review = document.createElement('div');
       review.className = 'live-reviews';
-      review.innerHTML = `<strong>${getRandomItem(names)}</strong> membeli <strong>${p.name}</strong><br>
-        Rating: ⭐ ${(4 + Math.random()).toFixed(1)} ${getRandomItem(emojis)}<br>
-        <em>"${getRandomItem(comments)}"</em>`;
+      review.innerHTML = `
+        <div style="display: flex; align-items: center;">
+          <img src="https://i.pravatar.cc/40?u=${name}" alt="avatar" />
+          <div>
+            <strong>${name}</strong> membeli <strong>${p.name}</strong><br>
+            Rating: ⭐ ${(4 + Math.random()).toFixed(1)} ${getRandomItem(emojis)}<br>
+            <em>"${getRandomItem(comments)}"</em>
+          </div>
+        </div>`;
       document.getElementById('live-review-container').appendChild(review);
       setTimeout(() => review.remove(), 6000);
     }
@@ -191,7 +235,6 @@
     setInterval(() => { if (Math.random() > 0.4) showLiveReview(); }, 10000);
 
     function renderProducts() {
-      console.log("Rendering products...");  // Debugging
       const container = document.getElementById('product-list');
       const filter = document.getElementById('categoryFilter').value.toLowerCase();
       const search = document.getElementById('searchInput').value.toLowerCase();
@@ -208,9 +251,11 @@
 
         container.innerHTML += `
           <div class="product">
-            ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
-            ${p.delivery ? '<span class="badge delivery">Delivery</span>' : ''}
-            ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
+            <div class="badge-container">
+              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
+              ${p.delivery ? '<span class="badge delivery">Delivery</span>' : ''}
+              ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
+            </div>
             <img src="${p.image}" alt="${p.name}">
             <h3>${p.name}</h3>
             <p class="description">${p.description}</p>
@@ -242,59 +287,24 @@
       if (c === 'Full Garansi') price += 10000;
       const discountPrice = price - (price * p.discount / 100);
       const el = document.getElementById(`price-${id}`);
-      el.innerHTML = `${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
+      el.innerHTML = `
+        ${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}
+        <span class="price">Rp${discountPrice.toLocaleString()}</span>`;
     }
 
     function addToCart(id) {
-      console.log(`Adding product ${id} to cart...`); // Debugging
-      const product = products.find(p => p.id === id);
-      if (!product) return;
-
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-      const variant = document.getElementById(`variant-${id}`).value;
-      const color = document.getElementById(`color-${id}`).value;
-      const productIndex = cart.findIndex(item => item.id === id && item.variant === variant && item.color === color);
-
-      if (productIndex !== -1) {
-        cart[productIndex].quantity += 1;
-      } else {
-        cart.push({
-          ...product,
-          variant,
-          color,
-          quantity: 1
-        });
-      }
-
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCartPopup();
       alert('Produk ditambahkan ke keranjang!');
     }
 
-    function updateCartPopup() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const cartItemsContainer = document.getElementById('cart-items');
-      cartItemsContainer.innerHTML = '';
-      cart.forEach(product => {
-        const li = document.createElement('li');
-        const price = product.variantPrices[product.variant] - (product.variantPrices[product.variant] * product.discount / 100);
-        li.innerHTML = `${product.name} (${product.variant} / ${product.color}) x ${product.quantity} - Rp${price.toLocaleString()}`;
-        cartItemsContainer.appendChild(li);
-      });
-      document.getElementById('checkout-button').disabled = cart.length === 0;
-    }
-
     function toggleCartPopup() {
-      const cartPopup = document.getElementById('cart-popup');
-      cartPopup.style.display = cartPopup.style.display === 'block' ? 'none' : 'block';
+      const p = document.getElementById('cart-popup');
+      p.style.display = p.style.display === 'block' ? 'none' : 'block';
     }
 
     function handleCheckout() {
       window.location.href = 'checkout.html';
     }
 
-    updateCartPopup();
     renderProducts();
   </script>
 </body>
