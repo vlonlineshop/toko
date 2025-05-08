@@ -192,7 +192,7 @@
         image: 'https://via.placeholder.com/200x150?text=Martabak',
         discount: 0, bestSeller: true, delivery: true,
         sold: 123, rating: 4.7, available: true,
-        category: 'makanan', colors: ['Biasa'], checkoutUrl: '#'
+        category: 'makanan', colors: ['Biasa', 'Spesial'], checkoutUrl: '#'
       },
       {
         id: 2,
@@ -203,8 +203,19 @@
         image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
         discount: 5, bestSeller: false, delivery: false,
         sold: 58, rating: 4.5, available: true,
-        category: 'fashion', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
-      }
+        category: 'digital', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
+      },
+      {
+        id: 3,
+        name: 'Sate Padang',
+        description: 'Makanan Khas Padang.',
+        variants: ['1 Porsi Sate + Lontong', '1 Porsi Sate','Sate Padang','Lontong'],
+        variantPrices: { '1 Porsi Sate + Lontong : 15000, '1 Porsi Sate: 120000, 'Sate Padang : 1300, }'
+        image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
+        discount: 5, bestSeller: false, delivery: false,
+        sold: 58, rating: 4.5, available: true,
+        category: 'digital', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
+      },
     ];
 
     let cart = [];
@@ -261,6 +272,7 @@
       const c = document.getElementById(`color-${id}`).value;
       let price = p.variantPrices[v];
       if (c === 'Full Garansi') price += 10000;
+      if (c === 'Spesial') price += 3000;
       const discountPrice = price - (price * p.discount / 100);
       const el = document.getElementById(`price-${id}`);
       el.innerHTML = `${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
@@ -272,6 +284,7 @@
       const color = document.getElementById(`color-${id}`).value;
       let price = p.variantPrices[variant];
       if (color === 'Full Garansi') price += 10000;
+       if (c === 'Spesial') price += 3000;
       const discounted = price - (price * p.discount / 100);
 
       const existing = cart.find(i => i.id === id && i.variant === variant && i.color === color);
