@@ -1,3 +1,4 @@
+<!-- Checkout - VL Online Shop -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -74,6 +75,7 @@
       </div>
     </div>
   </main>
+
   <script>
     const cart = JSON.parse(localStorage.getItem('cart')) || {};
     let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
@@ -119,8 +121,15 @@
       }
       codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
       adminFee = ['bca', 'qris', 'ewallet'].includes(selectedPaymentMethod) ? 2500 : 0;
-      document.getElementById('checkout-button').disabled = total === 0;
+      updateCheckoutButton();
       updateTotalPrice();
+    }
+
+    function updateCheckoutButton() {
+      const address = localStorage.getItem('address');
+      const isAddressValid = address && address.trim() !== '';
+      const isCartNotEmpty = total > 0;
+      document.getElementById('checkout-button').disabled = !(isAddressValid && isCartNotEmpty);
     }
 
     function updateTotalPrice() {
@@ -169,31 +178,51 @@
       return address ? Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000) : 0;
     }
 
+    function applyVoucher() {
+      const code = document.getElementById('voucher-code').value.trim().toUpperCase();
+      discount = 0;
+      shippingCost = calculateShipping();
+      if (code === 'DINO25' && total >= 20000) {
+        discount = 2500;
+      } else if (code === 'DINO5' && total >= 25000) {
+        discount = Math.floor(total * 0.05);
+      } else if (code === 'DINO10' && total >= 50000) {
+        discount = Math.floor(total * 0.10);
+      } else if (code === 'DINOONGKIR') {
+        const ongkir = calculateShipping();
+        discount = Math.min(10000, ongkir);
+        shippingCost = 0;
+      } else {
+        alert('Kode voucher tidak valid atau belum memenuhi syarat.');
+      }
+      updateTotalPrice();
+    }
+
+    document.getElementById('apply-voucher-btn').addEventListener('click', applyVoucher);
+
     document.getElementById('checkout-button').addEventListener('click', () => {
       const address = localStorage.getItem('address') || '-';
       const note = localStorage.getItem('courierNote') || '-';
-let message = '*[Checkout Order - VL Online Shop]*%0A';
-message += '━━━━━━━━━━━━━━━━━━━%0A';
-message += '*[Daftar Produk]*%0A';
-for (let id in cart) {
-  const item = cart[id];
-  message += `• ${item.name} ${item.variant ? '(' + item.variant + ')' : ''} ${item.color ? '- Warna: ' + item.color : ''} x ${item.quantity} = Rp ${(item.price * item.quantity).toLocaleString()}%0A`;
-}
-message += '━━━━━━━━━━━━━━━━━━━%0A';
-message += `*[Metode Pembayaran]*: ${getPaymentLabel(selectedPaymentMethod)}%0A`;
-message += `*[Biaya Admin]*: Rp ${adminFee.toLocaleString()}%0A`;
-if (selectedPaymentMethod === 'cod') {
-  message += `*[Biaya COD]*: Rp ${codFee.toLocaleString()}%0A`;
-}
-message += `*[Ongkir]*: Rp ${shippingCost.toLocaleString()}%0A`;
-if (discount) message += `*[Diskon]*: Rp ${discount.toLocaleString()}%0A`;
-const final = total + shippingCost + adminFee + codFee - discount;
-message += `*[Total Bayar]*: Rp ${final.toLocaleString()}%0A`;
-message += '━━━━━━━━━━━━━━━━━━━%0A';
-message += `*[Alamat Pengiriman]*:%0A${address}%0A%0A`;
-message += `*[Catatan untuk Kurir]*:%0A${note}%0A`;
-
-
+      let message = '*📦 Checkout Order - VL Online Shop*%0A';
+      message += '━━━━━━━━━━━━━━━━━━━%0A';
+      message += '*🛒 Daftar Produk:*%0A';
+      for (let id in cart) {
+        const item = cart[id];
+        message += `• ${item.name} ${item.variant ? '(' + item.variant + ')' : ''} ${item.color ? '- Warna: ' + item.color : ''} x ${item.quantity} = Rp ${(item.price * item.quantity).toLocaleString()}%0A`;
+      }
+      message += '━━━━━━━━━━━━━━━━━━━%0A';
+      message += `*💳 Metode Pembayaran:* ${getPaymentLabel(selectedPaymentMethod)}%0A`;
+      message += `*💰 Biaya Admin:* Rp ${adminFee.toLocaleString()}%0A`;
+      if (selectedPaymentMethod === 'cod') {
+        message += `*📦 Biaya COD:* Rp ${codFee.toLocaleString()}%0A`;
+      }
+      message += `*🚚 Ongkir:* Rp ${shippingCost.toLocaleString()}%0A`;
+      if (discount) message += `*🎁 Diskon:* Rp ${discount.toLocaleString()}%0A`;
+      const final = total + shippingCost + adminFee + codFee - discount;
+      message += `*💵 Total Bayar:* Rp ${final.toLocaleString()}%0A`;
+      message += '━━━━━━━━━━━━━━━━━━━%0A';
+      message += `*🏠 Alamat Pengiriman:*%0A${address}%0A%0A`;
+      message += `📬 *Catatan untuk Kurir:*%0A${note}%0A`;
       const phone = '6285709458101';
       const waURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       window.open(waURL, '_blank');
