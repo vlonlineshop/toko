@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
     <style>
+        /* Global Styles */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            color: #333;
         }
 
         .checkout-container {
@@ -23,30 +25,67 @@
 
         h1 {
             text-align: center;
-            color: #333;
-            margin-bottom: 20px;
             font-size: 2rem;
+            margin-bottom: 20px;
+            color: #333;
         }
 
         h2, h3 {
-            color: #333;
             margin-top: 20px;
             font-size: 1.5rem;
+            color: #333;
         }
 
         label {
             font-weight: bold;
             color: #333;
-            display: block;
-            margin-bottom: 8px;
             font-size: 1rem;
+            margin-bottom: 8px;
+            display: block;
         }
 
-        .address, .cart-items, .payment-methods, .voucher-section {
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Styles for the Address Section */
+        .address {
             margin-top: 20px;
         }
 
-        textarea {
+        .address-form {
+            display: none;
+            margin-top: 15px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .address-form.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .address textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -56,43 +95,30 @@
             margin-bottom: 15px;
         }
 
-        .cart-items div {
-            padding: 10px;
-            margin-bottom: 15px;
+        /* Cart Item Styles */
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
             border-bottom: 1px solid #ddd;
         }
 
-        .cart-items div p {
-            margin: 5px 0;
-            font-size: 1rem;
-            color: #555;
-        }
-
-        .cart-items button, .voucher-button, .payment-methods input {
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            border: none;
-        }
-
-        .cart-items button {
+        .cart-item button {
             background-color: #e74c3c;
-            color: white;
-            margin-right: 10px;
         }
 
-        .cart-items button:hover {
+        .cart-item button:hover {
             background-color: #c0392b;
         }
 
-        .voucher-button {
-            background-color: #f39c12;
-            color: white;
-            margin-top: 10px;
+        .cart-item .controls button {
+            margin: 0 5px;
         }
 
-        .voucher-button:hover {
-            background-color: #e67e22;
+        /* Payment Section */
+        .payment-methods {
+            margin-top: 20px;
         }
 
         .payment-methods input {
@@ -100,67 +126,93 @@
             margin-bottom: 10px;
         }
 
-        #total-cost {
+        .voucher-section {
             margin-top: 20px;
-            font-size: 1.2em;
         }
 
-        #final-total {
-            color: #27ae60;
-            font-weight: bold;
+        .voucher-input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 60%;
+            margin-right: 10px;
         }
 
         .voucher-message {
-            margin-top: 10px;
             color: green;
             font-size: 1rem;
+            margin-top: 10px;
         }
 
         .voucher-error {
-            margin-top: 10px;
             color: red;
             font-size: 1rem;
+            margin-top: 10px;
         }
 
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+        .total-cost {
             margin-top: 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.2rem;
         }
 
-        button:hover {
-            background-color: #2980b9;
+        .final-total {
+            font-weight: bold;
+            color: #27ae60;
         }
 
+        /* Shipping Section */
+        .shipping {
+            margin-top: 20px;
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .voucher-input {
+                width: 100%;
+            }
+
+            .checkout-container {
+                padding: 15px;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cart-item .controls {
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 <body>
+
     <div class="checkout-container">
         <h1>Halaman Checkout</h1>
 
-        <!-- Alamat Pengiriman -->
+        <!-- Address Section -->
         <div class="address">
-            <label for="address">Alamat Pengiriman:</label>
-            <textarea id="address" placeholder="Masukkan alamat pengiriman..." required></textarea>
-            <button id="save-address">Simpan Alamat</button>
+            <button id="add-address-btn">Tambah Alamat</button>
+            <div id="address-form" class="address-form">
+                <label for="address">Alamat Pengiriman:</label>
+                <textarea id="address" placeholder="Masukkan alamat pengiriman..." required></textarea>
+                <button id="save-address">Simpan Alamat</button>
+            </div>
         </div>
 
-        <!-- Keranjang Belanja -->
+        <!-- Cart Items -->
         <h2>Rincian Pesanan</h2>
         <div id="cart-items"></div>
 
-        <!-- Penghitungan Ongkir -->
+        <!-- Shipping Cost -->
         <div class="shipping">
             <label for="shipping">Ongkos Kirim: </label>
             <span id="shipping-cost">Rp 0</span>
         </div>
 
-        <!-- Opsi Pembayaran -->
+        <!-- Payment Methods -->
         <h3>Metode Pembayaran</h3>
         <div class="payment-methods">
             <input type="radio" id="bca" name="payment" value="BCA">
@@ -176,7 +228,7 @@
             <label for="cod">Cash On Delivery (COD) (Admin: 2%)</label><br>
         </div>
 
-        <!-- Fitur Voucher -->
+        <!-- Voucher Section -->
         <div class="voucher-section">
             <label for="voucher-code">Kode Voucher (jika ada):</label>
             <input type="text" id="voucher-code" class="voucher-input" placeholder="Masukkan kode voucher">
@@ -185,79 +237,56 @@
             <p id="voucher-error" class="voucher-error"></p>
         </div>
 
-        <!-- Total Pembayaran -->
-        <h3>Total Pembayaran</h3>
-        <div id="total-cost">
+        <!-- Total Cost Section -->
+        <div class="total-cost">
             <p>Harga Total: <span id="total-price">Rp 0</span></p>
             <p>Ongkos Kirim: <span id="final-shipping-cost">Rp 0</span></p>
-            <p><strong>Total: <span id="final-total">Rp 0</span></strong></p>
+            <p><strong>Total: <span id="final-total" class="final-total">Rp 0</span></strong></p>
         </div>
 
-        <!-- Tombol Kirim Pesanan -->
+        <!-- Place Order Button -->
         <button id="place-order">Kirim Pesanan</button>
     </div>
 
     <script>
-        // Voucher diskon yang tersedia
-        const vouchers = {
-            'DISKON10': 0.1,  // Diskon 10%
-            'HAPPY20': 0.2   // Diskon 20%
-        };
+        // Script untuk menangani checkout
 
         // Mengambil data dari localStorage
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const address = localStorage.getItem('address') || '';
 
-        // Menampilkan alamat pengiriman yang disimpan
-        document.getElementById('address').value = address;
+        // Menampilkan alamat yang sudah disimpan jika ada
+        if (address) {
+            document.getElementById('address').value = address;
+        }
 
-        // Fungsi untuk menampilkan item keranjang
+        // Menampilkan item keranjang
         function displayCartItems() {
             const cartContainer = document.getElementById('cart-items');
             cartContainer.innerHTML = '';
             let totalPrice = 0;
-            
-            cart.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.innerHTML = `
-                    <p><strong>Nama Produk:</strong> ${item.name}</p>
-                    <p><strong>Color/Garansi:</strong> ${item.color || 'N/A'} / ${item.warranty || 'N/A'}</p>
-                    <p><strong>Variant:</strong> ${item.variant}</p>
-                    <p><strong>Harga:</strong> Rp ${item.price.toLocaleString()}</p>
-                    <button onclick="removeFromCart('${item.name}')">Hapus</button>
-                    <button onclick="updateQuantity('${item.name}', 'increase')">Tambah</button>
-                    <button onclick="updateQuantity('${item.name}', 'decrease')">Kurangi</button>
+
+            cart.forEach((item, index) => {
+                const itemRow = document.createElement('div');
+                itemRow.classList.add('cart-item');
+                itemRow.innerHTML = `
+                    <div><strong>${item.name}</strong> - Rp ${item.price.toLocaleString()}</div>
+                    <div class="controls">
+                        <button class="decrease-btn" data-index="${index}">-</button>
+                        <span>${item.quantity}</span>
+                        <button class="increase-btn" data-index="${index}">+</button>
+                        <button class="remove-btn" data-index="${index}">Hapus</button>
+                    </div>
                 `;
-                cartContainer.appendChild(itemDiv);
-                totalPrice += item.price;
+                cartContainer.appendChild(itemRow);
+                totalPrice += item.price * item.quantity;
             });
 
             document.getElementById('total-price').innerText = `Rp ${totalPrice.toLocaleString()}`;
             return totalPrice;
         }
 
-        // Fungsi untuk menambahkan atau mengurangi kuantitas
-        function updateQuantity(productName, action) {
-            const product = cart.find(item => item.name === productName);
-            if (product) {
-                if (action === 'increase') {
-                    product.quantity += 1;
-                } else if (action === 'decrease' && product.quantity > 1) {
-                    product.quantity -= 1;
-                }
-                localStorage.setItem('cart', JSON.stringify(cart));
-                displayCartItems();
-            }
-        }
-
-        // Fungsi untuk menghapus item dari keranjang
-        function removeFromCart(productName) {
-            const updatedCart = cart.filter(item => item.name !== productName);
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
-            displayCartItems();
-        }
-
-        // Fungsi untuk mengatur ongkir secara acak
+        // Fungsi untuk menghitung ongkir
         function calculateShipping() {
             const randomShippingCost = Math.floor(Math.random() * 6) * 2000 + 5000;
             localStorage.setItem('shipping-cost', randomShippingCost);
@@ -265,7 +294,7 @@
             return randomShippingCost;
         }
 
-        // Menghitung total harga termasuk ongkir dan admin
+        // Menghitung total harga dengan ongkir dan admin
         function calculateTotal() {
             const cartTotal = displayCartItems();
             const shippingCost = calculateShipping();
@@ -293,6 +322,7 @@
             const address = document.getElementById('address').value;
             localStorage.setItem('address', address);
             alert('Alamat berhasil disimpan!');
+            document.getElementById('address-form').classList.remove('show');
         });
 
         // Menerapkan voucher
@@ -309,6 +339,16 @@
             } else {
                 voucherMessage.innerText = '';
                 voucherError.innerText = 'Kode voucher tidak valid.';
+            }
+        });
+
+        // Menampilkan animasi slide down untuk form alamat
+        document.getElementById('add-address-btn').addEventListener('click', function() {
+            const addressForm = document.getElementById('address-form');
+            if (addressForm.style.display === 'block') {
+                addressForm.classList.remove('show');
+            } else {
+                addressForm.classList.add('show');
             }
         });
 
@@ -330,8 +370,38 @@
             window.open(`https://wa.me/085709458101?text=${encodeURIComponent(whatsappMessage)}`);
         });
 
+        // Event listeners untuk tombol tambah, kurang, dan hapus produk
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.classList.contains('increase-btn')) {
+                const index = e.target.getAttribute('data-index');
+                cart[index].quantity += 1;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                displayCartItems();
+                calculateTotal();
+            }
+
+            if (e.target && e.target.classList.contains('decrease-btn')) {
+                const index = e.target.getAttribute('data-index');
+                if (cart[index].quantity > 1) {
+                    cart[index].quantity -= 1;
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    displayCartItems();
+                    calculateTotal();
+                }
+            }
+
+            if (e.target && e.target.classList.contains('remove-btn')) {
+                const index = e.target.getAttribute('data-index');
+                cart.splice(index, 1);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                displayCartItems();
+                calculateTotal();
+            }
+        });
+
         // Mulai proses
         displayCartItems();
     </script>
+
 </body>
 </html>
