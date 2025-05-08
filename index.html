@@ -86,8 +86,25 @@
   </div>
   <script>
     const products = [
-      { id: 1, name: 'Produk A', description: 'Produk A terbaik.', price: 10000, discount: 10, image: 'https://via.placeholder.com/200x150?text=Produk+A', bestSeller: true, checkoutUrl: '#', available: true, category: 'fashion', variants: ['M', 'L'], colors: ['Merah', 'Hitam'] },
-      { id: 2, name: 'Produk B', description: 'Produk B berkualitas.', price: 20000, discount: 0, image: 'https://via.placeholder.com/200x150?text=Produk+B', bestSeller: false, checkoutUrl: '#', available: true, category: 'makanan', variants: ['Rasa Coklat'], colors: ['Coklat'] },
+      {
+        id: 1,
+        name: 'Martabak',
+        description: 'Martabak Saya Suka-Saya Suka.',
+        variants: ['Telur Spesial Rasa Sapi', 'Telur Sapi', 'Manis Kacang', 'Manis Kacang Wijen'],
+        variantPrices: {
+          'Telur Spesial Rasa Sapi': 40000,
+          'Telur Sapi': 39000,
+          'Manis Kacang': 35000,
+          'Manis Kacang Wijen': 37000,
+        },
+        image: 'https://via.placeholder.com/200x150?text=Produk+A',
+        discount: 10,
+        bestSeller: true,
+        available: true,
+        category: 'fashion',
+        colors: ['Merah', 'Hitam'],
+      },
+      { id: 2, name: 'Produk B', description: 'Produk B berkualitas.', price: 20000, discount: 0, image: 'https://via.placeholder.com/200x150?text=Produk+B', bestSeller: false, checkoutUrl: '#', available: false, category: 'makanan', variants: ['Rasa Coklat'], colors: ['Coklat'] },
     ];
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
@@ -111,9 +128,9 @@
             <img src="${p.image}" alt="${p.name}">
             <h3>${p.name}</h3>
             <p class="description">${p.description}</p>
-            <p>${p.discount > 0 ? `<span class="original-price">Rp${p.price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span></p>
+            <p id="price-${p.id}">${p.discount > 0 ? `<span class="original-price">Rp${p.price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span></p>
             <div class="actions">
-              <select id="variant-${p.id}">
+              <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
                 ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
               </select>
               <select id="color-${p.id}">
@@ -127,13 +144,28 @@
       });
     }
 
+    function updatePrice(productId) {
+      const product = products.find(p => p.id === productId);
+      const variant = document.getElementById(`variant-${productId}`).value;
+
+      // Harga berdasarkan varian yang dipilih
+      const variantPrice = product.variantPrices[variant] || product.price;
+
+      const discountPrice = variantPrice - (variantPrice * product.discount / 100);
+      const priceElement = document.getElementById(`price-${productId}`);
+      priceElement.innerHTML = `${product.discount > 0 ? `<span class="original-price">Rp${variantPrice.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
+    }
+
     function addToCart(productId) {
       const product = products.find(p => p.id === productId);
       const variant = document.getElementById(`variant-${productId}`).value;
       const color = document.getElementById(`color-${productId}`).value;
-      const price = product.price - (product.price * product.discount / 100);
-      const key = `${productId}-${variant}-${color}`;
 
+      // Hitung ulang harga sesuai variant
+      const variantPrice = product.variantPrices[variant] || product.price;
+      const price = variantPrice - (variantPrice * product.discount / 100);
+
+      const key = `${productId}-${variant}-${color}`;
       if (cart[key]) {
         cart[key].quantity += 1;
       } else {
@@ -146,29 +178,23 @@
 
     function updateCart() {
       const cartItems = document.getElementById('cart-items');
-      const checkoutButton = document.getElementById('checkout-button');
       cartItems.innerHTML = '';
-      let hasItems = false;
+      let totalPrice = 0;
+      let totalQuantity = 0;
       for (let key in cart) {
         const item = cart[key];
-        hasItems = true;
+        totalPrice += item.price * item.quantity;
+        totalQuantity += item.quantity;
+
         cartItems.innerHTML += `
           <li>
-            <span>${item.name} (${item.variant}, ${item.color}) x${item.quantity}</span>
+            <span>${item.name} (${item.variant})</span>
+            <span>Rp${item.price.toLocaleString()} x ${item.quantity}</span>
             <button onclick="removeFromCart('${key}')">Hapus</button>
-            <button onclick="updateQuantity('${key}', 1)">+</button>
-            <button onclick="updateQuantity('${key}', -1)">-</button>
           </li>
         `;
       }
-      checkoutButton.disabled = !hasItems;
-    }
-
-    function updateQuantity(key, delta) {
-      cart[key].quantity += delta;
-      if (cart[key].quantity <= 0) delete cart[key];
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCart();
+      document.getElementById('checkout-button').disabled = totalQuantity === 0;
     }
 
     function removeFromCart(key) {
@@ -178,11 +204,13 @@
     }
 
     function toggleCartPopup() {
-      const popup = document.getElementById('cart-popup');
-      popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+      const cartPopup = document.getElementById('cart-popup');
+      cartPopup.style.display = cartPopup.style.display === 'block' ? 'none' : 'block';
     }
 
-    document.getElementById('checkout-button').addEventListener('click', () => alert('Checkout dimulai'));
+   document.getElementById('checkout-button').addEventListener('click', () => {
+  window.location.href = 'checkout.html';  // Mengarahkan ke halaman checkout.html
+});
     renderProducts();
     updateCart();
   </script>
