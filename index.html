@@ -156,12 +156,15 @@
   position: relative;
 }
 
-.popup img {
-  width: 100%;
+.popup-image {
+  max-width: 90vw;  /* maksimum 90% dari lebar layar */
+  max-height: 80vh; /* maksimum 80% dari tinggi layar */
+  width: auto;
   height: auto;
-  border-radius: 5px;
-  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
+
 
 .popup-buttons {
   margin-top: 15px;
@@ -228,7 +231,7 @@
     <button class="close-btn" onclick="closePopup()">X</button>
     <img src="https://vlonlineshop.github.io/toko/VL_resized_600x600.png" alt="Banner Image">
     <div class="popup-buttons">
-      <button class="ok-btn">OK</button>
+      <button class="ok-btn" onclick="goToProduct(1)">OK</button>
     </div>
   </div>
 </div>
