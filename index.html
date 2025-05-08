@@ -82,7 +82,7 @@
       z-index: 2000;
     }
     .keranjang-popup ul { list-style: none; padding: 0; margin: 0 0 1rem; }
-    .keranjang-popup li { margin-bottom: 0.5rem; display: flex; flex-direction: column; gap: 5px; }
+    .keranjang-popup li { margin-bottom: 0.5rem; }
     .keranjang-popup .checkout button {
       width: 100%;
       padding: 0.7rem;
@@ -95,19 +95,6 @@
     .keranjang-popup .checkout button:disabled {
       background: #ccc;
       cursor: not-allowed;
-    }
-    .cart-actions button {
-      background: none;
-      border: none;
-      font-size: 1rem;
-      margin: 0 3px;
-      cursor: pointer;
-    }
-    .total-harga {
-      font-weight: bold;
-      text-align: right;
-      margin-top: 10px;
-      color: #003366;
     }
 
     .floating-cart {
@@ -127,80 +114,233 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       z-index: 2000;
     }
+
+    .live-reviews {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      font-size: 0.85rem;
+      color: #333;
+      z-index: 1000;
+      animation: slideUpFade 1s ease forwards, fadeOut 1s ease 5s forwards;
+      max-width: 280px;
+    }
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      to { opacity: 0; transform: translateY(-10px); }
+    }
   </style>
 </head>
 <body>
-  <!-- Konten produk akan di sini -->
+  <header>
+    <h1>VL Online Shop</h1>
+    <div class="filter-search-wrapper">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Cari produk...">
+        <button onclick="renderProducts()">Cari</button>
+      </div>
+      <div class="filter-box">
+        <label for="categoryFilter">Kategori:</label>
+        <select id="categoryFilter" onchange="renderProducts()">
+          <option value="all">Semua</option>
+          <option value="fashion">Fashion</option>
+          <option value="makanan">Makanan</option>
+          <option value="sembako">Sembako</option>
+          <option value="jajanan">Jajanan</option>
+          <option value="best">Best Seller</option>
+          <option value="discount">Diskon</option>
+          <option value="available">Tersedia</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="products" id="product-list"></div>
+  </main>
 
   <div class="keranjang-popup" id="cart-popup">
+    <h2>Keranjang</h2>
     <ul id="cart-items"></ul>
-    <div class="total-harga" id="cart-total">Total: Rp0</div>
     <div class="checkout">
-      <button id="checkout-button" disabled>Checkout</button>
+      <button id="checkout-button" disabled onclick="handleCheckout()">Checkout</button>
     </div>
   </div>
 
-  <div class="floating-cart" onclick="toggleCart()">🛒</div>
+  <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
+    🛒
+  </div>
+
+  <div id="live-review-container"></div>
 
   <script>
+    const products = [
+      {
+        id: 1,
+        name: 'Martabak',
+        description: 'Martabak Saya Suka.',
+        variants: ['Telur Spesial', 'Manis Kacang'],
+        variantPrices: { 'Telur Spesial': 40000, 'Manis Kacang': 35000 },
+        image: 'https://via.placeholder.com/200x150?text=Martabak',
+        discount: 10, bestSeller: true, delivery: true,
+        sold: 123, rating: 4.7, available: true,
+        category: 'makanan', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
+      },
+      {
+        id: 2,
+        name: 'Canva Pro',
+        description: 'Langganan Editing Online.',
+        variants: ['1 Bulan', '1 Tahun'],
+        variantPrices: { '1 Bulan': 40000, '1 Tahun': 120000 },
+        image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
+        discount: 5, bestSeller: false, delivery: false,
+        sold: 58, rating: 4.5, available: true,
+        category: 'fashion', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
+      }
+    ];
+
     let cart = [];
 
-    function toggleCart() {
-      const popup = document.getElementById('cart-popup');
-      popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+    function renderProducts() {
+      const container = document.getElementById('product-list');
+      const filter = document.getElementById('categoryFilter').value.toLowerCase();
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      container.innerHTML = '';
+
+      products.forEach(p => {
+        const variant = p.variants[0];
+        let price = p.variantPrices[variant];
+        let discountPrice = price - (price * p.discount / 100);
+
+        if (filter !== 'all' && !['best', 'discount', 'available'].includes(filter) && p.category !== filter) return;
+        if (filter === 'best' && !p.bestSeller) return;
+        if (filter === 'discount' && p.discount === 0) return;
+        if (filter === 'available' && !p.available) return;
+        if (!p.name.toLowerCase().includes(search)) return;
+
+        container.innerHTML += `
+          <div class="product">
+            <div class="badge-container">
+              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
+              ${p.delivery ? '<span class="badge delivery">Delivery</span>' : ''}
+              ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
+            </div>
+            <img src="${p.image}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p class="description">${p.description}</p>
+            <div class="rating-stars">⭐ ${p.rating} &nbsp; <span class="sold-info">(${p.sold} terjual)</span></div>
+            <p id="price-${p.id}">
+              ${p.discount > 0 ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}
+              <span class="price">Rp${discountPrice.toLocaleString()}</span>
+            </p>
+            <div class="actions">
+              <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
+                ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
+              </select>
+              <select id="color-${p.id}" onchange="updatePrice(${p.id})">
+                ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
+              </select>
+              <button onclick="addToCart(${p.id})">Tambah</button>
+              <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
+            </div>
+          </div>`;
+      });
+    }
+
+    function updatePrice(id) {
+      const p = products.find(p => p.id === id);
+      const v = document.getElementById(`variant-${id}`).value;
+      const c = document.getElementById(`color-${id}`).value;
+      let price = p.variantPrices[v];
+      if (c === 'Full Garansi') price += 10000;
+      const discountPrice = price - (price * p.discount / 100);
+      const el = document.getElementById(`price-${id}`);
+      el.innerHTML = `${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
+    }
+
+    function addToCart(id) {
+      const p = products.find(p => p.id === id);
+      const variant = document.getElementById(`variant-${id}`).value;
+      const color = document.getElementById(`color-${id}`).value;
+      let price = p.variantPrices[variant];
+      if (color === 'Full Garansi') price += 10000;
+      const discounted = price - (price * p.discount / 100);
+
+      const existing = cart.find(i => i.id === id && i.variant === variant && i.color === color);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ id, name: p.name, variant, color, price: discounted, quantity: 1 });
+      }
+
+      updateCartUI();
+      toggleCartPopup();
     }
 
     function updateCartUI() {
       const list = document.getElementById('cart-items');
       const checkoutBtn = document.getElementById('checkout-button');
-      const totalEl = document.getElementById('cart-total');
-
       list.innerHTML = '';
-      let total = 0;
-
       if (cart.length === 0) {
         list.innerHTML = '<li>Keranjang kosong.</li>';
-        totalEl.textContent = 'Total: Rp0';
         checkoutBtn.disabled = true;
         return;
       }
-
-      cart.forEach((item, index) => {
-        total += item.price * item.quantity;
+      cart.forEach(item => {
         const li = document.createElement('li');
-        li.innerHTML = `
-          <strong>${item.name}</strong><br>
-          Varian: ${item.variant}, Warna: ${item.color}<br>
-          Qty: ${item.quantity} | <strong>Rp${(item.price * item.quantity).toLocaleString()}</strong><br>
-          <button onclick="changeQty(${index}, -1)">➖</button>
-          <button onclick="changeQty(${index}, 1)">➕</button>
-          <button onclick="removeFromCart(${index})">❌</button>
-        `;
+        li.innerHTML = `<strong>${item.name}</strong><br>Varian: ${item.variant}, Warna: ${item.color}<br>Qty: ${item.quantity} | Rp${(item.price * item.quantity).toLocaleString()}`;
         list.appendChild(li);
       });
-
-      totalEl.textContent = `Total: Rp${total.toLocaleString()}`;
       checkoutBtn.disabled = false;
     }
 
-    function changeQty(index, delta) {
-      if (!cart[index]) return;
-      cart[index].quantity += delta;
-      if (cart[index].quantity <= 0) {
-        cart.splice(index, 1);
-      }
-      updateCartUI();
+    function toggleCartPopup() {
+      const p = document.getElementById('cart-popup');
+      p.style.display = p.style.display === 'block' ? 'none' : 'block';
     }
 
-    function removeFromCart(index) {
-      cart.splice(index, 1);
-      updateCartUI();
+    function handleCheckout() {
+      localStorage.setItem('cartItems', JSON.stringify(cart));
+      window.location.href = 'checkout.html';
     }
 
-    // Contoh: Tambah produk secara manual untuk testing
-    cart.push({ name: 'Produk A', variant: 'L', color: 'Merah', quantity: 2, price: 100000 });
-    cart.push({ name: 'Produk B', variant: 'M', color: 'Biru', quantity: 1, price: 150000 });
-    updateCartUI();
+    const names = ["Aldi", "Rina", "Teguh", "Sari", "Dika", "Lina", "Fajar", "Nina"];
+    const emojis = ["😊", "😁", "👍", "🔥", "😍", "👏", "💯", "🎉"];
+    const comments = [
+      "Kualitas mantap!", "Pelayanan cepat & memuaskan!", "Rekomendasi banget 👍",
+      "Harga terjangkau, produk oke!", "Puas banget belanja di sini 😍",
+      "Produk sesuai deskripsi 💯", "Pengiriman cepat dan aman ✨",
+      "Suka banget sama produknya!", "Repeat order pasti 🔁", "Terbaik pokoknya!"
+    ];
+
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function showLiveReview() {
+      const highRated = products.filter(p => p.rating > 4.2);
+      if (highRated.length === 0) return;
+      const p = getRandomItem(highRated);
+      const review = document.createElement('div');
+      review.className = 'live-reviews';
+      review.innerHTML = `<strong>${getRandomItem(names)}</strong> membeli <strong>${p.name}</strong><br>
+        Rating: ⭐ ${(4 + Math.random()).toFixed(1)} ${getRandomItem(emojis)}<br>
+        <em>"${getRandomItem(comments)}"</em>`;
+      document.getElementById('live-review-container').appendChild(review);
+      setTimeout(() => review.remove(), 6000);
+    }
+
+    setInterval(() => { if (Math.random() > 0.4) showLiveReview(); }, 10000);
+
+    renderProducts();
   </script>
 </body>
 </html>
