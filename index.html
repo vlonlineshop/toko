@@ -171,14 +171,18 @@
   font-weight: bold;
 }
 
-.popup-buttons .ok-btn {
-  background-color: #0059b3;
-  color: white;
-}
+  .popup button.ok-btn {
+    background-color: #0059b3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+  }
 
-.popup-buttons .ok-btn:hover {
-  background-color: #003366;
-}
+  .popup button.ok-btn:hover {
+    background-color: #004080;
 
 .popup-buttons .close-btn {
   background-color: #ccc;
@@ -196,7 +200,7 @@
   <div id="banner-popup" class="popup">
     <div class="popup-content">
       <span class="close-btn" onclick="closeBannerPopup()">&times;</span>
-      <img src="https://via.placeholder.com/200x150?text=Canva+Pro" alt="Banner Promo">
+      <img src="https://files.oaiusercontent.com/file-8RyoeRxdRTnXboncBXekAd?se=2025-05-08T12%3A54%3A08Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D299%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3De0924a7f-2187-4518-80c7-4e6c7dfc0f34.png&sig=Kb1sUzJgbqkPMZxFVvZyATMfoVtq2rfFb7EmaTGX7Q4%3D" alt="Banner Promo">
 <button class="ok-btn" onclick="goToProduct(1)">Oke</button>
     </div>
   </div>
