@@ -160,15 +160,12 @@
   </style>
 </head>
 <body>
-   <!-- Popup promo -->
-  <div id="popup" class="popup">
-    <div class="popup-content">
-      <span class="close-btn" onclick="closePopup()">&times;</span>
-      <h2>Selamat Datang!</h2>
-      <p>Dapatkan diskon 20% untuk pembelian pertama Anda!</p>
-      <button onclick="closePopup()">Tutup</button>
-    </div>
+  <div id="banner-popup" class="popup">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closeBannerPopup()">&times;</span>
+    <img src="https://via.placeholder.com/360x640?text=Promo+VL+Shop" alt="Banner Promo" style="width:100%; border-radius:8px;">
   </div>
+</div>
   <header>
     <h1>VL Online Shop</h1>
     <div class="filter-search-wrapper">
@@ -209,6 +206,18 @@
   </div>
 <div class="live-review" id="live-review"></div>
    <script>
+
+// Tampilkan banner saat pengguna pertama kali masuk
+  window.onload = function () {
+    // Banner popup muncul setelah 1 detik
+    setTimeout(function () {
+      document.getElementById('banner-popup').style.display = 'block';
+    }, 1000);
+  };
+
+  function closeBannerPopup() {
+    document.getElementById('banner-popup').style.display = 'none';
+  }
   const products = [
       
         {
@@ -231,381 +240,7 @@
    colors: ['No Garansi', 'Full Garansi'],
    checkoutUrl: '#',
  
-},
-
-   {
-   id: 2,
-   name: 'Canva Pro B',
-   description: 'Langganan Editing Online.',
-   variants: ['1 Bulan', '1 Tahun'],
-   variantPrices: {
-     '1 Bulan': 40000,
-     '1 Tahun': 120000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 58,
-   rating: 4.5,
-   available: true,
-   category: 'digital',
-   colors: ['No Garansi', 'Full Garansi'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital'
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
-
-{
-   id: 3,
-   name: 'Martabak',
-   description: 'Langganan Editing Online.',
-   variants: ['Telur', 'Manis'],
-   variantPrices: {
-     'Telur': 40000,
-     'Manis': 35000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 70,
-   rating: 4.8,
-   available: true,
-   category: 'digital',
-   colors: ['---Tidak ada pilihan---'],
-   checkoutUrl: '#',
- 
-},
+}
     ];
 
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -796,6 +431,8 @@
     }
 
     setInterval(showLiveReview, 5000);  // Update review setiap 5 detik
+
+ 
 </script> 
 </body> 
 </html>
