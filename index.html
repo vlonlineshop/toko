@@ -18,32 +18,13 @@
     main { padding: 1rem; max-width: 1200px; margin: auto; }
     .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
 
-    .product {
-      background: white; border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 1rem; border: 1px solid #ccc; position: relative;
-    }
+    .product { background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding: 1rem; border: 1px solid #ccc; position: relative; }
     .product img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; }
     .product h3 { margin: 0.5rem 0; color: #003366; }
     .product p.description { font-size: 0.9rem; color: #555; margin: 0.5rem 0; }
 
-    .badge {
-      position: absolute;
-      font-size: 0.7rem;
-      font-weight: bold;
-      padding: 4px 8px;
-      border-radius: 5px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      z-index: 10;
-    }
-    .badge-container {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      position: absolute;
-      top: 8px;
-      left: 8px;
-    }
+    .badge { position: absolute; font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 10; }
+    .badge-container { display: flex; flex-direction: column; gap: 5px; position: absolute; top: 8px; left: 8px; }
     .badge.discount { background: red; color: white; }
     .badge.delivery { background: #00bcd4; color: white; }
     .badge.best { background: gold; color: black; }
@@ -55,88 +36,23 @@
     .sold-info { font-size: 0.8rem; color: #888; }
 
     .actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
-    .actions button, .actions a, .actions select {
-      padding: 0.5rem; font-size: 0.9rem;
-      border-radius: 5px; border: 1px solid #ccc;
-    }
-    .actions button {
-      background: #0059b3; color: white; border: none; cursor: pointer;
-    }
+    .actions button, .actions a, .actions select { padding: 0.5rem; font-size: 0.9rem; border-radius: 5px; border: 1px solid #ccc; }
+    .actions button { background: #0059b3; color: white; border: none; cursor: pointer; }
     .actions button:hover { background: #003366; }
-    .actions a {
-      background: #28a745; color: white; text-align: center; text-decoration: none;
-    }
+    .actions a { background: #28a745; color: white; text-align: center; text-decoration: none; }
     .actions a:hover { background: #1e7e34; }
 
-    .keranjang-popup {
-      display: none;
-      position: fixed;
-      right: 20px;
-      bottom: 80px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 1rem;
-      width: 300px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      z-index: 2000;
-    }
+    .keranjang-popup { display: none; position: fixed; right: 20px; bottom: 80px; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 1rem; width: 300px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 2000; }
     .keranjang-popup ul { list-style: none; padding: 0; margin: 0 0 1rem; }
     .keranjang-popup li { margin-bottom: 0.5rem; }
-    .keranjang-popup .checkout button {
-      width: 100%;
-      padding: 0.7rem;
-      background: #0059b3;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .keranjang-popup .checkout button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
+    .keranjang-popup .checkout button { width: 100%; padding: 0.7rem; background: #0059b3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .keranjang-popup .checkout button:disabled { background: #ccc; cursor: not-allowed; }
 
-    .floating-cart {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #003366;
-      color: white;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      z-index: 2000;
-    }
+    .floating-cart { position: fixed; bottom: 20px; right: 20px; background: #003366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 2000; }
 
-    .live-reviews {
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 0.8rem 1rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      font-size: 0.85rem;
-      color: #333;
-      z-index: 1000;
-      animation: slideUpFade 1s ease forwards, fadeOut 1s ease 5s forwards;
-      max-width: 280px;
-    }
-    @keyframes slideUpFade {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeOut {
-      to { opacity: 0; transform: translateY(-10px); }
-    }
+    .live-reviews { position: fixed; bottom: 10px; left: 10px; background: rgba(255, 255, 255, 0.95); border: 1px solid #ccc; border-radius: 10px; padding: 0.8rem 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.15); font-size: 0.85rem; color: #333; z-index: 1000; animation: slideUpFade 1s ease forwards, fadeOut 1s ease 5s forwards; max-width: 280px; }
+    @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
   </style>
 </head>
 <body>
@@ -183,58 +99,19 @@
 
   <div id="live-review-container"></div>
 
-
   <script>
     const products = [
-      {
-        id: 1,
-        name: 'Martabak',
-        description: 'Martabak Saya Suka.',
-        variants: ['Telur Spesial', 'Manis Kacang'],
-        variantPrices: { 
-          'Telur Spesial': 40000,
-          'Manis Kacang': 35000
-        },
-        image: 'https://via.placeholder.com/200x150?text=Martabak',
-        discount: 0, bestSeller: true, delivery: true,
-        sold: 123, rating: 4.7, available: true,
-        category: 'makanan', colors: ['Biasa', 'Spesial'], checkoutUrl: '#'
-      },
-      {
-        id: 2,
-        name: 'Canva Pro',
-        description: 'Langganan Editing Online.',
-        variants: ['1 Bulan', '1 Tahun'],
-        variantPrices: { 
-          '1 Bulan': 5000,
-          '1 Tahun': 20000,
-          'Lifetime': 50000
-        },
-        image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-        discount: 5, bestSeller: false, delivery: false,
-        sold: 58, rating: 4.5, available: true,
-        category: 'digital', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
-      },
-      {
-        id: 3,
-        name: 'Sate Padang',
-        description: 'Makanan Khas Padang.',
-        variants: ['1 Porsi Sate + Lontong', '1 Porsi Sate','Sate Padang','Lontong'],
-        variantPrices: {
-        '1 Porsi Sate + Lontong': 15000,
-        '1 Porsi Sate': 12000,
-        'Sate Padang': 13000,
-        'Lontong': 5000
-},
-
-        image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-        discount: 5, bestSeller: false, delivery: false,
-        sold: 58, rating: 4.5, available: true,
-        category: 'makanan', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
-      },
+      { id: 1, name: 'Martabak', description: 'Martabak Saya Suka.', variants: ['Telur Spesial', 'Manis Kacang'], variantPrices: { 'Telur Spesial': 40000, 'Manis Kacang': 35000 }, image: 'https://via.placeholder.com/200x150?text=Martabak', discount: 0, bestSeller: true, delivery: true, sold: 123, rating: 4.7, available: true, category: 'makanan', colors: ['Biasa', 'Spesial'], checkoutUrl: '#' },
+      { id: 2, name: 'Canva Pro', description: 'Langganan Editing Online.', variants: ['1 Bulan', '1 Tahun', 'Lifetime'], variantPrices: { '1 Bulan': 5000, '1 Tahun': 20000, 'Lifetime': 50000 }, image: 'https://via.placeholder.com/200x150?text=Canva+Pro', discount: 5, bestSeller: false, delivery: false, sold: 58, rating: 4.5, available: true, category: 'digital', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#' },
+      { id: 3, name: 'Sate Padang', description: 'Makanan Khas Padang.', variants: ['1 Porsi Sate + Lontong', '1 Porsi Sate', 'Sate Padang', 'Lontong'], variantPrices: { '1 Porsi Sate + Lontong': 15000, '1 Porsi Sate': 12000, 'Sate Padang': 13000, 'Lontong': 5000 }, image: 'https://via.placeholder.com/200x150?text=Sate+Padang', discount: 5, bestSeller: false, delivery: false, sold: 58, rating: 4.5, available: true, category: 'makanan', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#' }
     ];
 
-    let cart = [];
+    // Inisialisasi keranjang dari localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
 
     function renderProducts() {
       const container = document.getElementById('product-list');
@@ -243,9 +120,8 @@
       container.innerHTML = '';
 
       products.forEach(p => {
-        const variant = p.variants[0];
-        let price = p.variantPrices[variant];
-        let discountPrice = price - (price * p.discount / 100);
+        const priceBase = p.variantPrices[p.variants[0]];
+        const discountPrice = priceBase - (priceBase * p.discount / 100);
 
         if (filter !== 'all' && !['best', 'discount', 'available'].includes(filter) && p.category !== filter) return;
         if (filter === 'best' && !p.bestSeller) return;
@@ -253,7 +129,7 @@
         if (filter === 'available' && !p.available) return;
         if (!p.name.toLowerCase().includes(search)) return;
 
-        const productHTML = 
+        const productHTML = `
           <div class="product">
             <div class="badge-container">
               ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
@@ -265,46 +141,59 @@
             <p class="description">${p.description}</p>
             <div class="rating-stars">⭐ ${p.rating} &nbsp; <span class="sold-info">(${p.sold} terjual)</span></div>
             <p id="price-${p.id}">
-              ${p.discount > 0 ? <span class="original-price">Rp${price.toLocaleString()}</span><br> : ''}
+              ${p.discount > 0 ? `<span class="original-price">Rp${priceBase.toLocaleString()}</span><br>` : ''}
               <span class="price">Rp${discountPrice.toLocaleString()}</span>
             </p>
             <div class="actions">
               <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.variants.map(v => <option value="${v}">${v}</option>).join('')}
+                ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
               </select>
               <select id="color-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.colors.map(c => <option value="${c}">${c}</option>).join('')}
+                ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
               </select>
               <button onclick="addToCart(${p.id})">Tambah</button>
               <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
             </div>
           </div>
-        ;
+        `;
 
-        container.innerHTML += productHTML;
+        container.insertAdjacentHTML('beforeend', productHTML);
       });
+
+      updateCartUI();
     }
 
-
     function updatePrice(id) {
-      const p = products.find(p => p.id === id);
-      const variant = document.getElementById(variant-${id}).value;
-      const color = document.getElementById(color-${id}).value;
+      const p = products.find(x => x.id === id);
+      const variant = document.getElementById(`variant-${id}`).value;
+      const color = document.getElementById(`color-${id}`).value;
       let price = p.variantPrices[variant];
       if (color === 'Full Garansi') price += 10000;
       if (color === 'Spesial') price += 3000;
       const discountPrice = price - (price * p.discount / 100);
-      const el = document.getElementById(price-${id});
-      el.innerHTML = ${p.discount ? <span class="original-price">Rp${price.toLocaleString()}</span><br> : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>;
+      const el = document.getElementById(`price-${id}`);
+      el.innerHTML = `
+        ${p.discount > 0 ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}
+        <span class="price">Rp${discountPrice.toLocaleString()}</span>
+      `;
     }
 
-   function addToCart(item) {
-      const existing = cart.find(i => i.id === item.id && i.variant === item.variant && i.color === item.color);
+    function addToCart(id) {
+      const p = products.find(x => x.id === id);
+      const variant = document.getElementById(`variant-${id}`).value;
+      const color = document.getElementById(`color-${id}`).value;
+      let price = p.variantPrices[variant];
+      if (color === 'Full Garansi') price += 10000;
+      if (color === 'Spesial') price += 3000;
+      const discountPrice = price - (price * p.discount / 100);
+
+      const existing = cart.find(item => item.id === id && item.variant === variant && item.color === color);
       if (existing) {
-        existing.quantity += item.quantity;
+        existing.quantity += 1;
       } else {
-        cart.push({...item});
+        cart.push({ id, name: p.name, variant, color, price: discountPrice, quantity: 1 });
       }
+      saveCart();
       updateCartUI();
     }
 
@@ -328,21 +217,18 @@
       cart.forEach(item => {
         totalItems += item.quantity;
         const li = document.createElement('li');
-        li.innerHTML = 
+        li.innerHTML = `
           <strong>${item.name}</strong><br>
           Varian: ${item.variant}, Warna: ${item.color}<br>
-          Qty: 
-          <button onclick="changeQuantity(${item.id}, '${item.variant}', '${item.color}', -1)">-</button>
-          ${item.quantity}
-          <button onclick="changeQuantity(${item.id}, '${item.variant}', '${item.color}', 1)">+</button>
-          <button onclick="removeItem(${item.id}, '${item.variant}', '${item.color}')">🗑️</button>
-          <br>Total: Rp${(item.price * item.quantity).toLocaleString()}
-        ;
+          Qty: <button onclick="changeQuantity(${item.id}, '${item.variant}', '${item.color}', -1)">-</button> ${item.quantity} <button onclick="changeQuantity(${item.id}, '${item.variant}', '${item.color}', 1)">+</button>
+          <button onclick="removeItem(${item.id}, '${item.variant}', '${item.color}')">🗑️</button><br>
+          Total: Rp${(item.price * item.quantity).toLocaleString()}
+        `;
         list.appendChild(li);
       });
 
       checkoutBtn.disabled = false;
-      totalItemsEl.textContent = Total item: ${totalItems};
+      totalItemsEl.textContent = `Total item: ${totalItems}`;
       cartCount.textContent = totalItems;
     }
 
@@ -351,11 +237,13 @@
       if (!item) return;
       item.quantity += delta;
       if (item.quantity <= 0) removeItem(id, variant, color);
+      saveCart();
       updateCartUI();
     }
 
     function removeItem(id, variant, color) {
       cart = cart.filter(i => !(i.id === id && i.variant === variant && i.color === color));
+      saveCart();
       updateCartUI();
     }
 
@@ -365,10 +253,10 @@
     }
 
     function handleCheckout() {
-      alert('Checkout berhasil!');
-      cart = [];
-      updateCartUI();
-    }
+  alert('Melanjutkan ke halaman Checkout!');
+  localStorage.setItem('cart', JSON.stringify(cart));
+  window.location.href = "checkout.html";
+}
 
     function showLiveReview() {
       const container = document.getElementById('live-review-container');
@@ -394,7 +282,11 @@
       }, 5000);
     }
 
-    showLiveReview();
+    // Render products dan inisialisasi UI keranjang saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+      showLiveReview();
+    });
   </script>
 </body>
 </html>
