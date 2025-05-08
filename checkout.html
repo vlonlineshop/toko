@@ -2,10 +2,88 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Checkout - VL Online Shop</title>
   <style>
-    /* [Semua style tetap seperti sebelumnya, tidak diubah] */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #333;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .checkout-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 1rem;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .payment-option {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      margin: 0.25rem;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .payment-option.selected {
+      border-color: green;
+      background-color: #e6ffe6;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      background: green;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: darkgreen;
+    }
+    .info-text {
+      font-size: 0.9rem;
+      color: #666;
+      margin: 0.5rem 0;
+    }
+    .warning {
+      color: red;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -14,7 +92,52 @@
   </header>
   <main>
     <div class="checkout-container">
-      <!-- Alamat dan Keranjang Tetap Sama -->
+      <h2>Alamat Pengiriman</h2>
+      <div id="address-display" style="margin-bottom:1rem; display:none;"></div>
+      <button onclick="toggleAddressForm()">Ubah Alamat</button>
+      <div id="address-form">
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" id="full-name" />
+        </div>
+        <div class="form-group">
+          <label>No. HP</label>
+          <input type="text" id="phone-number" />
+        </div>
+        <div class="form-group">
+          <label>Alamat Lengkap</label>
+          <textarea id="full-address"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Catatan Kurir</label>
+          <input type="text" id="courier-note" placeholder="Contoh: depan gang, rumah hijau" />
+        </div>
+        <button class="btn" onclick="saveAddress()">Simpan Alamat</button>
+      </div>
+
+      <h2>Keranjang Belanja</h2>
+      <div id="cart-items"></div>
+
+      <h2>Voucher</h2>
+      <input type="text" id="voucher-code" placeholder="Kode voucher" />
+      <button onclick="applyVoucher()">Terapkan</button>
+
+      <h2>Metode Pembayaran</h2>
+      <div>
+        <div class="payment-option" onclick="selectPayment('bca', this)">Transfer BCA</div>
+        <div class="payment-option" onclick="selectPayment('ewallet', this)">E-Wallet</div>
+        <div class="payment-option" onclick="selectPayment('qris', this)">QRIS</div>
+        <div class="payment-option" onclick="selectPayment('cod', this)">COD</div>
+      </div>
+
+      <h2>Ringkasan</h2>
+      <div class="info-text" id="shipping-info">Ongkir: -</div>
+      <div class="info-text" id="admin-fee-info">Biaya Admin: -</div>
+      <div class="info-text" id="cod-fee-info"></div>
+      <div class="info-text" id="discount-info" style="display:none;"></div>
+      <h3 id="total-price">Total: Rp 0</h3>
+      <div class="warning" id="payment-warning" style="display:none;">COD tidak berlaku untuk produk digital</div>
+      <button class="btn" id="checkout-button">Checkout via WhatsApp</button>
     </div>
   </main>
 
@@ -123,7 +246,6 @@
       form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
 
-    document.getElementById('apply-voucher-btn').addEventListener('click', applyVoucher);
     document.getElementById('checkout-button').addEventListener('click', () => {
       if (!selectedPaymentMethod) return alert('Pilih metode pembayaran!');
       const address = localStorage.getItem('address');
