@@ -45,6 +45,7 @@
     .badge { position: absolute; font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 10; }
     .badge.discount { top: 8px; left: 8px; background: red; color: white; }
     .badge.best { top: 8px; right: 8px; background: gold; color: black; }
+    .badge.delivery { bottom: 8px; right: 8px; background: #007bff; color: white; }
     .floating-cart { position: fixed; bottom: 30px; right: 30px; background-color: #28a745; color: white; font-size: 1.2rem; border-radius: 50%; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); z-index: 1000; }
     .sold-info { font-size: 0.8rem; color: #666; margin: 0.3rem 0; }
     .stars { color: #f5c518; font-size: 0.9rem; }
@@ -68,11 +69,12 @@
       discount: 10,
       bestSeller: true,
       available: true,
-      category: 'fashion',
+      category: 'delivery',
       colors: ['Merah', 'Hitam'],
       checkoutUrl: 'https://example.com/checkout/martabak',
       sold: 124,
-      rating: 5
+      rating: 5,
+      delivery: true
     },
     {
       id: 2,
@@ -93,7 +95,8 @@
       checkoutUrl: 'https://example.com/checkout/canva-pro',
       warrantyExtra: 10000,
       sold: 87,
-      rating: 4
+      rating: 4,
+      delivery: false
     }
   ];
 
