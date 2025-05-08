@@ -1,213 +1,213 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout - VL Online Shop</title>
-  <style>
-    /* Styling halaman di sini */
-    * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; margin: 0; }
-    header { background: linear-gradient(to right, #003366, #0059b3); color: white; padding: 1rem 1.5rem; text-align: center; }
-    main { padding: 1rem; max-width: 1200px; margin: auto; }
-    .checkout-container { display: flex; flex-direction: column; gap: 1rem; }
-    .address-container, .checkout-box { background-color: #ffffff; padding: 1rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-    .address-header { display: flex; justify-content: space-between; align-items: center; }
-    .add-address-btn { background-color: #0059b3; color: white; padding: 0.4rem 0.8rem; border: none; border-radius: 5px; cursor: pointer; }
-    .address-form { margin-top: 1rem; display: none; }
-    .address-form input, .address-form textarea { width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; border: 1px solid #ccc; border-radius: 5px; }
-    .address-display { margin-top: 0.5rem; background-color: #f1f1f1; padding: 0.8rem; border-radius: 5px; }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: white; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
-    .cart-item button { background: #eee; border: 1px solid #ccc; padding: 4px 8px; cursor: pointer; border-radius: 4px; }
-    .voucher-section { margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
-    .voucher-section input { padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc; width: 60%; }
-    .voucher-section button { padding: 0.6rem; background-color: #0059b3; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    .payment-option { background-color: #f1f1f1; padding: 1rem; margin-bottom: 0.5rem; border-radius: 5px; cursor: pointer; }
-    .payment-option:hover, .payment-option.selected { background-color: #dbe9ff; border-left: 5px solid #0059b3; }
-    .total-section { margin-top: 1rem; padding: 1rem; background: white; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-    .total-section p { margin: 0.5rem 0; }
-    .total-section .total-price { font-size: 1.8rem; font-weight: bold; color: #0059b3; font-family: 'Courier New', Courier, monospace; }
-    .checkout-button { background-color: #28a745; color: white; padding: 0.8rem; font-size: 1.1rem; width: 100%; border: none; border-radius: 5px; cursor: pointer; margin-top: 1rem; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - VL Online Shop</title>
+  <style>
+    /* Styling halaman di sini */
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; margin: 0; }
+    header { background: linear-gradient(to right, #003366, #0059b3); color: white; padding: 1rem 1.5rem; text-align: center; }
+    main { padding: 1rem; max-width: 1200px; margin: auto; }
+    .checkout-container { display: flex; flex-direction: column; gap: 1rem; }
+    .address-container, .checkout-box { background-color: #ffffff; padding: 1rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .address-header { display: flex; justify-content: space-between; align-items: center; }
+    .add-address-btn { background-color: #0059b3; color: white; padding: 0.4rem 0.8rem; border: none; border-radius: 5px; cursor: pointer; }
+    .address-form { margin-top: 1rem; display: none; }
+    .address-form input, .address-form textarea { width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; border: 1px solid #ccc; border-radius: 5px; }
+    .address-display { margin-top: 0.5rem; background-color: #f1f1f1; padding: 0.8rem; border-radius: 5px; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: white; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+    .cart-item button { background: #eee; border: 1px solid #ccc; padding: 4px 8px; cursor: pointer; border-radius: 4px; }
+    .voucher-section { margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .voucher-section input { padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc; width: 60%; }
+    .voucher-section button { padding: 0.6rem; background-color: #0059b3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .payment-option { background-color: #f1f1f1; padding: 1rem; margin-bottom: 0.5rem; border-radius: 5px; cursor: pointer; }
+    .payment-option:hover, .payment-option.selected { background-color: #dbe9ff; border-left: 5px solid #0059b3; }
+    .total-section { margin-top: 1rem; padding: 1rem; background: white; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+    .total-section p { margin: 0.5rem 0; }
+    .total-section .total-price { font-size: 1.8rem; font-weight: bold; color: #0059b3; font-family: 'Courier New', Courier, monospace; }
+    .checkout-button { background-color: #28a745; color: white; padding: 0.8rem; font-size: 1.1rem; width: 100%; border: none; border-radius: 5px; cursor: pointer; margin-top: 1rem; }
+  </style>
 </head>
 <body>
-  <header><h1>Checkout - VL Online Shop</h1></header>
-  <main>
-    <div class="checkout-container">
-      <div class="address-container">
-        <div class="address-header">
-          <h3>Alamat Pengiriman</h3>
-          <button class="add-address-btn" onclick="toggleAddressForm()">Tambah Alamat</button>
-        </div>
-        <div id="address-display" class="address-display" style="display:none;"></div>
-        <div id="address-form" class="address-form">
-          <input type="text" id="full-name" placeholder="Nama Lengkap" />
-          <input type="text" id="phone-number" placeholder="Nomor HP" />
-          <input type="text" id="full-address" placeholder="Alamat Lengkap" />
-          <textarea id="courier-note" placeholder="Catatan untuk kurir (opsional)" rows="3"></textarea>
-          <button class="add-address-btn" onclick="saveAddress()">Simpan Alamat</button>
-        </div>
-      </div>
-      <div class="checkout-box">
-        <h2>Keranjang Anda</h2>
-        <div id="cart-items"></div>
-        <div class="voucher-section">
-          <input type="text" id="voucher-code" placeholder="Masukkan kode voucher..." />
-          <button id="apply-voucher-btn">Terapkan Voucher</button>
-        </div>
-        <div class="payment-section">
-          <h3>Pilih Metode Pembayaran</h3>
-          <div class="payment-option" onclick="selectPayment('bca', this)">Transfer Bank (BCA/SeaBank)</div>
-          <div class="payment-option" onclick="selectPayment('qris', this)">QRIS</div>
-          <div class="payment-option" onclick="selectPayment('ewallet', this)">E-Wallet</div>
-          <div class="payment-option" onclick="selectPayment('cod', this)">Cash On Delivery (COD)</div>
-          <p id="payment-warning" style="color:red; display:none; font-weight:bold;">COD tidak tersedia untuk produk digital!</p>
-        </div>
-        <div class="total-section">
-          <p class="total-price" id="total-price">Rp 0</p>
-          <p id="discount-info" style="color: green; display: none;">Diskon: Rp 0</p>
-          <p id="shipping-info">Ongkir: Rp 0</p>
-          <p id="admin-fee-info">Biaya Admin: Rp 0</p>
-          <p id="cod-fee-info">Biaya COD: Rp 0</p>
-        </div>
-        <button id="checkout-button" class="checkout-button" disabled>Checkout</button>
-      </div>
-    </div>
-  </main>
-  <script>
-    const cart = JSON.parse(localStorage.getItem('cart')) || {};
-    let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
-    let selectedPaymentMethod = null;
+  <header><h1>Checkout - VL Online Shop</h1></header>
+  <main>
+    <div class="checkout-container">
+      <div class="address-container">
+        <div class="address-header">
+          <h3>Alamat Pengiriman</h3>
+          <button class="add-address-btn" onclick="toggleAddressForm()">Tambah Alamat</button>
+        </div>
+        <div id="address-display" class="address-display" style="display:none;"></div>
+        <div id="address-form" class="address-form">
+          <input type="text" id="full-name" placeholder="Nama Lengkap" />
+          <input type="text" id="phone-number" placeholder="Nomor HP" />
+          <input type="text" id="full-address" placeholder="Alamat Lengkap" />
+          <textarea id="courier-note" placeholder="Catatan untuk kurir (opsional)" rows="3"></textarea>
+          <button class="add-address-btn" onclick="saveAddress()">Simpan Alamat</button>
+        </div>
+      </div>
+      <div class="checkout-box">
+        <h2>Keranjang Anda</h2>
+        <div id="cart-items"></div>
+        <div class="voucher-section">
+          <input type="text" id="voucher-code" placeholder="Masukkan kode voucher..." />
+          <button id="apply-voucher-btn">Terapkan Voucher</button>
+        </div>
+        <div class="payment-section">
+          <h3>Pilih Metode Pembayaran</h3>
+          <div class="payment-option" onclick="selectPayment('bca', this)">Transfer Bank (BCA/SeaBank)</div>
+          <div class="payment-option" onclick="selectPayment('qris', this)">QRIS</div>
+          <div class="payment-option" onclick="selectPayment('ewallet', this)">E-Wallet</div>
+          <div class="payment-option" onclick="selectPayment('cod', this)">Cash On Delivery (COD)</div>
+          <p id="payment-warning" style="color:red; display:none; font-weight:bold;">COD tidak tersedia untuk produk digital!</p>
+        </div>
+        <div class="total-section">
+          <p class="total-price" id="total-price">Rp 0</p>
+          <p id="discount-info" style="color: green; display: none;">Diskon: Rp 0</p>
+          <p id="shipping-info">Ongkir: Rp 0</p>
+          <p id="admin-fee-info">Biaya Admin: Rp 0</p>
+          <p id="cod-fee-info">Biaya COD: Rp 0</p>
+        </div>
+        <button id="checkout-button" class="checkout-button" disabled>Checkout</button>
+      </div>
+    </div>
+  </main>
+  <script>
+    const cart = JSON.parse(localStorage.getItem('cart')) || {};
+    let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
+    let selectedPaymentMethod = null;
 
-    function renderCartItems() {
-      const container = document.getElementById('cart-items');
-      container.innerHTML = '';
-      for (let id in cart) {
-        const p = cart[id];
-        container.innerHTML += `
-          <div class="cart-item">
-            <p>${p.name} ${p.variant ? `(${p.variant})` : ''} ${p.color ? `- Warna: ${p.color}` : ''} x ${p.quantity}</p>
-            <div>
-              <button onclick="updateQuantity('${id}', -1)">−</button>
-              <span style="margin: 0 8px;">${p.quantity}</span>
-              <button onclick="updateQuantity('${id}', 1)">+</button>
-            </div>
-            <p>Rp ${(p.price * p.quantity).toLocaleString()}</p>
-          </div>
-        `;
-      }
-      calculateTotal();
-    }
+    function renderCartItems() {
+      const container = document.getElementById('cart-items');
+      container.innerHTML = '';
+      for (let id in cart) {
+        const p = cart[id];
+        container.innerHTML += `
+          <div class="cart-item">
+            <p>${p.name} ${p.variant ? `(${p.variant})` : ''} ${p.color ? `- Warna: ${p.color}` : ''} x ${p.quantity}</p>
+            <div>
+              <button onclick="updateQuantity('${id}', -1)">−</button>
+              <span style="margin: 0 8px;">${p.quantity}</span>
+              <button onclick="updateQuantity('${id}', 1)">+</button>
+            </div>
+            <p>Rp ${(p.price * p.quantity).toLocaleString()}</p>
+          </div>
+        `;
+      }
+      calculateTotal();
+    }
 
-    function updateQuantity(productId, delta) {
-      if (!cart[productId]) return;
-      cart[productId].quantity += delta;
-      if (cart[productId].quantity <= 0) {
-        delete cart[productId];
-      }
-      localStorage.setItem('cart', JSON.stringify(cart));
-      renderCartItems();
-    }
+    function updateQuantity(productId, delta) {
+      if (!cart[productId]) return;
+      cart[productId].quantity += delta;
+      if (cart[productId].quantity <= 0) {
+        delete cart[productId];
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCartItems();
+    }
 
-    function calculateTotal() {
-      total = 0;
-      let hasDigital = false;
-      for (let id in cart) {
-        const item = cart[id];
-        total += item.price * item.quantity;
-        if (item.category === 'digital') hasDigital = true;
-      }
-      codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
-      adminFee = ['bca', 'qris', 'ewallet'].includes(selectedPaymentMethod) ? 2500 : 0;
-      document.getElementById('checkout-button').disabled = total === 0;
-      updateTotalPrice();
-    }
+    function calculateTotal() {
+      total = 0;
+      let hasDigital = false;
+      for (let id in cart) {
+        const item = cart[id];
+        total += item.price * item.quantity;
+        if (item.category === 'digital') hasDigital = true;
+      }
+      codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
+      adminFee = ['bca', 'qris', 'ewallet'].includes(selectedPaymentMethod) ? 2500 : 0;
+      document.getElementById('checkout-button').disabled = total === 0;
+      updateTotalPrice();
+    }
 
-    function updateTotalPrice() {
-      let final = total + shippingCost + adminFee + codFee - discount;
-      document.getElementById('total-price').textContent = `Rp ${final.toLocaleString()}`;
-      document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingCost.toLocaleString()}`;
-      document.getElementById('admin-fee-info').textContent = `Biaya Admin: Rp ${adminFee.toLocaleString()}`;
-      document.getElementById('cod-fee-info').textContent = selectedPaymentMethod === 'cod' ? `Biaya COD: Rp ${codFee.toLocaleString()}` : '';
-      document.getElementById('discount-info').style.display = discount ? 'block' : 'none';
-      document.getElementById('discount-info').textContent = `Diskon: Rp ${discount.toLocaleString()}`;
-    }
+    function updateTotalPrice() {
+      let final = total + shippingCost + adminFee + codFee - discount;
+      document.getElementById('total-price').textContent = `Rp ${final.toLocaleString()}`;
+      document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingCost.toLocaleString()}`;
+      document.getElementById('admin-fee-info').textContent = `Biaya Admin: Rp ${adminFee.toLocaleString()}`;
+      document.getElementById('cod-fee-info').textContent = selectedPaymentMethod === 'cod' ? `Biaya COD: Rp ${codFee.toLocaleString()}` : '';
+      document.getElementById('discount-info').style.display = discount ? 'block' : 'none';
+      document.getElementById('discount-info').textContent = `Diskon: Rp ${discount.toLocaleString()}`;
+    }
 
-    function selectPayment(method, element) {
-      selectedPaymentMethod = method;
-      document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
-      element.classList.add('selected');
-      calculateTotal();
-    }
+    function selectPayment(method, element) {
+      selectedPaymentMethod = method;
+      document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+      element.classList.add('selected');
+      calculateTotal();
+    }
 
-    function toggleAddressForm() {
-      const form = document.getElementById('address-form');
-      form.style.display = form.style.display === 'none' ? 'block' : 'none';
-    }
+    function toggleAddressForm() {
+      const form = document.getElementById('address-form');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
 
-    function saveAddress() {
-      const name = document.getElementById('full-name').value;
-      const phone = document.getElementById('phone-number').value;
-      const addr = document.getElementById('full-address').value;
-      const note = document.getElementById('courier-note').value;
-      if (name && phone && addr) {
-        const fullAddr = `${name}, ${phone}, ${addr}`;
-        document.getElementById('address-display').textContent = fullAddr;
-        document.getElementById('address-display').style.display = 'block';
-        document.getElementById('address-form').style.display = 'none';
-        localStorage.setItem('address', fullAddr);
-        localStorage.setItem('courierNote', note);
-        shippingCost = calculateShipping();
-        calculateTotal();
-      } else {
-        alert('Harap isi semua informasi alamat');
-      }
-    }
+    function saveAddress() {
+      const name = document.getElementById('full-name').value;
+      const phone = document.getElementById('phone-number').value;
+      const addr = document.getElementById('full-address').value;
+      const note = document.getElementById('courier-note').value;
+      if (name && phone && addr) {
+        const fullAddr = `${name}, ${phone}, ${addr}`;
+        document.getElementById('address-display').textContent = fullAddr;
+        document.getElementById('address-display').style.display = 'block';
+        document.getElementById('address-form').style.display = 'none';
+        localStorage.setItem('address', fullAddr);
+        localStorage.setItem('courierNote', note);
+        shippingCost = calculateShipping();
+        calculateTotal();
+      } else {
+        alert('Harap isi semua informasi alamat');
+      }
+    }
 
-    function calculateShipping() {
-      const address = localStorage.getItem('address');
-      return address ? Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000) : 0;
-    }
+    function calculateShipping() {
+      const address = localStorage.getItem('address');
+      return address ? Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000) : 0;
+    }
 
-    document.getElementById('checkout-button').addEventListener('click', () => {
-      const address = localStorage.getItem('address') || '-';
-      const note = localStorage.getItem('courierNote') || '-';
-      let message = '*📦 Checkout Order - VL Online Shop*%0A';
-      message += '━━━━━━━━━━━━━━━━━━━%0A';
-      message += '*🛒 Daftar Produk:*%0A';
-      for (let id in cart) {
-        const item = cart[id];
-        message += `• ${item.name} ${item.variant ? '(' + item.variant + ')' : ''} ${item.color ? '- Warna: ' + item.color : ''} x ${item.quantity} = Rp ${(item.price * item.quantity).toLocaleString()}%0A`;
-      }
-      message += '━━━━━━━━━━━━━━━━━━━%0A';
-      message += `*💳 Metode Pembayaran:* ${getPaymentLabel(selectedPaymentMethod)}%0A`;
-      message += `*💰 Biaya Admin:* Rp ${adminFee.toLocaleString()}%0A`;
-      if (selectedPaymentMethod === 'cod') {
-        message += `*📦 Biaya COD:* Rp ${codFee.toLocaleString()}%0A`;
-      }
-      message += `*🚚 Ongkir:* Rp ${shippingCost.toLocaleString()}%0A`;
-      if (discount) message += `*🎁 Diskon:* Rp ${discount.toLocaleString()}%0A`;
-      const final = total + shippingCost + adminFee + codFee - discount;
-      message += `*💵 Total Bayar:* Rp ${final.toLocaleString()}%0A`;
-      message += '━━━━━━━━━━━━━━━━━━━%0A';
-      message += `*🏠 Alamat Pengiriman:*%0A${address}%0A%0A`;
-      message += `📬 *Catatan untuk Kurir:*%0A${note}%0A`;
-      const phone = '6285709458101';
-      const waURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-      window.open(waURL, '_blank');
-    });
+    document.getElementById('checkout-button').addEventListener('click', () => {
+      const address = localStorage.getItem('address') || '-';
+      const note = localStorage.getItem('courierNote') || '-';
+      let message = '*📦 Checkout Order - VL Online Shop*';
+      message += '━━━━━━━━━━━━━━━━━━━%';
+      message += '*🛒 Daftar Produk:*';
+      for (let id in cart) {
+        const item = cart[id];
+        message += `• ${item.name} ${item.variant ? '(' + item.variant + ')' : ''} ${item.color ? '- Kategori: ' + item.color : ''} x ${item.quantity} = Rp ${(item.price * item.quantity).toLocaleString()}`;
+      }
+      message += '━━━━━━━━━━━━━━━━━━━';
+      message += `*💳 Metode Pembayaran:* ${getPaymentLabel(selectedPaymentMethod)}`;
+      message += `*💰 Biaya Admin:* Rp ${adminFee.toLocaleString()}`;
+      if (selectedPaymentMethod === 'cod') {
+        message += `*📦 Biaya COD:* Rp ${codFee.toLocaleString()}%`;
+      }
+      message += `*🚚 Ongkir:* Rp ${shippingCost.toLocaleString()}%`;
+      if (discount) message += `*🎁 Diskon:* Rp ${discount.toLocaleString()}`;
+      const final = total + shippingCost + adminFee + codFee - discount;
+      message += `*💵 Total Bayar:* Rp ${final.toLocaleString()}`;
+      message += '━━━━━━━━━━━━━━━━━━━%';
+      message += `*🏠 Alamat Pengiriman:*${address}`;
+      message += `📬 *Catatan untuk Kurir:*%0A${note}%0A`;
+      const phone = '6285709458101';
+      const waURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      window.open(waURL, '_blank');
+    });
 
-    function getPaymentLabel(method) {
-      switch (method) {
-        case 'bca': return 'Transfer Bank (BCA/SeaBank)';
-        case 'qris': return 'QRIS';
-        case 'ewallet': return 'E-Wallet';
-        case 'cod': return 'Cash On Delivery (COD)';
-        default: return '-';
-      }
-    }
+    function getPaymentLabel(method) {
+      switch (method) {
+        case 'bca': return 'Transfer Bank (BCA/SeaBank)';
+        case 'qris': return 'QRIS';
+        case 'ewallet': return 'E-Wallet';
+        case 'cod': return 'Cash On Delivery (COD)';
+        default: return '-';
+      }
+    }
 
-    renderCartItems();
-  </script>
+    renderCartItems();
+  </script>
 </body>
 </html>
