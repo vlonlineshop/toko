@@ -191,6 +191,7 @@
     setInterval(() => { if (Math.random() > 0.4) showLiveReview(); }, 10000);
 
     function renderProducts() {
+      console.log("Rendering products...");  // Debugging
       const container = document.getElementById('product-list');
       const filter = document.getElementById('categoryFilter').value.toLowerCase();
       const search = document.getElementById('searchInput').value.toLowerCase();
@@ -243,52 +244,58 @@
       const el = document.getElementById(`price-${id}`);
       el.innerHTML = `${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
     }
-    function addToCart(id) {
-      const p = products.find(p => p.id === id);
-      const variant = document.getElementById(`variant-${id}`).value;
-      const color = document.getElementById(`color-${id}`).value;
-      let price = p.variantPrices[variant];
-      if (color === 'Full Garansi') price += 10000;
-      const discountPrice = price - (price * p.discount / 100);
 
-      const cartItem = {
-        id: p.id,
-        name: p.name,
-        variant: variant,
-        color: color,
-        price: discountPrice,
-        image: p.image
-      };
+    function addToCart(id) {
+      console.log(`Adding product ${id} to cart...`); // Debugging
+      const product = products.find(p => p.id === id);
+      if (!product) return;
 
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
-      cart.push(cartItem);
-      localStorage.setItem('cart', JSON.stringify(cart));
 
-      alert('Produk ditambahkan ke keranjang!');
+      const variant = document.getElementById(`variant-${id}`).value;
+      const color = document.getElementById(`color-${id}`).value;
+      const productIndex = cart.findIndex(item => item.id === id && item.variant === variant && item.color === color);
+
+      if (productIndex !== -1) {
+        cart[productIndex].quantity += 1;
+      } else {
+        cart.push({
+          ...product,
+          variant,
+          color,
+          quantity: 1
+        });
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart));
       updateCartPopup();
+      alert('Produk ditambahkan ke keranjang!');
     }
 
     function updateCartPopup() {
-      const cartItems = document.getElementById('cart-items');
-      const checkoutButton = document.getElementById('checkout-button');
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-      cartItems.innerHTML = '';
-      cart.forEach((item, index) => {
+      const cartItemsContainer = document.getElementById('cart-items');
+      cartItemsContainer.innerHTML = '';
+      cart.forEach(product => {
         const li = document.createElement('li');
-        li.innerHTML = `
-          <strong>${item.name}</strong><br>
-          Varian: ${item.variant}, Warna: ${item.color}<br>
-          <span>Rp${item.price.toLocaleString()}</span>
-        `;
-        cartItems.appendChild(li);
+        const price = product.variantPrices[product.variant] - (product.variantPrices[product.variant] * product.discount / 100);
+        li.innerHTML = `${product.name} (${product.variant} / ${product.color}) x ${product.quantity} - Rp${price.toLocaleString()}`;
+        cartItemsContainer.appendChild(li);
       });
-
-      checkoutButton.disabled = cart.length === 0;
+      document.getElementById('checkout-button').disabled = cart.length === 0;
     }
 
-    renderProducts();
+    function toggleCartPopup() {
+      const cartPopup = document.getElementById('cart-popup');
+      cartPopup.style.display = cartPopup.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function handleCheckout() {
+      window.location.href = 'checkout.html';
+    }
+
     updateCartPopup();
+    renderProducts();
   </script>
 </body>
 </html>
