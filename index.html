@@ -183,10 +183,31 @@
 
   <script>
     const products = [
-      // (Product data remains the same)
+      {
+        id: 1,
+        name: 'Martabak',
+        description: 'Martabak Saya Suka.',
+        variants: ['Telur Spesial', 'Manis Kacang'],
+        variantPrices: { 'Telur Spesial': 40000, 'Manis Kacang': 35000 },
+        image: 'https://via.placeholder.com/200x150?text=Martabak',
+        discount: 10, bestSeller: true, delivery: true,
+        sold: 123, rating: 4.7, available: true,
+        category: 'makanan', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
+      },
+      {
+        id: 2,
+        name: 'Canva Pro',
+        description: 'Langganan Editing Online.',
+        variants: ['1 Bulan', '1 Tahun'],
+        variantPrices: { '1 Bulan': 40000, '1 Tahun': 120000 },
+        image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
+        discount: 5, bestSeller: false, delivery: false,
+        sold: 58, rating: 4.5, available: true,
+        category: 'fashion', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
+      }
     ];
 
-    let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
+    let cart = [];
 
     function renderProducts() {
       const container = document.getElementById('product-list');
@@ -230,8 +251,7 @@
               <button onclick="addToCart(${p.id})">Tambah</button>
               <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
             </div>
-          </div>
-        `;
+          </div>`;
       });
     }
 
@@ -243,10 +263,7 @@
       if (c === 'Full Garansi') price += 10000;
       const discountPrice = price - (price * p.discount / 100);
       const el = document.getElementById(`price-${id}`);
-      el.innerHTML = `
-        ${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}
-        <span class="price">Rp${discountPrice.toLocaleString()}</span>
-      `;
+      el.innerHTML = `${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
     }
 
     function addToCart(id) {
@@ -279,24 +296,10 @@
       }
       cart.forEach(item => {
         const li = document.createElement('li');
-        li.innerHTML = `
-          <strong>${item.name}</strong><br>
-          Varian: ${item.variant}, Warna: ${item.color}<br>
-          Qty: ${item.quantity} | Rp${(item.price * item.quantity).toLocaleString()}
-          <button onclick="removeFromCart(${item.id}, '${item.variant}', '${item.color}')">Hapus</button>
-        `;
+        li.innerHTML = `<strong>${item.name}</strong><br>Varian: ${item.variant}, Warna: ${item.color}<br>Qty: ${item.quantity} | Rp${(item.price * item.quantity).toLocaleString()}`;
         list.appendChild(li);
       });
       checkoutBtn.disabled = false;
-      localStorage.setItem('cartItems', JSON.stringify(cart));
-    }
-
-    function removeFromCart(id, variant, color) {
-      const index = cart.findIndex(i => i.id === id && i.variant === variant && i.color === color);
-      if (index > -1) {
-        cart.splice(index, 1);
-      }
-      updateCartUI();
     }
 
     function toggleCartPopup() {
@@ -311,23 +314,33 @@
 
     const names = ["Aldi", "Rina", "Teguh", "Sari", "Dika", "Lina", "Fajar", "Nina"];
     const emojis = ["😊", "😁", "👍", "🔥", "😍", "👏", "💯", "🎉"];
-function generateRandomReview() {
-const name = names[Math.floor(Math.random() * names.length)];
-const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-return ${name} ${emoji};
-}
-function showRandomReview() {
-  const review = generateRandomReview();
-  const container = document.getElementById('live-review-container');
-  const p = document.createElement('p');
-  p.innerText = `Live Review: ${review}`;
-  container.appendChild(p);
-  setTimeout(() => container.removeChild(p), 4000); // Remove after 4 seconds
-}
+    const comments = [
+      "Kualitas mantap!", "Pelayanan cepat & memuaskan!", "Rekomendasi banget 👍",
+      "Harga terjangkau, produk oke!", "Puas banget belanja di sini 😍",
+      "Produk sesuai deskripsi 💯", "Pengiriman cepat dan aman ✨",
+      "Suka banget sama produknya!", "Repeat order pasti 🔁", "Terbaik pokoknya!"
+    ];
 
-setInterval(showRandomReview, 5000);
-renderProducts();
-</script> 
-</body> 
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function showLiveReview() {
+      const highRated = products.filter(p => p.rating > 4.2);
+      if (highRated.length === 0) return;
+      const p = getRandomItem(highRated);
+      const review = document.createElement('div');
+      review.className = 'live-reviews';
+      review.innerHTML = `<strong>${getRandomItem(names)}</strong> membeli <strong>${p.name}</strong><br>
+        Rating: ⭐ ${(4 + Math.random()).toFixed(1)} ${getRandomItem(emojis)}<br>
+        <em>"${getRandomItem(comments)}"</em>`;
+      document.getElementById('live-review-container').appendChild(review);
+      setTimeout(() => review.remove(), 6000);
+    }
+
+    setInterval(() => { if (Math.random() > 0.4) showLiveReview(); }, 10000);
+
+    renderProducts();
+  </script>
+</body>
 </html>
-
