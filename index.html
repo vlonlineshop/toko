@@ -46,198 +46,60 @@
     .badge.discount { top: 8px; left: 8px; background: red; color: white; }
     .badge.best { top: 8px; right: 8px; background: gold; color: black; }
     .floating-cart { position: fixed; bottom: 30px; right: 30px; background-color: #28a745; color: white; font-size: 1.2rem; border-radius: 50%; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); z-index: 1000; }
+    .sold-info { font-size: 0.8rem; color: #666; margin: 0.3rem 0; }
+    .stars { color: #f5c518; font-size: 0.9rem; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>VL Online Shop</h1>
-    <div class="filter-search-wrapper">
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Cari produk...">
-        <button onclick="renderProducts()">Cari</button>
-      </div>
-      <div class="filter-box">
-        <label for="categoryFilter">Kategori:</label>
-        <select id="categoryFilter" onchange="renderProducts()">
-          <option value="all">Semua</option>
-          <option value="fashion">Fashion</option>
-          <option value="makanan">Makanan</option>
-          <option value="sembako">Sembako</option>
-          <option value="jajanan">Jajanan</option>
-          <option value="best">Best Seller</option>
-          <option value="discount">Diskon</option>
-          <option value="available">Tersedia</option>
-        </select>
-      </div>
-    </div>
-  </header>
-  <main>
-    <div class="products" id="product-list"></div>
-  </main>
-  <div class="keranjang-popup" id="cart-popup">
-    <h2>Keranjang</h2>
-    <ul id="cart-items"></ul>
-    <div class="checkout">
-      <button id="checkout-button" disabled>Checkout</button>
-    </div>
-  </div>
-  <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
-    <span>🛒</span>
-  </div>
-  <script>
-    const products = [
-      {
-        id: 1,
-        name: 'Martabak',
-        description: 'Martabak Saya Suka-Saya Suka.',
-        variants: ['Telur Spesial Rasa Sapi', 'Telur Sapi', 'Manis Kacang', 'Manis Kacang Wijen'],
-        variantPrices: {
-          'Telur Spesial Rasa Sapi': 40000,
-          'Telur Sapi': 39000,
-          'Manis Kacang': 35000,
-          'Manis Kacang Wijen': 37000,
-        },
-        image: 'https://via.placeholder.com/200x150?text=Produk+A',
-        discount: 10,
-        bestSeller: true,
-        available: true,
-        category: 'fashion',
-        colors: ['Merah', 'Hitam'],
-        checkoutUrl: 'https://example.com/checkout/martabak',
+<script>
+  const products = [
+    {
+      id: 1,
+      name: 'Martabak',
+      description: 'Martabak Saya Suka-Saya Suka.',
+      variants: ['Telur Spesial Rasa Sapi', 'Telur Sapi', 'Manis Kacang', 'Manis Kacang Wijen'],
+      variantPrices: {
+        'Telur Spesial Rasa Sapi': 40000,
+        'Telur Sapi': 39000,
+        'Manis Kacang': 35000,
+        'Manis Kacang Wijen': 37000,
       },
-      {
-        id: 2,
-        name: 'Canva Pro',
-        description: 'Editing.',
-        variants: ['1 Bulan', '1 Tahun', 'Lifetime'],
-        variantPrices: {
-          '1 Bulan': 40000,
-          '1 Tahun': 39000,
-          'Lifetime': 35000,
-        },
-        image: 'https://via.placeholder.com/200x150?text=Produk+A',
-        discount: 10,
-        bestSeller: true,
-        available: false,
-        category: 'fashion',
-        colors: ['No Garansi', 'Full Garansi'],
-        checkoutUrl: 'https://example.com/checkout/canva-pro',
+      image: 'https://via.placeholder.com/200x150?text=Produk+A',
+      discount: 10,
+      bestSeller: true,
+      available: true,
+      category: 'fashion',
+      colors: ['Merah', 'Hitam'],
+      checkoutUrl: 'https://example.com/checkout/martabak',
+      sold: 124,
+      rating: 5
+    },
+    {
+      id: 2,
+      name: 'Canva Pro',
+      description: 'Editing.',
+      variants: ['1 Bulan', '1 Tahun', 'Lifetime'],
+      variantPrices: {
+        '1 Bulan': 40000,
+        '1 Tahun': 39000,
+        'Lifetime': 35000,
       },
-    ];
-
-    let cart = JSON.parse(localStorage.getItem('cart')) || {};
-
-    function renderProducts() {
-      const container = document.getElementById('product-list');
-      const filter = document.getElementById('categoryFilter').value.toLowerCase();
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      container.innerHTML = '';
-      products.forEach(p => {
-        const discountPrice = p.variantPrices[p.variants[0]] - (p.variantPrices[p.variants[0]] * p.discount / 100);
-        if (filter !== 'all' && !['best', 'discount', 'available'].includes(filter) && p.category !== filter) return;
-        if (filter === 'best' && !p.bestSeller) return;
-        if (filter === 'discount' && p.discount === 0) return;
-        if (filter === 'available' && !p.available) return;
-        if (!p.name.toLowerCase().includes(search)) return;
-
-        container.innerHTML += `
-          <div class="product">
-            ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
-            ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
-            <img src="${p.image}" alt="${p.name}">
-            <h3>${p.name}</h3>
-            <p class="description">${p.description}</p>
-            <p id="price-${p.id}">${p.discount > 0 ? `<span class="original-price">Rp${p.variantPrices[p.variants[0]].toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span></p>
-            <div class="actions">
-              <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
-              </select>
-              <select id="color-${p.id}">
-                ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
-              </select>
-              <button onclick="addToCart(${p.id})">Tambah</button>
-              <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
-            </div>
-          </div>
-        `;
-      });
+      image: 'https://via.placeholder.com/200x150?text=Produk+A',
+      discount: 10,
+      bestSeller: true,
+      available: false,
+      category: 'fashion',
+      colors: ['No Garansi', 'Full Garansi'],
+      checkoutUrl: 'https://example.com/checkout/canva-pro',
+      warrantyExtra: 10000,
+      sold: 87,
+      rating: 4
     }
+  ];
 
-    function updatePrice(productId) {
-      const product = products.find(p => p.id === productId);
-      const variant = document.getElementById(`variant-${productId}`).value;
-
-      // Harga berdasarkan varian yang dipilih
-      const variantPrice = product.variantPrices[variant] || product.variantPrices[product.variants[0]];
-
-      const discountPrice = variantPrice - (variantPrice * product.discount / 100);
-      const priceElement = document.getElementById(`price-${productId}`);
-      priceElement.innerHTML = `${product.discount > 0 ? `<span class="original-price">Rp${variantPrice.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
-    }
-
-    function addToCart(productId) {
-      const product = products.find(p => p.id === productId);
-      const variant = document.getElementById(`variant-${productId}`).value;
-      const color = document.getElementById(`color-${productId}`).value;
-
-      // Hitung ulang harga sesuai variant
-      const variantPrice = product.variantPrices[variant] || product.variantPrices[product.variants[0]];
-      const price = variantPrice - (variantPrice * product.discount / 100);
-
-      const key = `${productId}-${variant}-${color}`;
-      if (cart[key]) {
-        cart[key].quantity += 1;
-      } else {
-        cart[key] = { ...product, variant, color, quantity: 1, price };
-      }
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCart();
-      document.getElementById('cart-popup').style.display = 'block';
-
-}
-
-function updateCart() {
-  const container = document.getElementById('cart-items');
-  container.innerHTML = '';
-  Object.entries(cart).forEach(([key, item]) => {
-    container.innerHTML += `
-      <li>
-        <span>${item.name} (${item.variant} - ${item.color}) x ${item.quantity} - Rp${(item.price * item.quantity).toLocaleString()}</span>
-        <div>
-          <button onclick="adjustQuantity('${key}', -1)">-</button>
-          <button onclick="adjustQuantity('${key}', 1)">+</button>
-          <button onclick="removeFromCart('${key}')">Hapus</button>
-        </div>
-      </li>
-    `;
-  });
-  document.getElementById('checkout-button').disabled = Object.keys(cart).length === 0;
-}
-
-function adjustQuantity(key, amount) {
-  if (cart[key]) {
-    cart[key].quantity += amount;
-    if (cart[key].quantity <= 0) {
-      delete cart[key];
-    }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCart();
+  function renderStars(rating) {
+    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
   }
-}
-
-function removeFromCart(key) {
-  delete cart[key];
-  localStorage.setItem('cart', JSON.stringify(cart));
-  updateCart();
-}
-
-function toggleCartPopup() {
-  const popup = document.getElementById('cart-popup');
-  popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
-}
-
-renderProducts();
-updateCart();
-</script> 
-    </body>
-    </html>
+</script>
+</body>
+</html>
