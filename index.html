@@ -328,21 +328,83 @@
     renderProducts();
     updateCart();
 
-    const reviewProfiles = [
-      '🧑‍💼 Alex', '👩‍🍳 Bunda Tika', '👨‍💻 RudiDev', '👩‍🎓 Nia', '🧔 Om Heri', '👩 Nana', '👨 Bayu', '👩‍🏫 Sarah', '👨‍🔧 Dika', '👨‍🍳 Mas Gibran'
+     const foodReviews = [
+      "Rasanya enak banget, bikin nagih! 🥳",
+      "Harganya pas di kantong! ⭐",
+      "Porsi yang pas, cocok buat makan siang!",
+      "Dikirim cepat, rasa tetap mantap!",
+      "Beneran Best Seller, udah sering beli!",
+      "Wah, suka banget nih!",
+      "Diskonnya oke banget, apalagi buat makanan enak kayak gini!",
+      "Delivery nya cepet, enak banget! 😋",
+      "Pengen lagi! Ulangi terus masakannya!"
     ];
 
-    const foodReviews = [
-      "Rasanya enak banget, bikin nagih!🥳", "Harganya pas di kantong! ⭐", "Porsi yang pas, cocok buat makan siang!", "Dikirim cepat, rasa tetap mantap!", "Beneran Best Seller, udah sering beli!", "Wah, suka banget nih!", "Diskonnya oke banget, apalagi buat makanan enak kayak gini!", "Delivery nya cepet, enak banget! 😋", "Pengen lagi! Ulangi terus masakannya!"
-];
-setInterval(() => {
-  const randomReview = Math.floor(Math.random() * foodReviews.length);
-  const randomProfile = Math.floor(Math.random() * reviewProfiles.length);
-  document.getElementById('live-review').innerHTML = `
-    <strong>${reviewProfiles[randomProfile]}</strong>: ${foodReviews[randomReview]}
-  `;
-  document.getElementById('live-review').style.display = 'block';
-}, 3000);
+    const fashionReviews = [
+      "Desainnya keren banget, stylish!",
+      "Kualitas bahannya sangat bagus, nyaman dipakai.",
+      "Warna dan ukurannya pas, cocok banget buat dipakai.",
+      "Paket cepat sampai dan sesuai dengan deskripsi.",
+      "Baju ini membuat penampilan lebih trendy!"
+    ];
+
+    const digitalReviews = [
+      "Sangat bermanfaat, jadi lebih mudah desainnya!",
+      "Langganan ini membantu saya meningkatkan kreativitas.",
+      "Harga sebanding dengan kualitas yang didapat.",
+      "Sangat cocok untuk pekerjaan desain saya!"
+    ];
+
+    const reviewProfiles = [
+      '🧑‍💼 Alex', '👩‍🍳 Bunda Tika', '👨‍💻 RudiDev', '👩‍🎓 Nia', '🧔 Om Heri', '👩 Nana', '👨 Bayu', '👩‍🏫 Sarah', '👨‍🔧 Dika', '👨‍🍳 Mas Gibran',
+      '👩 Aulia', '👨 Ahmad', '👩 Linda', '👨 Budi', '👩 Yani', '👨 Anton', '👩 Nia', '👨 Tono', '👩 Putri', '👨 Fahmi', '👩 Novi', '👨 Aldi', '👩 Indah',
+      '👨 Surya', '👩 Ira', '👨 Bayu', '👩 Irma', '👨 Ramli', '👩 Fani', '👨 Toni', '👩 Dewi', '👨 Riki', '👩 Sari', '👨 Ismail', '👩 Bella', '👨 Hendri',
+      '👩 Nabila', '👨 Zaki', '👩 Tantri', '👨 Bima', '👩 Tiara', '👨 Sigit', '👩 Nani', '👨 Jimmy', '👩 Dwi', '👨 Firman', '👩 Anggi', '👨 Satria', '👩 Fitri',
+      '👨 Indra', '👩 Reski', '👨 Yudi', '👩 Lilis', '👨 Wira', '👩 Saraswati', '👨 Nando', '👩 Santi', '👨 Gunawan', '👩 Yuliana', '👨 Adi', '👩 Ayu', '👨 Dedi',
+      '👩 Shella', '👨 Farhan', '👩 Eka', '👨 Rio', '👩 April', '👨 Julian', '👩 Rina', '👨 Reza', '👩 Tantri', '👨 Yoga', '👩 Lala', '👨 Dian', '👩 Angga',
+      '👨 Bayu', '👩 Rika', '👨 Anwar', '👩 Alia', '👨 Suryo', '👩 Najwa', '👨 Kevin', '👩 Dina', '👨 Rico', '👩 Erika'
+    ];
+
+    function getRandomReview(product) {
+      const randomProfile = Math.floor(Math.random() * reviewProfiles.length);
+      let reviewText = '';
+      const randomRating = product.rating;
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const currentTime = `${hours}:${minutes}:${seconds}`;
+
+      if (product.category === 'makanan') {
+        reviewText = foodReviews[Math.floor(Math.random() * foodReviews.length)];
+      } else if (product.category === 'pakaian') {
+        reviewText = fashionReviews[Math.floor(Math.random() * fashionReviews.length)];
+      } else if (product.category === 'digital') {
+        reviewText = digitalReviews[Math.floor(Math.random() * digitalReviews.length)];
+      }
+
+      return {
+        profile: reviewProfiles[randomProfile],
+        productName: product.name,
+        rating: randomRating,
+        reviewText: reviewText,
+        time: currentTime
+      };
+    }
+
+    function showLiveReview() {
+      const randomProduct = products[Math.floor(Math.random() * products.length)];
+      const review = getRandomReview(randomProduct);
+      document.getElementById('live-review').innerHTML = `
+        <strong>${review.profile}</strong> membeli <em>"${review.productName}"</em><br />
+        Rating: ${review.rating} ⭐<br />
+        ${review.reviewText}<br />
+        <small>Waktu: ${review.time}</small>
+      `;
+      document.getElementById('live-review').style.display = 'block';
+    }
+
+    setInterval(showLiveReview, 5000);  // Update review setiap 5 detik
 </script> 
 </body> 
 </html>
