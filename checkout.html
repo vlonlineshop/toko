@@ -222,11 +222,12 @@
 
     function calculateTotal() {
       total = 0;
-      let shippingCost = 0;
+      shippingCost = 0;
 
+      // Ambil alamat dari localStorage dan hitung ongkir berdasarkan alamat
       const address = localStorage.getItem('address');
       if (address) {
-        shippingCost = Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000);
+        shippingCost = calculateShipping(address);
       } else {
         shippingCost = 0;
       }
@@ -249,6 +250,12 @@
       }
 
       updateTotalPrice();
+    }
+
+    function calculateShipping(address) {
+      // Fungsi ini menghitung ongkir berdasarkan alamat yang disimpan
+      // Misalnya, mengacu pada jarak atau wilayah pengiriman
+      return Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000);
     }
 
     function updateTotalPrice() {
