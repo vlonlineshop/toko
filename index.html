@@ -5,67 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VL Online Shop</title>
   <style>
-    .filter-search-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  border-radius: 8px;
-  background: #fff;
-  margin-bottom: 1rem;
-  align-items: center;
-  justify-content: space-between;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-@media (max-width: 600px) {
-  .filter-search-wrapper {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-box, .filter-box {
-    width: 100%;
-  }
-}
-
-    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: #f5f7fa;
       color: #333;
     }
+
     header {
       position: sticky;
       top: 0;
       background: linear-gradient(to right, #003366, #0059b3);
       color: white;
-      padding: 0.8rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 1rem;
       z-index: 1000;
-      flex-wrap: wrap;
     }
+
     header h1 {
       margin: 0;
-      font-size: 1.2rem;
-      font-weight: 600;
+      font-size: 1.4rem;
+      font-weight: bold;
     }
+
+    .filter-search-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
     .search-box {
       display: flex;
       flex: 1;
       max-width: 400px;
-      margin-top: 0.5rem;
-      margin-left: auto;
     }
+
     .search-box input {
       flex: 1;
       padding: 0.6rem;
       border: none;
       border-radius: 5px 0 0 5px;
     }
+
     .search-box button {
       padding: 0.6rem 1rem;
       border: none;
@@ -74,24 +61,42 @@
       border-radius: 0 5px 5px 0;
       cursor: pointer;
     }
+
+    .filter-box select {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      color: #333;
+    }
+
+    @media (max-width: 600px) {
+      .filter-search-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box,
+      .filter-box {
+        width: 100%;
+      }
+
+      .search-box {
+        margin-bottom: 0.5rem;
+      }
+    }
+
     main {
       padding: 1rem;
       max-width: 1200px;
       margin: auto;
     }
-    .filter-box {
-      margin-bottom: 1rem;
-    }
-    .filter-box select {
-      padding: 0.5rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
+
     .products {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1.5rem;
     }
+
     .product {
       background: white;
       border-radius: 10px;
@@ -100,35 +105,42 @@
       border: 1px solid #ccc;
       position: relative;
     }
+
     .product img {
       width: 100%;
       height: 150px;
       object-fit: cover;
       border-radius: 10px;
     }
+
     .product h3 {
       margin: 0.5rem 0;
       color: #003366;
     }
+
     .product p.description {
       font-size: 0.9rem;
       color: #555;
       margin: 0.5rem 0;
     }
+
     .price {
       font-weight: bold;
       color: #0059b3;
     }
+
     .original-price {
       text-decoration: line-through;
       color: #888;
       font-size: 0.9rem;
     }
+
     .actions {
       display: flex;
       gap: 0.5rem;
       margin-top: 0.5rem;
     }
+
     .actions button,
     .actions a {
       flex: 1;
@@ -139,20 +151,25 @@
       text-decoration: none;
       color: white;
     }
+
     .actions button {
       background: #0059b3;
       border: none;
       cursor: pointer;
     }
+
     .actions button:hover {
       background: #003366;
     }
+
     .actions a {
       background: #28a745;
     }
+
     .actions a:hover {
       background: #1e7e34;
     }
+
     .keranjang-popup {
       position: fixed;
       top: 15%;
@@ -165,34 +182,41 @@
       z-index: 1000;
       display: none;
     }
+
     .keranjang-popup h2 {
       text-align: center;
       color: #003366;
     }
+
     .keranjang-popup ul {
       list-style: none;
       padding: 0;
       max-height: 300px;
       overflow-y: auto;
     }
+
     .keranjang-popup li {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 0.5rem;
     }
+
     .keranjang-popup li span {
       flex: 1;
     }
+
     .keranjang-popup li button {
       margin: 0 0.2rem;
       padding: 0.2rem 0.5rem;
       font-size: 0.8rem;
     }
+
     .keranjang-popup .checkout {
       margin-top: 1rem;
       text-align: center;
     }
+
     .keranjang-popup .checkout button {
       padding: 0.6rem 1.2rem;
       background: #28a745;
@@ -201,31 +225,36 @@
       border-radius: 5px;
       cursor: pointer;
     }
+
     .keranjang-popup .checkout button:disabled {
       background: #ccc;
       cursor: not-allowed;
     }
+
     .badge {
       position: absolute;
       font-size: 0.7rem;
       font-weight: bold;
       padding: 4px 8px;
       border-radius: 5px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
       z-index: 10;
     }
+
     .badge.discount {
       top: 8px;
       left: 8px;
       background: red;
       color: white;
     }
+
     .badge.best {
       top: 8px;
       right: 8px;
       background: gold;
       color: black;
     }
+
     .floating-cart {
       position: fixed;
       bottom: 30px;
@@ -246,30 +275,30 @@
   </style>
 </head>
 <body>
- <header>
-  <h1>VL Online Shop</h1>
-</header>
-<main>
-  <div class="filter-search-wrapper">
-    <div class="search-box">
-      <input type="text" placeholder="Cari produk...">
-      <button>Cari</button>
+  <header>
+    <h1>VL Online Shop</h1>
+    <div class="filter-search-wrapper">
+      <div class="search-box">
+        <input type="text" placeholder="Cari produk...">
+        <button>Cari</button>
+      </div>
+      <div class="filter-box">
+        <label for="categoryFilter">Filter Kategori: </label>
+        <select id="categoryFilter" onchange="renderProducts()">
+          <option value="all">Semua</option>
+          <option value="fashion">Fashion</option>
+          <option value="makanan">Makanan</option>
+          <option value="sembako">Sembako</option>
+          <option value="jajanan">Jajanan</option>
+          <option value="best">Best Seller</option>
+          <option value="discount">Diskon</option>
+          <option value="available">Tersedia</option>
+        </select>
+      </div>
     </div>
-    <div class="filter-box">
-      <label for="categoryFilter">Filter Kategori: </label>
-      <select id="categoryFilter" onchange="renderProducts()">
-        <option value="all">Semua</option>
-        <option value="fashion">Fashion</option>
-        <option value="makanan">Makanan</option>
-        <option value="sembako">Sembako</option>
-        <option value="jajanan">Jajanan</option>
-        <option value="best">Best Seller</option>
-        <option value="discount">Diskon</option>
-        <option value="available">Tersedia</option>
-      </select>
-    </div>
-  </div>
+  </header>
 
+  <main>
     <div class="products" id="product-list"></div>
   </main>
 
@@ -347,15 +376,15 @@
       products.forEach(p => {
         const discountPrice = p.price - (p.price * p.discount / 100);
 
-        // Filter logic
         if (filter === 'best' && !p.bestSeller) return;
         if (filter === 'discount' && p.discount === 0) return;
         if (filter === 'available' && !p.available) return;
         if (!['all', 'best', 'discount', 'available'].includes(filter) && p.category.toLowerCase() !== filter) return;
 
-        let addButton = p.available ? <button onclick="addToCart(${p.id})">Tambah</button> : '';
-        let buyNowButton = p.checkoutUrl ? <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a> : '';
-        container.innerHTML += 
+        let addButton = p.available ? `<button onclick="addToCart(${p.id})">Tambah</button>` : '';
+        let buyNowButton = p.checkoutUrl ? `<a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>` : '';
+
+        container.innerHTML += `
           <div class="product">
             ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
             ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
@@ -363,7 +392,7 @@
             <h3>${p.name}</h3>
             <p class="description">${p.description}</p>
             <p>
-              ${p.discount > 0 ? <span class="original-price">Rp${p.price.toLocaleString()}</span><br> : ''}
+              ${p.discount > 0 ? `<span class="original-price">Rp${p.price.toLocaleString()}</span><br>` : ''}
               <span class="price">Rp${discountPrice.toLocaleString()}</span>
             </p>
             <div class="actions">
@@ -371,7 +400,7 @@
               ${buyNowButton}
             </div>
           </div>
-        ;
+        `;
       });
     }
 
@@ -395,14 +424,14 @@
       let hasItems = false;
       for (let id in cart) {
         hasItems = true;
-        cartItems.innerHTML += 
+        cartItems.innerHTML += `
           <li>
             <span>${cart[id].name} x${cart[id].quantity}</span>
             <button onclick="removeFromCart(${id})">Hapus</button>
             <button onclick="updateQuantity(${id}, 1)">+</button>
             <button onclick="updateQuantity(${id}, -1)">-</button>
           </li>
-        ;
+        `;
       }
       checkoutButton.disabled = !hasItems;
     }
