@@ -158,6 +158,7 @@
           <option value="best">Best Seller</option>
           <option value="discount">Diskon</option>
           <option value="available">Tersedia</option>
+          <option value="digital">Digital</option>
         </select>
       </div>
     </div>
@@ -188,7 +189,10 @@
         name: 'Martabak',
         description: 'Martabak Saya Suka.',
         variants: ['Telur Spesial', 'Manis Kacang'],
-        variantPrices: { 'Telur Spesial': 40000, 'Manis Kacang': 35000 },
+        variantPrices: { 
+          'Telur Spesial': 40000,
+          'Manis Kacang': 35000
+        },
         image: 'https://via.placeholder.com/200x150?text=Martabak',
         discount: 0, bestSeller: true, delivery: true,
         sold: 123, rating: 4.7, available: true,
@@ -199,7 +203,11 @@
         name: 'Canva Pro',
         description: 'Langganan Editing Online.',
         variants: ['1 Bulan', '1 Tahun'],
-        variantPrices: { '1 Bulan': 40000, '1 Tahun': 120000 },
+        variantPrices: { 
+          '1 Bulan': 5000,
+          '1 Tahun': 20000,
+          'Lifetime': 50000
+        },
         image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
         discount: 5, bestSeller: false, delivery: false,
         sold: 58, rating: 4.5, available: true,
@@ -210,11 +218,17 @@
         name: 'Sate Padang',
         description: 'Makanan Khas Padang.',
         variants: ['1 Porsi Sate + Lontong', '1 Porsi Sate','Sate Padang','Lontong'],
-        variantPrices: { '1 Porsi Sate + Lontong : 15000, '1 Porsi Sate: 120000, 'Sate Padang : 1300, }'
+        variantPrices: {
+        '1 Porsi Sate + Lontong': 15000,
+        '1 Porsi Sate': 12000,
+        'Sate Padang': 13000,
+        'Lontong': 5000
+},
+
         image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
         discount: 5, bestSeller: false, delivery: false,
         sold: 58, rating: 4.5, available: true,
-        category: 'digital', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
+        category: 'makanan', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
       },
     ];
 
@@ -283,7 +297,7 @@
       const variant = document.getElementById(`variant-${id}`).value;
       const color = document.getElementById(`color-${id}`).value;
       let price = p.variantPrices[variant];
-      if (color === 'Full Garansi') price += 10000;
+      if (c === 'Full Garansi') price += 10000;
        if (c === 'Spesial') price += 3000;
       const discounted = price - (price * p.discount / 100);
 
