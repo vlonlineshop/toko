@@ -160,12 +160,15 @@
   </style>
 </head>
 <body>
+   <!-- Popup promo -->
   <div id="popup" class="popup">
-  <div class="popup-content">
-    <span class="close-btn" onclick="closePopup()">&times;</span>
-    <h2>Selamat Datang!</h2>
-    <p>Dapatkan diskon 20% untuk pembelian pertama Anda!</p>
-    <button onclick="closePopup()">Tutup</button>
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup()">&times;</span>
+      <h2>Selamat Datang!</h2>
+      <p>Dapatkan diskon 20% untuk pembelian pertama Anda!</p>
+      <button onclick="closePopup()">Tutup</button>
+    </div>
+  </div>
   <header>
     <h1>VL Online Shop</h1>
     <div class="filter-search-wrapper">
@@ -206,18 +209,7 @@
   </div>
 <div class="live-review" id="live-review"></div>
    <script>
-  window.onload = function() {
-    setTimeout(function() {
-      document.getElementById('popup').style.display = 'block';
-    }, 1000); // tampil setelah 1 detik
-  };
-
-  function closePopup() {
-    document.getElementById('popup').style.display = 'none';
-  }
-
-
-    const products = [
+  const products = [
       
         {
    id: 1,
