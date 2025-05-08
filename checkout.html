@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -192,21 +194,35 @@
     let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
     let selectedPaymentMethod = null;
 
+    document.addEventListener('DOMContentLoaded', function() {
+      // Display saved address if available
+      const savedAddress = localStorage.getItem('address');
+      if (savedAddress) {
+        document.getElementById('address-display').textContent = savedAddress;
+        document.getElementById('address-display').style.display = 'block';
+      }
+      renderCartItems();
+    });
+
     function renderCartItems() {
       const container = document.getElementById('cart-items');
-      container.innerHTML = ''; // Kosongkan container sebelumnya
-      for (let id in cart) {
-        const p = cart[id];
-        container.innerHTML += `
-          <div class="cart-item">
-            <p>${p.name} ${p.variant ? `(${p.variant})` : ''} ${p.color ? `- Warna: ${p.color}` : ''} x ${p.quantity}</p>
-            <div>
-              <button onclick="updateQuantity('${id}', -1)">−</button>
-              <span style="margin: 0 8px;">${p.quantity}</span>
-              <button onclick="updateQuantity('${id}', 1)">+</button>
-            </div>
-            <p>Rp ${(p.price * p.quantity).toLocaleString()}</p>
-          </div>`;
+      container.innerHTML = ''; // Empty the container before rendering
+      if (Object.keys(cart).length === 0) {
+        container.innerHTML = `<p>Keranjang Anda kosong</p>`;
+      } else {
+        for (let id in cart) {
+          const p = cart[id];
+          container.innerHTML += `
+            <div class="cart-item">
+              <p>${p.name} ${p.variant ? `(${p.variant})` : ''} ${p.color ? `- Warna: ${p.color}` : ''} x ${p.quantity}</p>
+              <div>
+                <button onclick="updateQuantity('${id}', -1)">−</button>
+                <span style="margin: 0 8px;">${p.quantity}</span>
+                <button onclick="updateQuantity('${id}', 1)">+</button>
+              </div>
+              <p>Rp ${(p.price * p.quantity).toLocaleString()}</p>
+            </div>`;
+        }
       }
       calculateTotal();
     }
@@ -224,8 +240,6 @@
     function calculateTotal() {
       total = 0;
       let hasDigital = false;
-      
-      // Hitung total belanja
       for (let id in cart) {
         const item = cart[id];
         total += item.price * item.quantity;
@@ -233,8 +247,6 @@
       }
 
       codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
-
-      // Update total harga
       updateTotalPrice();
     }
 
@@ -254,6 +266,14 @@
       document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
       element.classList.add('selected');
       calculateTotal();
+      enableCheckoutButton(); 
+    }
+
+    function enableCheckoutButton() {
+      const address = localStorage.getItem('address');
+      if (address && selectedPaymentMethod) {
+        document.getElementById('checkout-button').disabled = false;
+      }
     }
 
     function toggleAddressForm() {
@@ -273,21 +293,17 @@
         document.getElementById('address-display').style.display = 'block';
         document.getElementById('address-form').style.display = 'none';
 
-        // Simpan alamat di localStorage
         localStorage.setItem('address', fullAddr);
         localStorage.setItem('courierNote', note);
 
-        // Hitung ongkir berdasarkan alamat yang disimpan
         shippingCost = calculateShipping();
-
-        // Update harga total
         calculateTotal();
+        enableCheckoutButton(); 
       } else {
         alert('Harap isi semua informasi alamat');
       }
     }
 
-    // Hitung Ongkir
     function calculateShipping() {
       const address = localStorage.getItem('address');
       if (address) {
@@ -296,9 +312,6 @@
         return 0;
       }
     }
-
-    // Init render cart items
-    renderCartItems();
   </script>
 </body>
 </html>
