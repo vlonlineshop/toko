@@ -1,235 +1,47 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VL Online Shop</title>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
-    header { position: sticky; top: 0; background: linear-gradient(to right, #003366, #0059b3); color: white; padding: 1rem; z-index: 1000; }
-    header h1 { margin: 0; font-size: 1.4rem; font-weight: bold; }
-    .filter-search-wrapper { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; align-items: center; justify-content: space-between; }
-    .search-box { display: flex; flex: 1; max-width: 400px; }
-    .search-box input { flex: 1; padding: 0.6rem; border: none; border-radius: 5px 0 0 5px; }
-    .search-box button { padding: 0.6rem 1rem; border: none; background: #003366; color: white; border-radius: 0 5px 5px 0; cursor: pointer; }
-    .filter-box select, .filter-box input[type="text"] { padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc; color: #333; margin-left: 0.5rem; }
-    @media (max-width: 600px) {
-      .filter-search-wrapper { flex-direction: column; align-items: stretch; }
-      .search-box, .filter-box { width: 100%; }
-      .search-box { margin-bottom: 0.5rem; }
-    }
-    main { padding: 1rem; max-width: 1200px; margin: auto; }
-    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
-    .product { background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding: 1rem; border: 1px solid #ccc; position: relative; }
-    .product img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; }
-    .product h3 { margin: 0.5rem 0; color: #003366; }
-    .product p.description { font-size: 0.9rem; color: #555; margin: 0.5rem 0; }
-    .price { font-weight: bold; color: #0059b3; }
-    .original-price { text-decoration: line-through; color: #888; font-size: 0.9rem; }
-    .actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
-    .actions button, .actions a, .actions select { padding: 0.5rem; font-size: 0.9rem; border-radius: 5px; border: 1px solid #ccc; }
-    .actions button { background: #0059b3; color: white; border: none; cursor: pointer; }
-    .actions button:hover { background: #003366; }
-    .actions a { background: #28a745; color: white; text-align: center; text-decoration: none; }
-    .actions a:hover { background: #1e7e34; }
-    .keranjang-popup { position: fixed; top: 15%; right: 2%; background: white; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1); border-radius: 10px; padding: 1.5rem; width: 300px; z-index: 1000; display: none; }
-    .keranjang-popup h2 { text-align: center; color: #003366; }
-    .keranjang-popup ul { list-style: none; padding: 0; max-height: 300px; overflow-y: auto; }
-    .keranjang-popup li { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-    .keranjang-popup li span { flex: 1; }
-    .keranjang-popup li button { margin: 0 0.2rem; padding: 0.2rem 0.5rem; font-size: 0.8rem; }
-    .keranjang-popup .checkout { margin-top: 1rem; text-align: center; }
-    .keranjang-popup .checkout button { padding: 0.6rem 1.2rem; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    .keranjang-popup .checkout button:disabled { background: #ccc; cursor: not-allowed; }
-    .badge { position: absolute; font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 10; }
-    .badge.discount { top: 8px; left: 8px; background: red; color: white; }
-    .badge.best { top: 8px; right: 8px; background: gold; color: black; }
-    .floating-cart { position: fixed; bottom: 30px; right: 30px; background-color: #28a745; color: white; font-size: 1.2rem; border-radius: 50%; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); z-index: 1000; }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>VL Online Shop</h1>
-    <div class="filter-search-wrapper">
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Cari produk...">
-        <button onclick="renderProducts()">Cari</button>
-      </div>
-      <div class="filter-box">
-        <label for="categoryFilter">Kategori:</label>
-        <select id="categoryFilter" onchange="renderProducts()">
-          <option value="all">Semua</option>
-          <option value="fashion">Fashion</option>
-          <option value="makanan">Makanan</option>
-          <option value="sembako">Sembako</option>
-          <option value="jajanan">Jajanan</option>
-          <option value="best">Best Seller</option>
-          <option value="discount">Diskon</option>
-          <option value="available">Tersedia</option>
-        </select>
-      </div>
-    </div>
-  </header>
-  <main>
-    <div class="products" id="product-list"></div>
-  </main>
-  <div class="keranjang-popup" id="cart-popup">
-    <h2>Keranjang</h2>
-    <ul id="cart-items"></ul>
-    <div class="checkout">
-      <button id="checkout-button" disabled>Checkout</button>
-    </div>
-  </div>
-  <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
-    <span>🛒</span>
-  </div>
-  <script>
-    const products = [
-      {
-        id: 1,
-        name: 'Martabak',
-        description: 'Martabak Saya Suka-Saya Suka.',
-        variants: ['Telur Spesial Rasa Sapi', 'Telur Sapi', 'Manis Kacang', 'Manis Kacang Wijen'],
-        variantPrices: {
-          'Telur Spesial Rasa Sapi': 40000,
-          'Telur Sapi': 39000,
-          'Manis Kacang': 35000,
-          'Manis Kacang Wijen': 37000,
-        },
-        image: 'https://via.placeholder.com/200x150?text=Produk+A',
-        discount: 10,
-        bestSeller: true,
-        available: true,
-        category: 'fashion',
-        colors: ['Merah', 'Hitam'],
-      },
-         {
-        id: 2,
-        name: 'Canva Pro',
-        description: 'Editing.',
-        variants: ['1 Bulan', '1 Tahun', 'Lifetime'],
-        variantPrices: {
-          '1 Bulan': 40000,
-          '1 Tahun': 39000,
-          'Lifetime': 35000,
-        },
-        image: 'https://via.placeholder.com/200x150?text=Produk+A',
-        discount: 10,
-        bestSeller: true,
-        available: false,
-        category: 'fashion',
-        colors: ['No Garansi', 'Full Garansi'],
-      },
-    ];
-    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+}
 
-    function renderProducts() {
-      const container = document.getElementById('product-list');
-      const filter = document.getElementById('categoryFilter').value.toLowerCase();
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      container.innerHTML = '';
-      products.forEach(p => {
-        const discountPrice = p.price - (p.price * p.discount / 100);
-        if (filter !== 'all' && !['best', 'discount', 'available'].includes(filter) && p.category !== filter) return;
-        if (filter === 'best' && !p.bestSeller) return;
-        if (filter === 'discount' && p.discount === 0) return;
-        if (filter === 'available' && !p.available) return;
-        if (!p.name.toLowerCase().includes(search)) return;
+function updateCart() {
+  const container = document.getElementById('cart-items');
+  container.innerHTML = '';
+  Object.entries(cart).forEach(([key, item]) => {
+    container.innerHTML += `
+      <li>
+        <span>${item.name} (${item.variant} - ${item.color}) x ${item.quantity} - Rp${(item.price * item.quantity).toLocaleString()}</span>
+        <div>
+          <button onclick="adjustQuantity('${key}', -1)">-</button>
+          <button onclick="adjustQuantity('${key}', 1)">+</button>
+          <button onclick="removeFromCart('${key}')">Hapus</button>
+        </div>
+      </li>
+    `;
+  });
+  document.getElementById('checkout-button').disabled = Object.keys(cart).length === 0;
+}
 
-        container.innerHTML += `
-          <div class="product">
-            ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
-            ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
-            <img src="${p.image}" alt="${p.name}">
-            <h3>${p.name}</h3>
-            <p class="description">${p.description}</p>
-            <p id="price-${p.id}">${p.discount > 0 ? `<span class="original-price">Rp${p.price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span></p>
-            <div class="actions">
-              <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
-              </select>
-              <select id="color-${p.id}">
-                ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
-              </select>
-              <button onclick="addToCart(${p.id})">Tambah</button>
-              <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function updatePrice(productId) {
-      const product = products.find(p => p.id === productId);
-      const variant = document.getElementById(`variant-${productId}`).value;
-
-      // Harga berdasarkan varian yang dipilih
-      const variantPrice = product.variantPrices[variant] || product.price;
-
-      const discountPrice = variantPrice - (variantPrice * product.discount / 100);
-      const priceElement = document.getElementById(`price-${productId}`);
-      priceElement.innerHTML = `${product.discount > 0 ? `<span class="original-price">Rp${variantPrice.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
-    }
-
-    function addToCart(productId) {
-      const product = products.find(p => p.id === productId);
-      const variant = document.getElementById(`variant-${productId}`).value;
-      const color = document.getElementById(`color-${productId}`).value;
-
-      // Hitung ulang harga sesuai variant
-      const variantPrice = product.variantPrices[variant] || product.price;
-      const price = variantPrice - (variantPrice * product.discount / 100);
-
-      const key = `${productId}-${variant}-${color}`;
-      if (cart[key]) {
-        cart[key].quantity += 1;
-      } else {
-        cart[key] = { ...product, variant, color, quantity: 1, price };
-      }
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCart();
-      document.getElementById('cart-popup').style.display = 'block';
-    }
-
-    function updateCart() {
-      const cartItems = document.getElementById('cart-items');
-      cartItems.innerHTML = '';
-      let totalPrice = 0;
-      let totalQuantity = 0;
-      for (let key in cart) {
-        const item = cart[key];
-        totalPrice += item.price * item.quantity;
-        totalQuantity += item.quantity;
-
-        cartItems.innerHTML += `
-          <li>
-            <span>${item.name} (${item.variant})</span>
-            <span>Rp${item.price.toLocaleString()} x ${item.quantity}</span>
-            <button onclick="removeFromCart('${key}')">Hapus</button>
-          </li>
-        `;
-      }
-      document.getElementById('checkout-button').disabled = totalQuantity === 0;
-    }
-
-    function removeFromCart(key) {
+function adjustQuantity(key, amount) {
+  if (cart[key]) {
+    cart[key].quantity += amount;
+    if (cart[key].quantity <= 0) {
       delete cart[key];
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCart();
     }
-
-    function toggleCartPopup() {
-      const cartPopup = document.getElementById('cart-popup');
-      cartPopup.style.display = cartPopup.style.display === 'block' ? 'none' : 'block';
-    }
-
-    document.getElementById('checkout-button').addEventListener('click', () => {
-      window.location.href = 'checkout.html';  // Mengarahkan ke halaman checkout.html
-    });
-
-    renderProducts();
+    localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
-  </script>
-</body>
-</html>
+  }
+}
+
+function removeFromCart(key) {
+  delete cart[key];
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCart();
+}
+
+function toggleCartPopup() {
+  const popup = document.getElementById('cart-popup');
+  popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+}
+
+renderProducts();
+updateCart();
+</script> 
+    </body>
+    </html>
