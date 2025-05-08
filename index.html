@@ -28,13 +28,62 @@
     .actions button:hover { background: #003366; }
     .actions a { background: #28a745; color: white; text-align: center; text-decoration: none; }
     .actions a:hover { background: #1e7e34; }
-    .badge { position: absolute; font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 10; }
-    .badge.discount { top: 8px; left: 8px; background: red; color: white; }
-    .badge.delivery { top: 30px; left: 8px; background: #00bcd4; color: white; }
-    .badge.best { top: 52px; left: 8px; background: gold; color: black; }
+
+    .badge-container {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .badge.discount { background: red; color: white; }
+    .badge.delivery { background: #00bcd4; color: white; }
+    .badge.best { background: gold; color: black; }
+
     .rating-stars { color: #ffc107; font-size: 0.9rem; margin-top: 0.3rem; }
     .sold-info { font-size: 0.8rem; color: #888; }
-    .keranjang-popup, .floating-cart { /* same as sebelumnya */ }
+
+    .keranjang-popup {
+      display: none;
+      position: fixed;
+      right: 20px;
+      bottom: 60px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      width: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 999;
+    }
+
+    .floating-cart {
+      position: fixed;
+      bottom: 10px;
+      right: 20px;
+      background: #0059b3;
+      color: white;
+      padding: 12px;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      font-size: 1.4rem;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
     .live-reviews {
       position: fixed;
       bottom: 10px;
@@ -50,10 +99,20 @@
       animation: slideUpFade 1s ease forwards, fadeOut 1s ease 5s forwards;
       max-width: 280px;
     }
+
+    .live-reviews img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
     @keyframes slideUpFade {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     @keyframes fadeOut {
       to { opacity: 0; transform: translateY(-10px); }
     }
@@ -85,6 +144,7 @@
   <main>
     <div class="products" id="product-list"></div>
   </main>
+
   <div class="keranjang-popup" id="cart-popup">
     <h2>Keranjang</h2>
     <ul id="cart-items"></ul>
@@ -156,11 +216,18 @@
       const highRated = products.filter(p => p.rating > 4.2);
       if (highRated.length === 0) return;
       const p = getRandomItem(highRated);
+      const name = getRandomItem(names);
       const review = document.createElement('div');
       review.className = 'live-reviews';
-      review.innerHTML = <strong>${getRandomItem(names)}</strong> membeli <strong>${p.name}</strong><br>
-        Rating: ⭐ ${(4 + Math.random()).toFixed(1)} ${getRandomItem(emojis)}<br>
-        <em>"${getRandomItem(comments)}"</em>;
+      review.innerHTML = `
+        <div style="display: flex; align-items: center;">
+          <img src="https://i.pravatar.cc/40?u=${name}" alt="avatar" />
+          <div>
+            <strong>${name}</strong> membeli <strong>${p.name}</strong><br>
+            Rating: ⭐ ${(4 + Math.random()).toFixed(1)} ${getRandomItem(emojis)}<br>
+            <em>"${getRandomItem(comments)}"</em>
+          </div>
+        </div>`;
       document.getElementById('live-review-container').appendChild(review);
       setTimeout(() => review.remove(), 6000);
     }
@@ -182,43 +249,47 @@
         if (filter === 'available' && !p.available) return;
         if (!p.name.toLowerCase().includes(search)) return;
 
-        container.innerHTML += 
+        container.innerHTML += `
           <div class="product">
-            ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
-            ${p.delivery ? '<span class="badge delivery">Delivery</span>' : ''}
-            ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
+            <div class="badge-container">
+              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
+              ${p.delivery ? '<span class="badge delivery">Delivery</span>' : ''}
+              ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
+            </div>
             <img src="${p.image}" alt="${p.name}">
             <h3>${p.name}</h3>
             <p class="description">${p.description}</p>
             <div class="rating-stars">⭐ ${p.rating} &nbsp; <span class="sold-info">(${p.sold} terjual)</span></div>
             <p id="price-${p.id}">
-              ${p.discount > 0 ? <span class="original-price">Rp${price.toLocaleString()}</span><br> : ''}
+              ${p.discount > 0 ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}
               <span class="price">Rp${discountPrice.toLocaleString()}</span>
             </p>
             <div class="actions">
               <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.variants.map(v => <option value="${v}">${v}</option>).join('')}
+                ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
               </select>
               <select id="color-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.colors.map(c => <option value="${c}">${c}</option>).join('')}
+                ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
               </select>
               <button onclick="addToCart(${p.id})">Tambah</button>
               <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
             </div>
           </div>
-        ;
+        `;
       });
     }
 
     function updatePrice(id) {
       const p = products.find(p => p.id === id);
-      const v = document.getElementById(variant-${id}).value;
-      const c = document.getElementById(color-${id}).value;
+      const v = document.getElementById(`variant-${id}`).value;
+      const c = document.getElementById(`color-${id}`).value;
       let price = p.variantPrices[v];
       if (c === 'Full Garansi') price += 10000;
       const discountPrice = price - (price * p.discount / 100);
-      const el = document.getElementById(price-${id});
-      el.innerHTML = ${p.discount ? <span class="original-price">Rp${price.toLocaleString()}</span><br> : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>;
+      const el = document.getElementById(`price-${id}`);
+      el.innerHTML = `
+        ${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}
+        <span class="price">Rp${discountPrice.toLocaleString()}</span>`;
     }
 
     function addToCart(id) {
