@@ -5,6 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VL Online Shop</title>
   <style>
+    .filter-search-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #fff;
+  margin-bottom: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 600px) {
+  .filter-search-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-box, .filter-box {
+    width: 100%;
+  }
+}
+
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -30,7 +54,6 @@
       font-weight: 600;
     }
     .search-box {
-      position: relative;
       display: flex;
       flex: 1;
       max-width: 400px;
@@ -39,39 +62,18 @@
     }
     .search-box input {
       flex: 1;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 5px 0 0 5px;
+    }
+    .search-box button {
       padding: 0.6rem 1rem;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      background: #003366;
+      color: white;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
     }
-    .search-box::after {
-      content: '🔍';
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.2rem;
-      color: #888;
-      pointer-events: none;
-    }
-
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .search-box {
-        width: 100%;
-        margin-left: 0;
-      }
-
-      .search-box input {
-        width: 100%;
-      }
-    }
-
     main {
       padding: 1rem;
       max-width: 1200px;
@@ -244,13 +246,15 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1>VL Online Shop</h1>
+ <header>
+  <h1>VL Online Shop</h1>
+</header>
+<main>
+  <div class="filter-search-wrapper">
     <div class="search-box">
-      <input type="text" placeholder="Cari produk..." />
+      <input type="text" placeholder="Cari produk...">
+      <button>Cari</button>
     </div>
-  </header>
-  <main>
     <div class="filter-box">
       <label for="categoryFilter">Filter Kategori: </label>
       <select id="categoryFilter" onchange="renderProducts()">
@@ -264,6 +268,8 @@
         <option value="available">Tersedia</option>
       </select>
     </div>
+  </div>
+
     <div class="products" id="product-list"></div>
   </main>
 
@@ -280,7 +286,56 @@
   </div>
 
   <script>
-    const products = [ /* ... Daftar produk tetap sama ... */ ];
+    const products = [
+      {
+        id: 1,
+        name: 'Produk A',
+        description: 'Produk A adalah pilihan terbaik untuk kebutuhan sehari-hari Anda.',
+        price: 10000,
+        discount: 10,
+        image: 'https://via.placeholder.com/200x150?text=Produk+A',
+        bestSeller: true,
+        checkoutUrl: 'https://example.com/checkoutA',
+        available: true,
+        category: 'fashion'
+      },
+      {
+        id: 2,
+        name: 'Produk B',
+        description: 'Produk B menawarkan kualitas unggul dengan harga terjangkau.',
+        price: 20000,
+        discount: 0,
+        image: 'https://via.placeholder.com/200x150?text=Produk+B',
+        bestSeller: false,
+        checkoutUrl: 'https://vlonlineshop.github.io/toko/index.html',
+        available: false,
+        category: 'makanan'
+      },
+      {
+        id: 3,
+        name: 'Produk C',
+        description: 'Produk C dirancang khusus untuk memenuhi kebutuhan Anda.',
+        price: 30000,
+        discount: 5,
+        image: 'https://via.placeholder.com/200x150?text=Produk+C',
+        bestSeller: true,
+        checkoutUrl: 'https://example.com/checkoutC',
+        available: true,
+        category: 'sembako'
+      },
+      {
+        id: 4,
+        name: 'Produk D',
+        description: 'Produk D cemilan enak dan renyah.',
+        price: 15000,
+        discount: 0,
+        image: 'https://via.placeholder.com/200x150?text=Produk+D',
+        bestSeller: false,
+        checkoutUrl: '',
+        available: true,
+        category: 'jajanan'
+      }
+    ];
 
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
@@ -292,14 +347,15 @@
       products.forEach(p => {
         const discountPrice = p.price - (p.price * p.discount / 100);
 
+        // Filter logic
         if (filter === 'best' && !p.bestSeller) return;
         if (filter === 'discount' && p.discount === 0) return;
         if (filter === 'available' && !p.available) return;
         if (!['all', 'best', 'discount', 'available'].includes(filter) && p.category.toLowerCase() !== filter) return;
 
-        let addButton = p.available ? `<button onclick="addToCart(${p.id})">Tambah</button>` : '';
-        let buyNowButton = p.checkoutUrl ? `<a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>` : '';
-        container.innerHTML += `
+        let addButton = p.available ? <button onclick="addToCart(${p.id})">Tambah</button> : '';
+        let buyNowButton = p.checkoutUrl ? <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a> : '';
+        container.innerHTML += 
           <div class="product">
             ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
             ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
@@ -307,7 +363,7 @@
             <h3>${p.name}</h3>
             <p class="description">${p.description}</p>
             <p>
-              ${p.discount > 0 ? `<span class="original-price">Rp${p.price.toLocaleString()}</span><br>` : ''}
+              ${p.discount > 0 ? <span class="original-price">Rp${p.price.toLocaleString()}</span><br> : ''}
               <span class="price">Rp${discountPrice.toLocaleString()}</span>
             </p>
             <div class="actions">
@@ -315,7 +371,7 @@
               ${buyNowButton}
             </div>
           </div>
-        `;
+        ;
       });
     }
 
@@ -339,14 +395,14 @@
       let hasItems = false;
       for (let id in cart) {
         hasItems = true;
-        cartItems.innerHTML += `
+        cartItems.innerHTML += 
           <li>
             <span>${cart[id].name} x${cart[id].quantity}</span>
             <button onclick="removeFromCart(${id})">Hapus</button>
             <button onclick="updateQuantity(${id}, 1)">+</button>
             <button onclick="updateQuantity(${id}, -1)">-</button>
           </li>
-        `;
+        ;
       }
       checkoutButton.disabled = !hasItems;
     }
