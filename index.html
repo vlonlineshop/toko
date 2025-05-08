@@ -251,7 +251,7 @@
         if (filter === 'available' && !p.available) return;
         if (!p.name.toLowerCase().includes(search)) return;
 
-        container.innerHTML += 
+        const productHTML = `
           <div class="product">
             <div class="badge-container">
               ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
@@ -263,22 +263,26 @@
             <p class="description">${p.description}</p>
             <div class="rating-stars">⭐ ${p.rating} &nbsp; <span class="sold-info">(${p.sold} terjual)</span></div>
             <p id="price-${p.id}">
-              ${p.discount > 0 ? <span class="original-price">Rp${price.toLocaleString()}</span><br> : ''}
+              ${p.discount > 0 ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}
               <span class="price">Rp${discountPrice.toLocaleString()}</span>
             </p>
             <div class="actions">
               <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.variants.map(v => <option value="${v}">${v}</option>).join('')}
+                ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
               </select>
               <select id="color-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.colors.map(c => <option value="${c}">${c}</option>).join('')}
+                ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
               </select>
               <button onclick="addToCart(${p.id})">Tambah</button>
               <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
             </div>
-          </div>;
+          </div>
+        `;
+
+        container.innerHTML += productHTML;
       });
     }
+
 
     function updatePrice(id) {
       const p = products.find(p => p.id === id);
