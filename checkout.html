@@ -193,6 +193,7 @@
           <div class="payment-option" onclick="selectPayment('qris', this)">QRIS</div>
           <div class="payment-option" onclick="selectPayment('ewallet', this)">E-Wallet</div>
           <div class="payment-option" onclick="selectPayment('cod', this)">Cash On Delivery (COD)</div>
+          <p id="payment-warning" style="color:red; display:none; font-weight:bold;">COD tidak tersedia untuk produk digital!</p>
         </div>
         <div class="total-section">
           <p class="total-price" id="total-price">Rp 0</p>
@@ -211,7 +212,6 @@
     let selectedPaymentMethod = null;
     let shippingCostSet = false;
 
-    // Restore saved address on load
     window.addEventListener('DOMContentLoaded', () => {
       const savedAddress = localStorage.getItem('address');
       const savedNote = localStorage.getItem('courierNote');
@@ -225,12 +225,25 @@
     });
 
     function calculateTotal() {
-      total = Object.values(cart).reduce((acc, item) => acc + item.price * item.quantity, 0);
-      codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
-      if (!shippingCostSet) {
-        shippingCost = [5000, 7000, 9000, 11000, 13000, 15000][Math.floor(Math.random() * 6)];
-        shippingCostSet = true;
-        localStorage.setItem('ongkir', shippingCost);
+      total = 0;
+      shippingCost = 0;
+      let hasDigital = false;
+      for (let id in cart) {
+        const item = cart[id];
+        total += item.price * item.quantity;
+        if (item.category !== 'digital') {
+          shippingCost += 10000; // flat 10rb per item non-digital
+        } else {
+          hasDigital = true;
+        }
+      }
+      codFee = (selectedPaymentMethod === 'cod') ? Math.round(total * 0.02) : 0;
+      if (selectedPaymentMethod === 'cod' && hasDigital) {
+        document.getElementById('payment-warning').style.display = 'block';
+        document.getElementById('checkout-button').disabled = true;
+      } else {
+        document.getElementById('payment-warning').style.display = 'none';
+        document.getElementById('checkout-button').disabled = false;
       }
       updateTotalPrice();
     }
@@ -268,7 +281,6 @@
       element.classList.add('selected');
       adminFee = method === 'bca' ? 2500 : method === 'ewallet' ? 1500 : method === 'qris' ? Math.round(total * 0.01) : 0;
       calculateTotal();
-      document.getElementById('checkout-button').disabled = false;
     }
 
     function saveAddress() {
@@ -300,7 +312,6 @@
       const message = encodeURIComponent(`🧾 *Checkout Order*\n\n📦 Produk:\n${Object.values(cart).map(p => `- ${p.name} x${p.quantity}`).join('\n')}\n\n🏠 Alamat: ${address}\n🏷️ Catatan: ${note}\n💳 Metode: ${selectedPaymentMethod}\n📦 Ongkir: Rp ${shippingCost.toLocaleString()}\n💰 Total: Rp ${(total + adminFee + codFee + shippingCost - discount).toLocaleString()}`);
       window.location.href = `https://wa.me/6285709458101?text=${message}`;
     });
-
   </script>
 </body>
 </html>
