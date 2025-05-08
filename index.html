@@ -130,10 +130,42 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+.popup {
+  display: none; 
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.popup-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.close-btn {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
 
   </style>
 </head>
 <body>
+  <div id="popup" class="popup">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+    <h2>Selamat Datang!</h2>
+    <p>Dapatkan diskon 20% untuk pembelian pertama Anda!</p>
+    <button onclick="closePopup()">Tutup</button>
   <header>
     <h1>VL Online Shop</h1>
     <div class="filter-search-wrapper">
@@ -174,6 +206,17 @@
   </div>
 <div class="live-review" id="live-review"></div>
    <script>
+  window.onload = function() {
+    setTimeout(function() {
+      document.getElementById('popup').style.display = 'block';
+    }, 1000); // tampil setelah 1 detik
+  };
+
+  function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+  }
+
+
     const products = [
       
         {
@@ -280,7 +323,7 @@
    sold: 70,
    rating: 4.8,
    available: true,
-   category: 'digital',
+   category: 'digital'
    colors: ['---Tidak ada pilihan---'],
    checkoutUrl: '#',
  
