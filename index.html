@@ -380,23 +380,24 @@ function goToProduct(id) {
     }
 
     function addToCart(id) {
-      const product = products.find(p => p.id === id);
-      const variant = document.getElementById(`variant-${id}`).value;
-      const color = document.getElementById(`color-${id}`).value;
-      const price = product.variantPrices[variant];
-      const discountPrice = price - (price * product.discount / 100);
+  const product = products.find(p => p.id === id);
+  const variant = document.getElementById(`variant-${id}`).value;
+  const color = document.getElementById(`color-${id}`).value;
+  const price = product.variantPrices[variant];
+  const discountPrice = price - (price * product.discount / 100);
 
-      const cartItem = cart.find(item => item.id === id && item.variant === variant && item.color === color);
+  const cartItem = cart.find(item => item.id === id && item.variant === variant && item.color === color);
 
-      if (cartItem) {
-        cartItem.quantity++;
-      } else {
-        cart.push({ ...product, variant, color, price: discountPrice, quantity: 1 });
-      }
+  if (cartItem) {
+    cartItem.quantity++;
+  } else {
+    cart.push({ ...product, variant, color, price: discountPrice, quantity: 1 });
+  }
 
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCart();
-    }
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCart();
+}
+    
 
     function updateCart() {
       const cartItemsList = document.getElementById('cart-items');
