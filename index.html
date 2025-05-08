@@ -282,23 +282,23 @@
 
     function updatePrice(id) {
       const p = products.find(p => p.id === id);
-      const v = document.getElementById(variant-${id}).value;
-      const c = document.getElementById(color-${id}).value;
-      let price = p.variantPrices[v];
-      if (c === 'Full Garansi') price += 10000;
-      if (c === 'Spesial') price += 3000;
+      const variant = document.getElementById(`variant-${id}`).value;
+      const color = document.getElementById(`color-${id}`).value;
+      let price = p.variantPrices[variant];
+      if (color === 'Full Garansi') price += 10000;
+      if (color === 'Spesial') price += 3000;
       const discountPrice = price - (price * p.discount / 100);
-      const el = document.getElementById(price-${id});
-      el.innerHTML = ${p.discount ? <span class="original-price">Rp${price.toLocaleString()}</span><br> : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>;
+      const el = document.getElementById(`price-${id}`);
+      el.innerHTML = `${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
     }
 
     function addToCart(id) {
       const p = products.find(p => p.id === id);
-      const variant = document.getElementById(variant-${id}).value;
-      const color = document.getElementById(color-${id}).value;
+      const variant = document.getElementById(`variant-${id}`).value;
+      const color = document.getElementById(`color-${id}`).value;
       let price = p.variantPrices[variant];
-      if (c === 'Full Garansi') price += 10000;
-       if (c === 'Spesial') price += 3000;
+      if (color === 'Full Garansi') price += 10000;
+      if (color === 'Spesial') price += 3000;
       const discounted = price - (price * p.discount / 100);
 
       const existing = cart.find(i => i.id === id && i.variant === variant && i.color === color);
@@ -323,7 +323,7 @@
       }
       cart.forEach(item => {
         const li = document.createElement('li');
-        li.innerHTML = <strong>${item.name}</strong><br>Varian: ${item.variant}, Warna: ${item.color}<br>Qty: ${item.quantity} | Rp${(item.price * item.quantity).toLocaleString()};
+        li.innerHTML = `<strong>${item.name}</strong><br>Varian: ${item.variant}, Warna: ${item.color}<br>Qty: ${item.quantity} | Rp${(item.price * item.quantity).toLocaleString()}`;
         list.appendChild(li);
       });
       checkoutBtn.disabled = false;
@@ -339,15 +339,6 @@
       window.location.href = 'checkout.html';
     }
 
-    const names = ["Aldi", "Rina", "Teguh", "Sari", "Dika", "Lina", "Fajar", "Nina"];
-    const emojis = ["😊", "😁", "👍", "🔥", "😍", "👏", "💯", "🎉"];
-    const comments = [
-      "Kualitas mantap!", "Pelayanan cepat & memuaskan!", "Rekomendasi banget 👍",
-      "Harga terjangkau, produk oke!", "Puas banget belanja di sini 😍",
-      "Produk sesuai deskripsi 💯", "Pengiriman cepat dan aman ✨",
-      "Suka banget sama produknya!", "Repeat order pasti 🔁", "Terbaik pokoknya!"
-    ];
-
     function getRandomItem(arr) {
       return arr[Math.floor(Math.random() * arr.length)];
     }
@@ -356,18 +347,27 @@
       const highRated = products.filter(p => p.rating > 4.2);
       if (highRated.length === 0) return;
       const p = getRandomItem(highRated);
+      const names = ["Aldi", "Rina", "Teguh", "Sari", "Dika", "Lina", "Fajar", "Nina"];
+      const emojis = ["😊", "😁", "👍", "🔥", "😍", "👏", "💯", "🎉"];
+      const comments = [
+        "Kualitas mantap!", "Pelayanan cepat & memuaskan!", "Rekomendasi banget 👍",
+        "Harga terjangkau, produk oke!", "Puas banget belanja di sini 😍",
+        "Produk sesuai deskripsi 💯", "Pengiriman cepat dan aman ✨",
+        "Suka banget sama produknya!", "Repeat order pasti 🔁", "Terbaik pokoknya!"
+      ];
+
       const review = document.createElement('div');
       review.className = 'live-reviews';
-      review.innerHTML = <strong>${getRandomItem(names)}</strong> membeli <strong>${p.name}</strong><br>
+      review.innerHTML = `<strong>${getRandomItem(names)}</strong> membeli <strong>${p.name}</strong><br>
         Rating: ⭐ ${(4 + Math.random()).toFixed(1)} ${getRandomItem(emojis)}<br>
-        <em>"${getRandomItem(comments)}"</em>;
+        <em>"${getRandomItem(comments)}"</em>`;
       document.getElementById('live-review-container').appendChild(review);
       setTimeout(() => review.remove(), 6000);
     }
 
     setInterval(() => { if (Math.random() > 0.4) showLiveReview(); }, 10000);
-
     renderProducts();
   </script>
 </body>
-</html
+</html>
+
