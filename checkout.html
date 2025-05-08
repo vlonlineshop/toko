@@ -192,6 +192,24 @@
   let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
   let selectedPaymentMethod = null;
 
+    function renderCheckout() {
+    const container = document.getElementById('checkout-list');
+    let total = 0;
+    container.innerHTML = '';
+
+    cart.forEach(item => {
+      const subtotal = item.price * item.quantity;
+      total += subtotal;
+      container.innerHTML += `
+        <li>${item.name} - ${item.variant}, ${item.color} x ${item.quantity} = Rp ${subtotal.toLocaleString()}</li>
+      `;
+    });
+
+    document.getElementById('total').textContent = 'Total: Rp ' + total.toLocaleString();
+  }
+
+  renderCheckout();
+
   function renderCartItems() {
     const container = document.getElementById('cart-items');
     container.innerHTML = '';
