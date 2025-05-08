@@ -223,9 +223,9 @@
         '1 Porsi Sate': 12000,
         'Sate Padang': 13000,
         'Lontong': 5000
-},
+        },
 
-        image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
+        image: 'https://via.placeholder.com/200x150?text=Sate+Padang',
         discount: 5, bestSeller: false, delivery: false,
         sold: 58, rating: 4.5, available: true,
         category: 'makanan', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
@@ -236,138 +236,82 @@
 
     function renderProducts() {
       const container = document.getElementById('product-list');
-      const filter = document.getElementById('categoryFilter').value.toLowerCase();
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      container.innerHTML = '';
+container.innerHTML = '';  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const selectedCategory = document.getElementById('categoryFilter').value;
 
-      products.forEach(p => {
-        const variant = p.variants[0];
-        let price = p.variantPrices[variant];
-        let discountPrice = price - (price * p.discount / 100);
+  const filteredProducts = products.filter(product => {
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+    return matchesCategory && matchesSearch;
+  });
 
-        if (filter !== 'all' && !['best', 'discount', 'available'].includes(filter) && p.category !== filter) return;
-        if (filter === 'best' && !p.bestSeller) return;
-        if (filter === 'discount' && p.discount === 0) return;
-        if (filter === 'available' && !p.available) return;
-        if (!p.name.toLowerCase().includes(search)) return;
+  filteredProducts.forEach(product => {
+    const productElement = document.createElement('div');
+    productElement.classList.add('product');
 
-        container.innerHTML += `
-          <div class="product">
-            <div class="badge-container">
-              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
-              ${p.delivery ? '<span class="badge delivery">Delivery</span>' : ''}
-              ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
-            </div>
-            <img src="${p.image}" alt="${p.name}">
-            <h3>${p.name}</h3>
-            <p class="description">${p.description}</p>
-            <div class="rating-stars">⭐ ${p.rating} &nbsp; <span class="sold-info">(${p.sold} terjual)</span></div>
-            <p id="price-${p.id}">
-              ${p.discount > 0 ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}
-              <span class="price">Rp${discountPrice.toLocaleString()}</span>
-            </p>
-            <div class="actions">
-              <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
-              </select>
-              <select id="color-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
-              </select>
-              <button onclick="addToCart(${p.id})">Tambah</button>
-              <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
-            </div>
-          </div>`;
-      });
-    }
+    productElement.innerHTML = `
+      <div class="badge-container">
+        ${product.bestSeller ? '<div class="badge best">Best Seller</div>' : ''}
+        ${product.discount > 0 ? `<div class="badge discount">${product.discount}% OFF</div>` : ''}
+        ${product.delivery ? '<div class="badge delivery">Free Delivery</div>' : ''}
+      </div>
+      <img src="${product.image}" alt="${product.name}">
+      <h3>${product.name}</h3>
+      <p class="description">${product.description}</p>
+      <div class="price">
+        Rp ${product.variantPrices[product.variants[0]].toLocaleString()}
+        ${product.discount > 0 ? `<span class="original-price">Rp ${product.variantPrices[product.variants[0]].toLocaleString()}</span>` : ''}
+      </div>
+      <div class="rating-stars">${'★'.repeat(Math.round(product.rating))}</div>
+      <div class="sold-info">Sold: ${product.sold}</div>
+      <div class="actions">
+        <select onchange="updatePrice(${product.id}, this.value)">
+          ${product.variants.map(variant => `<option value="${variant}">${variant}</option>`).join('')}
+        </select>
+        <button onclick="addToCart(${product.id}, document.querySelector('#color-${product.id}').value)">Add to Cart</button>
+      </div>
+    `;
+    container.appendChild(productElement);
+  });
+}
 
-    function updatePrice(id) {
-      const p = products.find(p => p.id === id);
-      const v = document.getElementById(`variant-${id}`).value;
-      const c = document.getElementById(`color-${id}`).value;
-      let price = p.variantPrices[v];
-      if (c === 'Full Garansi') price += 10000;
-      if (c === 'Spesial') price += 3000;
-      const discountPrice = price - (price * p.discount / 100);
-      const el = document.getElementById(`price-${id}`);
-      el.innerHTML = `${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
-    }
+function updatePrice(productId, selectedVariant) {
+  const product = products.find(p => p.id === productId);
+  const price = product.variantPrices[selectedVariant];
+  document.querySelector(`#price-${productId}`).textContent = `Rp ${price.toLocaleString()}`;
+}
 
-    function addToCart(id) {
-      const p = products.find(p => p.id === id);
-      const variant = document.getElementById(`variant-${id}`).value;
-      const color = document.getElementById(`color-${id}`).value;
-      let price = p.variantPrices[variant];
-      if (c === 'Full Garansi') price += 10000;
-       if (c === 'Spesial') price += 3000;
-      const discounted = price - (price * p.discount / 100);
+function addToCart(productId, selectedColor) {
+  const product = products.find(p => p.id === productId);
+  cart.push({ ...product, color: selectedColor });
+  alert(`Product added to cart: ${product.name}`);
+}
 
-      const existing = cart.find(i => i.id === id && i.variant === variant && i.color === color);
-      if (existing) {
-        existing.quantity += 1;
-      } else {
-        cart.push({ id, name: p.name, variant, color, price: discounted, quantity: 1 });
-      }
+function toggleCartPopup() {
+  const cartPopup = document.getElementById('cart-popup');
+  const isVisible = cartPopup.style.display === 'block';
+  cartPopup.style.display = isVisible ? 'none' : 'block';
+  renderCart();
+}
 
-      updateCartUI();
-      toggleCartPopup();
-    }
+function renderCart() {
+  const cartItemsContainer = document.getElementById('cart-items');
+  cartItemsContainer.innerHTML = '';
 
-    function updateCartUI() {
-      const list = document.getElementById('cart-items');
-      const checkoutBtn = document.getElementById('checkout-button');
-      list.innerHTML = '';
-      if (cart.length === 0) {
-        list.innerHTML = '<li>Keranjang kosong.</li>';
-        checkoutBtn.disabled = true;
-        return;
-      }
-      cart.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>${item.name}</strong><br>Varian: ${item.variant}, Warna: ${item.color}<br>Qty: ${item.quantity} | Rp${(item.price * item.quantity).toLocaleString()}`;
-        list.appendChild(li);
-      });
-      checkoutBtn.disabled = false;
-    }
+  cart.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = `${item.name} - ${item.color}`;
+    cartItemsContainer.appendChild(li);
+  });
 
-    function toggleCartPopup() {
-      const p = document.getElementById('cart-popup');
-      p.style.display = p.style.display === 'block' ? 'none' : 'block';
-    }
+  document.getElementById('checkout-button').disabled = cart.length === 0;
+}
 
-    function handleCheckout() {
-      localStorage.setItem('cartItems', JSON.stringify(cart));
-      window.location.href = 'checkout.html';
-    }
+function handleCheckout() {
+  alert('Proceeding to checkout...');
+}
 
-    const names = ["Aldi", "Rina", "Teguh", "Sari", "Dika", "Lina", "Fajar", "Nina"];
-    const emojis = ["😊", "😁", "👍", "🔥", "😍", "👏", "💯", "🎉"];
-    const comments = [
-      "Kualitas mantap!", "Pelayanan cepat & memuaskan!", "Rekomendasi banget 👍",
-      "Harga terjangkau, produk oke!", "Puas banget belanja di sini 😍",
-      "Produk sesuai deskripsi 💯", "Pengiriman cepat dan aman ✨",
-      "Suka banget sama produknya!", "Repeat order pasti 🔁", "Terbaik pokoknya!"
-    ];
-
-    function getRandomItem(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function showLiveReview() {
-      const highRated = products.filter(p => p.rating > 4.2);
-      if (highRated.length === 0) return;
-      const p = getRandomItem(highRated);
-      const review = document.createElement('div');
-      review.className = 'live-reviews';
-      review.innerHTML = `<strong>${getRandomItem(names)}</strong> membeli <strong>${p.name}</strong><br>
-        Rating: ⭐ ${(4 + Math.random()).toFixed(1)} ${getRandomItem(emojis)}<br>
-        <em>"${getRandomItem(comments)}"</em>`;
-      document.getElementById('live-review-container').appendChild(review);
-      setTimeout(() => review.remove(), 6000);
-    }
-
-    setInterval(() => { if (Math.random() > 0.4) showLiveReview(); }, 10000);
-
-    renderProducts();
-  </script>
-</body>
+renderProducts();
+</script> 
+</body> 
 </html>
