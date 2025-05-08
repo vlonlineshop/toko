@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VL Online Shop</title>
   <style>
-    /* (semua style tetap seperti sebelumnya — tidak diubah) */
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
     header { position: sticky; top: 0; background: linear-gradient(to right, #003366, #0059b3); color: white; padding: 1rem; z-index: 1000; }
@@ -46,6 +45,9 @@
     .badge { position: absolute; font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 10; }
     .badge.discount { top: 8px; left: 8px; background: red; color: white; }
     .badge.best { top: 8px; right: 8px; background: gold; color: black; }
+    .badge.delivery { bottom: 8px; left: 8px; background: #17a2b8; color: white; }
+    .sold-rating { font-size: 0.85rem; color: #666; margin: 0.4rem 0; }
+    .sold-rating .rating { color: #ff9800; font-weight: bold; }
     .floating-cart { position: fixed; bottom: 30px; right: 30px; background-color: #28a745; color: white; font-size: 1.2rem; border-radius: 50%; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); z-index: 1000; }
   </style>
 </head>
@@ -104,27 +106,12 @@
         bestSeller: true,
         available: true,
         category: 'fashion',
-        colors: ['Merah', 'Hitam'],
+        colors: ['Merah', 'Hitam', 'Full Garansi'],
         checkoutUrl: 'https://example.com/checkout/martabak',
-      },
-      {
-        id: 2,
-        name: 'Canva Pro',
-        description: 'Editing.',
-        variants: ['1 Bulan', '1 Tahun', 'Lifetime'],
-        variantPrices: {
-          '1 Bulan': 40000,
-          '1 Tahun': 39000,
-          'Lifetime': 35000,
-        },
-        image: 'https://via.placeholder.com/200x150?text=Produk+A',
-        discount: 10,
-        bestSeller: true,
-        available: false,
-        category: 'fashion',
-        colors: ['No Garansi', 'Full Garansi'],
-        checkoutUrl: 'https://example.com/checkout/canva-pro',
-      },
+        delivery: true,
+        sold: 250,
+        rating: 4.5
+      }
     ];
 
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
@@ -146,9 +133,14 @@
           <div class="product">
             ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
             ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
+            ${p.delivery ? '<span class="badge delivery">Delivery</span>' : ''}
             <img src="${p.image}" alt="${p.name}">
             <h3>${p.name}</h3>
             <p class="description">${p.description}</p>
+            <p class="sold-rating">
+              <span class="sold">Terjual: ${p.sold}</span><br>
+              <span class="rating">Rating: ${'⭐'.repeat(Math.floor(p.rating))}${p.rating % 1 >= 0.5 ? '½' : ''}</span>
+            </p>
             <p id="price-${p.id}">${p.discount > 0 ? `<span class="original-price">Rp${p.variantPrices[p.variants[0]].toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span></p>
             <div class="actions">
               <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
@@ -170,12 +162,7 @@
       const variant = document.getElementById(`variant-${productId}`).value;
       const color = document.getElementById(`color-${productId}`).value;
       let variantPrice = product.variantPrices[variant] || product.variantPrices[product.variants[0]];
-
-      // Tambahan: Jika pengguna memilih Full Garansi, tambahkan biaya (misal: 10%)
-      if (color === 'Full Garansi') {
-        variantPrice += 10000; // atau gunakan perhitungan presentase
-      }
-
+      if (color === 'Full Garansi') variantPrice += 10000;
       const discountPrice = variantPrice - (variantPrice * product.discount / 100);
       const priceElement = document.getElementById(`price-${productId}`);
       priceElement.innerHTML = `${product.discount > 0 ? `<span class="original-price">Rp${variantPrice.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
@@ -187,7 +174,6 @@
       const color = document.getElementById(`color-${productId}`).value;
       let variantPrice = product.variantPrices[variant] || product.variantPrices[product.variants[0]];
       if (color === 'Full Garansi') variantPrice += 10000;
-
       const price = variantPrice - (variantPrice * product.discount / 100);
       const key = `${productId}-${variant}-${color}`;
       if (cart[key]) {
@@ -221,9 +207,7 @@
     function adjustQuantity(key, amount) {
       if (cart[key]) {
         cart[key].quantity += amount;
-        if (cart[key].quantity <= 0) {
-          delete cart[key];
-        }
+        if (cart[key].quantity <= 0) delete cart[key];
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCart();
       }
