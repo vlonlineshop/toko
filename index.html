@@ -51,9 +51,6 @@
     .badge.delivery { background: #00bcd4; color: white; }
     .badge.best { background: gold; color: black; }
 
-    .rating-stars { color: #ffc107; font-size: 0.9rem; margin-top: 0.3rem; }
-    .sold-info { font-size: 0.8rem; color: #888; }
-
     .keranjang-popup {
       display: none;
       position: fixed;
@@ -84,38 +81,37 @@
       z-index: 1000;
     }
 
-    .live-reviews {
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 0.8rem 1rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      font-size: 0.85rem;
-      color: #333;
-      z-index: 1000;
-      animation: slideUpFade 1s ease forwards, fadeOut 1s ease 5s forwards;
-      max-width: 280px;
+    .checkout-button {
+      background: #28a745;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background 0.3s;
     }
 
-    .live-reviews img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      margin-right: 8px;
-      vertical-align: middle;
+    .checkout-button:hover {
+      background: #218838;
     }
 
-    @keyframes slideUpFade {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes fadeInCart {
+      0% { opacity: 0; transform: translateX(50px); }
+      100% { opacity: 1; transform: translateX(0); }
     }
 
-    @keyframes fadeOut {
-      to { opacity: 0; transform: translateY(-10px); }
+    .keranjang-popup ul {
+      list-style-type: none;
+      padding: 0;
     }
+
+    .keranjang-popup li {
+      margin: 10px 0;
+      animation: fadeInCart 0.5s ease-out;
+    }
+
   </style>
 </head>
 <body>
@@ -148,14 +144,17 @@
   <div class="keranjang-popup" id="cart-popup">
     <h2>Keranjang</h2>
     <ul id="cart-items"></ul>
-    <div class="checkout"><button id="checkout-button" disabled onclick="handleCheckout()">Checkout</button></div>
+    <div id="cart-total">
+      <p>Total Produk: <span id="total-count">0</span></p>
+      <p>Total Harga: Rp <span id="total-price">0</span></p>
+    </div>
+    <div class="checkout"><button id="checkout-button" class="checkout-button" disabled onclick="handleCheckout()">Checkout</button></div>
   </div>
   <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
     <span>🛒</span>
   </div>
-  <div id="live-review-container"></div>
 
-  <script>
+   <script>
     const products = [
       {
         id: 1,
@@ -199,40 +198,7 @@
       }
     ];
 
-    const names = ["Aldi", "Rina", "Teguh", "Sari", "Dika", "Lina", "Fajar", "Nina"];
-    const emojis = ["😊", "😁", "👍", "🔥", "😍", "👏", "💯", "🎉"];
-    const comments = [
-      "Kualitas mantap!", "Pelayanan cepat & memuaskan!", "Rekomendasi banget 👍",
-      "Harga terjangkau, produk oke!", "Puas banget belanja di sini 😍",
-      "Produk sesuai deskripsi 💯", "Pengiriman cepat dan aman ✨",
-      "Suka banget sama produknya!", "Repeat order pasti 🔁", "Terbaik pokoknya!"
-    ];
-
-    function getRandomItem(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function showLiveReview() {
-      const highRated = products.filter(p => p.rating > 4.2);
-      if (highRated.length === 0) return;
-      const p = getRandomItem(highRated);
-      const name = getRandomItem(names);
-      const review = document.createElement('div');
-      review.className = 'live-reviews';
-      review.innerHTML = `
-        <div style="display: flex; align-items: center;">
-          <img src="https://i.pravatar.cc/40?u=${name}" alt="avatar" />
-          <div>
-            <strong>${name}</strong> membeli <strong>${p.name}</strong><br>
-            Rating: ⭐ ${(4 + Math.random()).toFixed(1)} ${getRandomItem(emojis)}<br>
-            <em>"${getRandomItem(comments)}"</em>
-          </div>
-        </div>`;
-      document.getElementById('live-review-container').appendChild(review);
-      setTimeout(() => review.remove(), 6000);
-    }
-
-    setInterval(() => { if (Math.random() > 0.4) showLiveReview(); }, 10000);
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
     function renderProducts() {
       const container = document.getElementById('product-list');
@@ -252,16 +218,16 @@
         container.innerHTML += `
           <div class="product">
             <div class="badge-container">
-              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
-              ${p.delivery ? '<span class="badge delivery">Delivery</span>' : ''}
-              ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
+              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : '' }
+              ${p.delivery ? '<span class="badge delivery">Delivery</span>' : '' }
+              ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : '' }
             </div>
             <img src="${p.image}" alt="${p.name}">
             <h3>${p.name}</h3>
             <p class="description">${p.description}</p>
             <div class="rating-stars">⭐ ${p.rating} &nbsp; <span class="sold-info">(${p.sold} terjual)</span></div>
             <p id="price-${p.id}">
-              ${p.discount > 0 ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}
+              ${p.discount > 0 ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : '' }
               <span class="price">Rp${discountPrice.toLocaleString()}</span>
             </p>
             <div class="actions">
@@ -292,8 +258,44 @@
         <span class="price">Rp${discountPrice.toLocaleString()}</span>`;
     }
 
-    function addToCart(id) {
-      alert('Produk ditambahkan ke keranjang!');
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  const variant = document.getElementById(`variant-${id}`).value;
+  const color = document.getElementById(`color-${id}`).value;
+  const price = product.variantPrices[variant];
+  const discountPrice = price - (price * product.discount / 100);
+
+  const cartItem = cart.find(item => item.id === id && item.variant === variant && item.color === color);
+
+  if (cartItem) {
+    cartItem.quantity++;
+  } else {
+    cart.push({ ...product, variant, color, price: discountPrice, quantity: 1 });
+  }
+
+  console.log(cart); // Debugging line: Log the updated cart to the console.
+
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCart();
+}
+
+    function updateCart() {
+      const cartItemsList = document.getElementById('cart-items');
+      cartItemsList.innerHTML = '';
+      let totalPrice = 0;
+      let totalCount = 0;
+
+      cart.forEach(item => {
+        totalPrice += item.price * item.quantity;
+        totalCount += item.quantity;
+        cartItemsList.innerHTML += `
+          <li>${item.name} (${item.variant}, ${item.color}) x ${item.quantity} - Rp ${item.price * item.quantity}</li>
+        `;
+      });
+
+      document.getElementById('total-price').textContent = totalPrice.toLocaleString();
+      document.getElementById('total-count').textContent = totalCount;
+      document.getElementById('checkout-button').disabled = totalCount === 0;
     }
 
     function toggleCartPopup() {
@@ -305,7 +307,9 @@
       window.location.href = 'checkout.html';
     }
 
+    // Render produk dan keranjang setelah halaman dimuat
     renderProducts();
+    updateCart();
   </script>
 </body>
 </html>
