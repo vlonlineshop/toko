@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VL Online Shop</title>
   <style>
+    /* (semua style tetap seperti sebelumnya — tidak diubah) */
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
     header { position: sticky; top: 0; background: linear-gradient(to right, #003366, #0059b3); color: white; padding: 1rem; z-index: 1000; }
@@ -78,12 +79,13 @@
     <h2>Keranjang</h2>
     <ul id="cart-items"></ul>
     <div class="checkout">
-      <button id="checkout-button" disabled>Checkout</button>
+      <button id="checkout-button" disabled onclick="handleCheckout()">Checkout</button>
     </div>
   </div>
   <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
     <span>🛒</span>
   </div>
+
   <script>
     const products = [
       {
@@ -152,7 +154,7 @@
               <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
                 ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
               </select>
-              <select id="color-${p.id}">
+              <select id="color-${p.id}" onchange="updatePrice(${p.id})">
                 ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
               </select>
               <button onclick="addToCart(${p.id})">Tambah</button>
@@ -166,9 +168,13 @@
     function updatePrice(productId) {
       const product = products.find(p => p.id === productId);
       const variant = document.getElementById(`variant-${productId}`).value;
+      const color = document.getElementById(`color-${productId}`).value;
+      let variantPrice = product.variantPrices[variant] || product.variantPrices[product.variants[0]];
 
-      // Harga berdasarkan varian yang dipilih
-      const variantPrice = product.variantPrices[variant] || product.variantPrices[product.variants[0]];
+      // Tambahan: Jika pengguna memilih Full Garansi, tambahkan biaya (misal: 10%)
+      if (color === 'Full Garansi') {
+        variantPrice += 10000; // atau gunakan perhitungan presentase
+      }
 
       const discountPrice = variantPrice - (variantPrice * product.discount / 100);
       const priceElement = document.getElementById(`price-${productId}`);
@@ -179,11 +185,10 @@
       const product = products.find(p => p.id === productId);
       const variant = document.getElementById(`variant-${productId}`).value;
       const color = document.getElementById(`color-${productId}`).value;
+      let variantPrice = product.variantPrices[variant] || product.variantPrices[product.variants[0]];
+      if (color === 'Full Garansi') variantPrice += 10000;
 
-      // Hitung ulang harga sesuai variant
-      const variantPrice = product.variantPrices[variant] || product.variantPrices[product.variants[0]];
       const price = variantPrice - (variantPrice * product.discount / 100);
-
       const key = `${productId}-${variant}-${color}`;
       if (cart[key]) {
         cart[key].quantity += 1;
@@ -200,15 +205,15 @@
       container.innerHTML = '';
       Object.entries(cart).forEach(([key, item]) => {
         container.innerHTML += `
-      <li>
-        <span>${item.name} (${item.variant} - ${item.color}) x ${item.quantity} - Rp${(item.price * item.quantity).toLocaleString()}</span>
-        <div>
-          <button onclick="adjustQuantity('${key}', -1)">-</button>
-          <button onclick="adjustQuantity('${key}', 1)">+</button>
-          <button onclick="removeFromCart('${key}')">Hapus</button>
-        </div>
-      </li>
-    `;
+        <li>
+          <span>${item.name} (${item.variant} - ${item.color}) x ${item.quantity} - Rp${(item.price * item.quantity).toLocaleString()}</span>
+          <div>
+            <button onclick="adjustQuantity('${key}', -1)">-</button>
+            <button onclick="adjustQuantity('${key}', 1)">+</button>
+            <button onclick="removeFromCart('${key}')">Hapus</button>
+          </div>
+        </li>
+      `;
       });
       document.getElementById('checkout-button').disabled = Object.keys(cart).length === 0;
     }
@@ -235,8 +240,13 @@
       popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
     }
 
+    function handleCheckout() {
+      if (Object.keys(cart).length === 0) return;
+      window.location.href = 'checkout.html';
+    }
+
     renderProducts();
     updateCart();
-  </script> 
+  </script>
 </body>
 </html>
