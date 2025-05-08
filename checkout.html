@@ -188,134 +188,117 @@
     </div>
   </main>
   <script>
-  const cart = JSON.parse(localStorage.getItem('cart')) || {};
-  let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
-  let selectedPaymentMethod = null;
+    const cart = JSON.parse(localStorage.getItem('cart')) || {};
+    let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
+    let selectedPaymentMethod = null;
 
-    function renderCheckout() {
-    const container = document.getElementById('checkout-list');
-    let total = 0;
-    container.innerHTML = '';
-
-    cart.forEach(item => {
-      const subtotal = item.price * item.quantity;
-      total += subtotal;
-      container.innerHTML += `
-        <li>${item.name} - ${item.variant}, ${item.color} x ${item.quantity} = Rp ${subtotal.toLocaleString()}</li>
-      `;
-    });
-
-    document.getElementById('total').textContent = 'Total: Rp ' + total.toLocaleString();
-  }
-
-  renderCheckout();
-
-  function renderCartItems() {
-    const container = document.getElementById('cart-items');
-    container.innerHTML = '';
-    for (let id in cart) {
-      const p = cart[id];
-      container.innerHTML += `
-        <div class="cart-item">
-          <p>${p.name}</p>
-          <div>
-            <button onclick="updateQuantity('${id}', -1)">−</button>
-            <span style="margin: 0 8px;">${p.quantity}</span>
-            <button onclick="updateQuantity('${id}', 1)">+</button>
-          </div>
-          <p>Rp ${(p.price * p.quantity).toLocaleString()}</p>
-        </div>`;
-    }
-    calculateTotal();
-  }
-
-  function updateQuantity(productId, delta) {
-    if (!cart[productId]) return;
-    cart[productId].quantity += delta;
-    if (cart[productId].quantity <= 0) {
-      delete cart[productId];
-    }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    renderCartItems();
-  }
-
-  function calculateTotal() {
-    total = 0;
-    let hasDigital = false;
-
-    // Hitung total belanja
-    for (let id in cart) {
-      const item = cart[id];
-      total += item.price * item.quantity;
-      if (item.category === 'digital') hasDigital = true;
-    }
-
-    codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
-
-    // Update total harga (tanpa hitung ulang ongkir di sini)
-    updateTotalPrice();
-  }
-
-  function calculateShipping() {
-    const address = localStorage.getItem('address');
-    if (address) {
-      return Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000);  // Contoh perhitungan ongkir
-    } else {
-      return 0;
-    }
-  }
-
-  function updateTotalPrice() {
-    let final = total + shippingCost + adminFee + codFee - discount;
-
-    document.getElementById('total-price').textContent = `Rp ${final.toLocaleString()}`;
-    document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingCost.toLocaleString()}`;
-    document.getElementById('admin-fee-info').textContent = `Biaya Admin: Rp ${adminFee.toLocaleString()}`;
-    document.getElementById('cod-fee-info').textContent = selectedPaymentMethod === 'cod' ? `Biaya COD: Rp ${codFee.toLocaleString()}` : '';
-    document.getElementById('discount-info').style.display = discount ? 'block' : 'none';
-    document.getElementById('discount-info').textContent = `Diskon: Rp ${discount.toLocaleString()}`;
-  }
-
-  function selectPayment(method, element) {
-    selectedPaymentMethod = method;
-    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
-    element.classList.add('selected');
-    calculateTotal();  // Tidak hitung ulang shippingCost karena sudah dipisah
-  }
-
-  function toggleAddressForm() {
-    const form = document.getElementById('address-form');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-  }
-
-  function saveAddress() {
-    const name = document.getElementById('full-name').value;
-    const phone = document.getElementById('phone-number').value;
-    const addr = document.getElementById('full-address').value;
-    const note = document.getElementById('courier-note').value;
-
-    if (name && phone && addr) {
-      const fullAddr = `${name}, ${phone}, ${addr}`;
-      document.getElementById('address-display').textContent = fullAddr;
-      document.getElementById('address-display').style.display = 'block';
-      document.getElementById('address-form').style.display = 'none';
-
-      // Simpan ke localStorage
-      localStorage.setItem('address', fullAddr);
-      localStorage.setItem('courierNote', note);
-
-      // Hitung ongkir sekali di sini saja
-      shippingCost = calculateShipping();
-
-      // Update tampilan harga total
+    function renderCartItems() {
+      const container = document.getElementById('cart-items');
+      container.innerHTML = ''; // Kosongkan container sebelumnya
+      for (let id in cart) {
+        const p = cart[id];
+        container.innerHTML += `
+          <div class="cart-item">
+            <p>${p.name} ${p.variant ? `(${p.variant})` : ''} ${p.color ? `- Warna: ${p.color}` : ''} x ${p.quantity}</p>
+            <div>
+              <button onclick="updateQuantity('${id}', -1)">−</button>
+              <span style="margin: 0 8px;">${p.quantity}</span>
+              <button onclick="updateQuantity('${id}', 1)">+</button>
+            </div>
+            <p>Rp ${(p.price * p.quantity).toLocaleString()}</p>
+          </div>`;
+      }
       calculateTotal();
-    } else {
-      alert('Harap isi semua informasi alamat');
     }
-  }
 
-  // Init render cart items
-  renderCartItems();
+    function updateQuantity(productId, delta) {
+      if (!cart[productId]) return;
+      cart[productId].quantity += delta;
+      if (cart[productId].quantity <= 0) {
+        delete cart[productId];
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCartItems();
+    }
+
+    function calculateTotal() {
+      total = 0;
+      let hasDigital = false;
+      
+      // Hitung total belanja
+      for (let id in cart) {
+        const item = cart[id];
+        total += item.price * item.quantity;
+        if (item.category === 'digital') hasDigital = true;
+      }
+
+      codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
+
+      // Update total harga
+      updateTotalPrice();
+    }
+
+    function updateTotalPrice() {
+      let final = total + shippingCost + adminFee + codFee - discount;
+
+      document.getElementById('total-price').textContent = `Rp ${final.toLocaleString()}`;
+      document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingCost.toLocaleString()}`;
+      document.getElementById('admin-fee-info').textContent = `Biaya Admin: Rp ${adminFee.toLocaleString()}`;
+      document.getElementById('cod-fee-info').textContent = selectedPaymentMethod === 'cod' ? `Biaya COD: Rp ${codFee.toLocaleString()}` : '';
+      document.getElementById('discount-info').style.display = discount ? 'block' : 'none';
+      document.getElementById('discount-info').textContent = `Diskon: Rp ${discount.toLocaleString()}`;
+    }
+
+    function selectPayment(method, element) {
+      selectedPaymentMethod = method;
+      document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+      element.classList.add('selected');
+      calculateTotal();
+    }
+
+    function toggleAddressForm() {
+      const form = document.getElementById('address-form');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function saveAddress() {
+      const name = document.getElementById('full-name').value;
+      const phone = document.getElementById('phone-number').value;
+      const addr = document.getElementById('full-address').value;
+      const note = document.getElementById('courier-note').value;
+
+      if (name && phone && addr) {
+        const fullAddr = `${name}, ${phone}, ${addr}`;
+        document.getElementById('address-display').textContent = fullAddr;
+        document.getElementById('address-display').style.display = 'block';
+        document.getElementById('address-form').style.display = 'none';
+
+        // Simpan alamat di localStorage
+        localStorage.setItem('address', fullAddr);
+        localStorage.setItem('courierNote', note);
+
+        // Hitung ongkir berdasarkan alamat yang disimpan
+        shippingCost = calculateShipping();
+
+        // Update harga total
+        calculateTotal();
+      } else {
+        alert('Harap isi semua informasi alamat');
+      }
+    }
+
+    // Hitung Ongkir
+    function calculateShipping() {
+      const address = localStorage.getItem('address');
+      if (address) {
+        return Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000);
+      } else {
+        return 0;
+      }
+    }
+
+    // Init render cart items
+    renderCartItems();
   </script>
 </body>
 </html>
