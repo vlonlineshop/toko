@@ -140,51 +140,51 @@
         if (filter === 'available' && !p.available) return;
         if (!p.name.toLowerCase().includes(search)) return;
 
-        container.innerHTML += 
+        container.innerHTML += `
           <div class="product">
             ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
             ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
             <img src="${p.image}" alt="${p.name}">
             <h3>${p.name}</h3>
             <p class="description">${p.description}</p>
-            <p id="price-${p.id}">${p.discount > 0 ? <span class="original-price">Rp${p.variantPrices[p.variants[0]].toLocaleString()}</span><br> : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span></p>
+            <p id="price-${p.id}">${p.discount > 0 ? `<span class="original-price">Rp${p.variantPrices[p.variants[0]].toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span></p>
             <div class="actions">
               <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.variants.map(v => <option value="${v}">${v}</option>).join('')}
+                ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
               </select>
               <select id="color-${p.id}">
-                ${p.colors.map(c => <option value="${c}">${c}</option>).join('')}
+                ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
               </select>
               <button onclick="addToCart(${p.id})">Tambah</button>
               <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
             </div>
           </div>
-        ;
+        `;
       });
     }
 
     function updatePrice(productId) {
       const product = products.find(p => p.id === productId);
-      const variant = document.getElementById(variant-${productId}).value;
+      const variant = document.getElementById(`variant-${productId}`).value;
 
       // Harga berdasarkan varian yang dipilih
       const variantPrice = product.variantPrices[variant] || product.variantPrices[product.variants[0]];
 
       const discountPrice = variantPrice - (variantPrice * product.discount / 100);
-      const priceElement = document.getElementById(price-${productId});
-      priceElement.innerHTML = ${product.discount > 0 ? <span class="original-price">Rp${variantPrice.toLocaleString()}</span><br> : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>;
+      const priceElement = document.getElementById(`price-${productId}`);
+      priceElement.innerHTML = `${product.discount > 0 ? `<span class="original-price">Rp${variantPrice.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
     }
 
     function addToCart(productId) {
       const product = products.find(p => p.id === productId);
-      const variant = document.getElementById(variant-${productId}).value;
-      const color = document.getElementById(color-${productId}).value;
+      const variant = document.getElementById(`variant-${productId}`).value;
+      const color = document.getElementById(`color-${productId}`).value;
 
       // Hitung ulang harga sesuai variant
       const variantPrice = product.variantPrices[variant] || product.variantPrices[product.variants[0]];
       const price = variantPrice - (variantPrice * product.discount / 100);
 
-      const key = ${productId}-${variant}-${color};
+      const key = `${productId}-${variant}-${color}`;
       if (cart[key]) {
         cart[key].quantity += 1;
       } else {
@@ -193,14 +193,13 @@
       localStorage.setItem('cart', JSON.stringify(cart));
       updateCart();
       document.getElementById('cart-popup').style.display = 'block';
+    }
 
-}
-
-function updateCart() {
-  const container = document.getElementById('cart-items');
-  container.innerHTML = '';
-  Object.entries(cart).forEach(([key, item]) => {
-    container.innerHTML += 
+    function updateCart() {
+      const container = document.getElementById('cart-items');
+      container.innerHTML = '';
+      Object.entries(cart).forEach(([key, item]) => {
+        container.innerHTML += `
       <li>
         <span>${item.name} (${item.variant} - ${item.color}) x ${item.quantity} - Rp${(item.price * item.quantity).toLocaleString()}</span>
         <div>
@@ -209,35 +208,35 @@ function updateCart() {
           <button onclick="removeFromCart('${key}')">Hapus</button>
         </div>
       </li>
-    ;
-  });
-  document.getElementById('checkout-button').disabled = Object.keys(cart).length === 0;
-}
-
-function adjustQuantity(key, amount) {
-  if (cart[key]) {
-    cart[key].quantity += amount;
-    if (cart[key].quantity <= 0) {
-      delete cart[key];
+    `;
+      });
+      document.getElementById('checkout-button').disabled = Object.keys(cart).length === 0;
     }
-    localStorage.setItem('cart', JSON.stringify(cart));
+
+    function adjustQuantity(key, amount) {
+      if (cart[key]) {
+        cart[key].quantity += amount;
+        if (cart[key].quantity <= 0) {
+          delete cart[key];
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart();
+      }
+    }
+
+    function removeFromCart(key) {
+      delete cart[key];
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCart();
+    }
+
+    function toggleCartPopup() {
+      const popup = document.getElementById('cart-popup');
+      popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+    }
+
+    renderProducts();
     updateCart();
-  }
-}
-
-function removeFromCart(key) {
-  delete cart[key];
-  localStorage.setItem('cart', JSON.stringify(cart));
-  updateCart();
-}
-
-function toggleCartPopup() {
-  const popup = document.getElementById('cart-popup');
-  popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
-}
-
-renderProducts();
-updateCart();
-</script> 
-    </body>
-    </html>
+  </script> 
+</body>
+</html>
