@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout - VL Online Shop</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+    header { background: #003366; color: white; padding: 1rem; }
+    h1 { margin: 0; font-size: 1.5rem; }
+    .checkout-container { max-width: 800px; margin: 2rem auto; padding: 1.5rem; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+    .section { margin-bottom: 1.5rem; }
+    .label { font-weight: bold; }
+    .total { font-size: 1.2rem; font-weight: bold; color: #003366; }
+    .btn { background-color: #28a745; color: white; padding: 1rem; border: none; border-radius: 5px; cursor: pointer; width: 100%; }
+    .btn:disabled { background-color: #ccc; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Checkout</h1>
+  </header>
+  <main>
+    <div class="checkout-container">
+      <div class="section">
+        <h2>Alamat Pengiriman</h2>
+        <input type="text" placeholder="Nama Lengkap" id="name" class="input-field" />
+        <input type="text" placeholder="Alamat Lengkap" id="address" class="input-field" />
+        <input type="text" placeholder="Nomor Telepon" id="phone" class="input-field" />
+      </div>
+
+      <div class="section">
+        <h2>Produk dalam Keranjang</h2>
+        <ul id="cart-items"></ul>
+      </div>
+
+      <div class="section" id="shipping-section">
+        <h3 class="label">Biaya Pengiriman</h3>
+        <div id="shipping-fee">Rp 0</div>
+      </div>
+
+      <div class="section" id="cod-section">
+        <h3 class="label">Metode Pembayaran</h3>
+        <label for="payment-method">Pilih Metode Pembayaran:</label>
+        <select id="payment-method">
+          <option value="transfer">Transfer Bank</option>
+          <option value="cod">COD</option>
+        </select>
+      </div>
+
+      <div class="total">
+        <p>Total: <span id="total-price">Rp 0</span></p>
+      </div>
+      <button class="btn" id="checkout-btn" disabled>Bayar Sekarang</button>
+    </div>
+  </main>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let totalPrice = 0;
+    let shippingFee = 0;
+
+    // Fungsi untuk merender produk di keranjang
+    function renderCartItems() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      cartItemsContainer.innerHTML = '';
+      totalPrice = 0;
+      let isDigitalProduct = false;
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        totalPrice += itemTotal;
+
+        if (item.category === 'digital') {
+          isDigitalProduct = true;
+        }
+
+        cartItemsContainer.innerHTML += `
+          <li>
+            <strong>${item.name}</strong> (${item.variant}) - Rp ${itemTotal.toLocaleString()} 
+            x ${item.quantity}
+          </li>
+        `;
+      });
+
+      // Jika ada produk digital, set ongkir 0 dan disable COD
+      if (isDigitalProduct) {
+        shippingFee = 0;
+        document.getElementById('shipping-fee').textContent = 'Rp 0';
+        document.getElementById('cod-section').style.display = 'none';  // Hide COD option
+      } else {
+        shippingFee = 5000;  // Contoh biaya ongkir
+        document.getElementById('shipping-fee').textContent = `Rp ${shippingFee.toLocaleString()}`;
+        document.getElementById('cod-section').style.display = 'block';  // Show COD option
+      }
+
+      // Update total harga
+      const finalPrice = totalPrice + shippingFee;
+      document.getElementById('total-price').textContent = `Rp ${finalPrice.toLocaleString()}`;
+
+      // Enable tombol checkout jika alamat sudah diisi
+      const name = document.getElementById('name').value;
+      const address = document.getElementById('address').value;
+      const phone = document.getElementById('phone').value;
+      const checkoutBtn = document.getElementById('checkout-btn');
+      checkoutBtn.disabled = !(name && address && phone);
+    }
+
+    // Fungsi untuk menangani klik tombol checkout
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+      const paymentMethod = document.getElementById('payment-method').value;
+
+      if (paymentMethod === 'cod' && shippingFee === 0) {
+        alert("Produk digital tidak bisa menggunakan COD.");
+        return;
+      }
+
+      // Proses checkout
+      alert('Pembayaran telah dilakukan!');
+    });
+
+    // Render keranjang ketika halaman dimuat
+    renderCartItems();
+  </script>
+</body>
+</html>
