@@ -130,17 +130,6 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-.popup {
-  display: none; 
-  position: fixed;
-  z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
-}
-
 .popup-content {
   background-color: #fff;
   margin: 15% auto;
@@ -149,23 +138,54 @@
   max-width: 400px;
   text-align: center;
   border-radius: 8px;
+  border: 2px solid #0059b3; /* Border lebih tegas */
+  position: relative;
 }
 
-.close-btn {
-  float: right;
-  font-size: 24px;
+.popup-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.popup-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
+}
+
+.popup-buttons .ok-btn {
+  background-color: #0059b3;
+  color: white;
+}
+
+.popup-buttons .ok-btn:hover {
+  background-color: #003366;
+}
+
+.popup-buttons .close-btn {
+  background-color: #ccc;
+  color: #333;
+}
+
+.popup-buttons .close-btn:hover {
+  background-color: #999;
 }
 
   </style>
 </head>
 <body>
+  <!-- Popup banner dipindah keluar dari <header> -->
   <div id="banner-popup" class="popup">
-  <div class="popup-content">
-    <span class="close-btn" onclick="closeBannerPopup()">&times;</span>
-    <img src="https://sdmntprwestus2.oaiusercontent.com/files/00000000-5e40-61f8-a84c-3f305c4efdc3/raw?se=2025-05-08T13%3A21%3A24Z&sp=r&sv=2024-08-04&sr=b&scid=00000000-0000-0000-0000-000000000000&skoid=30ec2761-8f41-44db-b282-7a0f8809659b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-08T11%3A46%3A13Z&ske=2025-05-09T11%3A46%3A13Z&sks=b&skv=2024-08-04&sig=4wejvXnfWr29fr/bdcE6ay8oYcNLFfMdUFB1TDwuWOQ%3D" alt="Banner Promo" style="width:100%; border-radius:8px;">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closeBannerPopup()">&times;</span>
+      <img src="https://via.placeholder.com/200x150?text=Canva+Pro" alt="Banner Promo">
+      <button onclick="goToProduct(1)">Oke</button>
+    </div>
   </div>
-</div>
   <header>
     <h1>VL Online Shop</h1>
     <div class="filter-search-wrapper">
@@ -180,7 +200,7 @@
           <option value="fashion">Fashion</option>
           <option value="makanan">Makanan</option>
           <option value="sembako">Sembako</option>
-          <option value="jajanan">Jajanan</option>
+          <option value="digital">Digital</option>
           <option value="best">Best Seller</option>
           <option value="discount">Diskon</option>
           <option value="available">Tersedia</option>
@@ -206,18 +226,17 @@
   </div>
 <div class="live-review" id="live-review"></div>
    <script>
-
-// Tampilkan banner saat pengguna pertama kali masuk
-  window.onload = function () {
-    // Banner popup muncul setelah 1 detik
-    setTimeout(function () {
-      document.getElementById('banner-popup').style.display = 'block';
-    }, 1000);
-  };
-
-  function closeBannerPopup() {
-    document.getElementById('banner-popup').style.display = 'none';
+function goToProduct(id) {
+  closeBannerPopup(); // tutup banner dulu
+  const productElement = document.getElementById('product-' + id);
+  if (productElement) {
+    productElement.scrollIntoView({ behavior: 'smooth' });
+    productElement.style.boxShadow = '0 0 10px 3px gold'; // efek highlight
+    setTimeout(() => {
+      productElement.style.boxShadow = ''; // hilangkan efek setelah 2 detik
+    }, 2000);
   }
+}
   const products = [
       
         {
@@ -261,7 +280,7 @@
         if (!p.name.toLowerCase().includes(search)) return;
 
         container.innerHTML += ` 
-          <div class="product">
+         <div class="product" id="product-${p.id}">
             <div class="badge-container">
               ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : '' }
               ${p.delivery ? '<span class="badge delivery">Delivery</span>' : '' }
