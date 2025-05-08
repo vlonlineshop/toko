@@ -299,9 +299,10 @@ function addToCart(id) {
     }
 
     function toggleCartPopup() {
-      const p = document.getElementById('cart-popup');
-      p.style.display = p.style.display === 'block' ? 'none' : 'block';
-    }
+  const p = document.getElementById('cart-popup');
+  console.log('Toggling cart popup'); // Debug log
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
+}
 
     function handleCheckout() {
       window.location.href = 'checkout.html';
