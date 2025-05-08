@@ -5,145 +5,396 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VL Online Shop</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    header { background: #007bff; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-    header h1 { margin: 0; font-size: 24px; }
-    #cart-btn { background: white; color: #007bff; border: none; padding: 6px 12px; cursor: pointer; font-weight: bold; border-radius: 4px; }
-    #products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; padding: 20px; }
-    .product { border: 1px solid #ccc; padding: 10px; border-radius: 8px; text-align: center; background: #fff; box-shadow: 2px 2px 6px rgba(0,0,0,0.1); }
-    .product img { max-width: 100%; border-radius: 4px; }
-    .cart-popup { position: fixed; top: 60px; right: 20px; width: 300px; background: white; border: 1px solid #ccc; padding: 15px; z-index: 999; display: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2); border-radius: 8px; }
-    .cart-item { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-    .cart-total { font-weight: bold; text-align: right; margin-top: 10px; }
-    select, button { margin-top: 5px; padding: 6px; font-size: 14px; border-radius: 4px; border: 1px solid #ccc; }
-    .cart-item span { display: block; }
-    .checkout-btn { margin-top: 10px; width: 100%; background: #28a745; color: white; font-weight: bold; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+    header { position: sticky; top: 0; background: linear-gradient(to right, #003366, #0059b3); color: white; padding: 1rem; z-index: 1000; }
+    header h1 { margin: 0; font-size: 1.4rem; font-weight: bold; }
+    .filter-search-wrapper { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; align-items: center; justify-content: space-between; }
+    .search-box { display: flex; flex: 1; max-width: 400px; }
+    .search-box input { flex: 1; padding: 0.6rem; border: none; border-radius: 5px 0 0 5px; }
+    .search-box button { padding: 0.6rem 1rem; border: none; background: #003366; color: white; border-radius: 0 5px 5px 0; cursor: pointer; }
+    .filter-box select { padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc; color: #333; margin-left: 0.5rem; }
+
+    main { padding: 1rem; max-width: 1200px; margin: auto; }
+    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+
+    .product {
+      background: white; border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 1rem; border: 1px solid #ccc; position: relative;
+    }
+    .product img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; }
+    .product h3 { margin: 0.5rem 0; color: #003366; }
+    .product p.description { font-size: 0.9rem; color: #555; margin: 0.5rem 0; }
+
+    .badge {
+      position: absolute;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+    .badge-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+    }
+    .badge.discount { background: red; color: white; }
+    .badge.delivery { background: #00bcd4; color: white; }
+    .badge.best { background: gold; color: black; }
+
+    .price { font-weight: bold; color: #0059b3; }
+    .original-price { text-decoration: line-through; color: #888; font-size: 0.9rem; }
+
+    .rating-stars { color: #ffc107; font-size: 0.9rem; margin-top: 0.3rem; }
+    .sold-info { font-size: 0.8rem; color: #888; }
+
+    .actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+    .actions button, .actions a, .actions select {
+      padding: 0.5rem; font-size: 0.9rem;
+      border-radius: 5px; border: 1px solid #ccc;
+    }
+    .actions button {
+      background: #0059b3; color: white; border: none; cursor: pointer;
+    }
+    .actions button:hover { background: #003366; }
+    .actions a {
+      background: #28a745; color: white; text-align: center; text-decoration: none;
+    }
+    .actions a:hover { background: #1e7e34; }
+
+    .keranjang-popup {
+      display: none;
+      position: fixed;
+      right: 20px;
+      bottom: 80px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 1rem;
+      width: 300px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 2000;
+    }
+    .keranjang-popup ul { list-style: none; padding: 0; margin: 0 0 1rem; }
+    .keranjang-popup li { margin-bottom: 0.5rem; }
+    .keranjang-popup .checkout button {
+      width: 100%;
+      padding: 0.7rem;
+      background: #0059b3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .keranjang-popup .checkout button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .floating-cart {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #003366;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 2000;
+    }
+
+    .live-reviews {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      font-size: 0.85rem;
+      color: #333;
+      z-index: 1000;
+      animation: slideUpFade 1s ease forwards, fadeOut 1s ease 5s forwards;
+      max-width: 280px;
+    }
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      to { opacity: 0; transform: translateY(-10px); }
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>VL Online Shop</h1>
-    <button id="cart-btn" onclick="toggleCart()">🛒 Keranjang (<span id="cart-count">0</span>)</button>
+    <div class="filter-search-wrapper">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Cari produk...">
+        <button onclick="renderProducts()">Cari</button>
+      </div>
+      <div class="filter-box">
+        <label for="categoryFilter">Kategori:</label>
+        <select id="categoryFilter" onchange="renderProducts()">
+          <option value="all">Semua</option>
+          <option value="fashion">Fashion</option>
+          <option value="makanan">Makanan</option>
+          <option value="sembako">Sembako</option>
+          <option value="jajanan">Jajanan</option>
+          <option value="best">Best Seller</option>
+          <option value="discount">Diskon</option>
+          <option value="available">Tersedia</option>
+          <option value="digital">Digital</option>
+        </select>
+      </div>
+    </div>
   </header>
 
   <main>
-    <div id="products"></div>
-    <div class="cart-popup" id="cart-popup">
-      <h3>Keranjang</h3>
-      <div id="cart-items"></div>
-      <div class="cart-total">Total: Rp <span id="cart-total">0</span></div>
-      <button class="checkout-btn" onclick="proceedToCheckout()">Checkout</button>
-    </div>
+    <div class="products" id="product-list"></div>
   </main>
+
+  <div class="keranjang-popup" id="cart-popup">
+    <h2>Keranjang</h2>
+    <ul id="cart-items"></ul>
+    <div class="total-items" id="total-items">Total item: 0</div>
+    <div class="checkout">
+      <button id="checkout-button" disabled onclick="handleCheckout()">Checkout</button>
+    </div>
+  </div>
+
+  <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
+    🛒<span id="cart-count" style="margin-left:5px;font-size:0.9rem;background:red;color:white;border-radius:50%;padding:2px 6px;">0</span>
+  </div>
+
+  <div id="live-review-container"></div>
+
 
   <script>
     const products = [
       {
         id: 1,
-        name: 'Sate Padang',
-        image: 'https://via.placeholder.com/200x150?text=Sate+Padang',
-        variantPrices: { 'Biasa': 15000, 'Jumbo': 22000 },
-        discount: 10
+        name: 'Martabak',
+        description: 'Martabak Saya Suka.',
+        variants: ['Telur Spesial', 'Manis Kacang'],
+        variantPrices: { 
+          'Telur Spesial': 40000,
+          'Manis Kacang': 35000
+        },
+        image: 'https://via.placeholder.com/200x150?text=Martabak',
+        discount: 0, bestSeller: true, delivery: true,
+        sold: 123, rating: 4.7, available: true,
+        category: 'makanan', colors: ['Biasa', 'Spesial'], checkoutUrl: '#'
       },
       {
         id: 2,
-        name: 'Nasi Goreng',
-        image: 'https://via.placeholder.com/200x150?text=Nasi+Goreng',
-        variantPrices: { 'Biasa': 12000, 'Spesial': 18000 },
-        discount: 5
+        name: 'Canva Pro',
+        description: 'Langganan Editing Online.',
+        variants: ['1 Bulan', '1 Tahun'],
+        variantPrices: { 
+          '1 Bulan': 5000,
+          '1 Tahun': 20000,
+          'Lifetime': 50000
+        },
+        image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
+        discount: 5, bestSeller: false, delivery: false,
+        sold: 58, rating: 4.5, available: true,
+        category: 'digital', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
+      },
+      {
+        id: 3,
+        name: 'Sate Padang',
+        description: 'Makanan Khas Padang.',
+        variants: ['1 Porsi Sate + Lontong', '1 Porsi Sate','Sate Padang','Lontong'],
+        variantPrices: {
+        '1 Porsi Sate + Lontong': 15000,
+        '1 Porsi Sate': 12000,
+        'Sate Padang': 13000,
+        'Lontong': 5000
+},
+
+        image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
+        discount: 5, bestSeller: false, delivery: false,
+        sold: 58, rating: 4.5, available: true,
+        category: 'makanan', colors: ['No Garansi', 'Full Garansi'], checkoutUrl: '#'
       },
     ];
 
-    const cart = [];
+    let cart = [];
 
     function renderProducts() {
-      const container = document.getElementById('products');
+      const container = document.getElementById('product-list');
+      const filter = document.getElementById('categoryFilter').value.toLowerCase();
+      const search = document.getElementById('searchInput').value.toLowerCase();
       container.innerHTML = '';
+
       products.forEach(p => {
-        container.innerHTML += `
+        const variant = p.variants[0];
+        let price = p.variantPrices[variant];
+        let discountPrice = price - (price * p.discount / 100);
+
+        if (filter !== 'all' && !['best', 'discount', 'available'].includes(filter) && p.category !== filter) return;
+        if (filter === 'best' && !p.bestSeller) return;
+        if (filter === 'discount' && p.discount === 0) return;
+        if (filter === 'available' && !p.available) return;
+        if (!p.name.toLowerCase().includes(search)) return;
+
+        const productHTML = 
           <div class="product">
-            <img src="${p.image}" alt="${p.name}" />
+            <div class="badge-container">
+              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : ''}
+              ${p.delivery ? '<span class="badge delivery">Delivery</span>' : ''}
+              ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : ''}
+            </div>
+            <img src="${p.image}" alt="${p.name}">
             <h3>${p.name}</h3>
-            <label>Varian:
-              <select id="variant-${p.id}">
-                ${Object.keys(p.variantPrices).map(v => `<option value="${v}">${v}</option>`).join('')}
+            <p class="description">${p.description}</p>
+            <div class="rating-stars">⭐ ${p.rating} &nbsp; <span class="sold-info">(${p.sold} terjual)</span></div>
+            <p id="price-${p.id}">
+              ${p.discount > 0 ? <span class="original-price">Rp${price.toLocaleString()}</span><br> : ''}
+              <span class="price">Rp${discountPrice.toLocaleString()}</span>
+            </p>
+            <div class="actions">
+              <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
+                ${p.variants.map(v => <option value="${v}">${v}</option>).join('')}
               </select>
-            </label><br/>
-            <label>Warna:
-              <select id="color-${p.id}">
-                <option value="Biasa">Biasa</option>
-                <option value="Full Garansi">Full Garansi (+Rp10.000)</option>
-                <option value="Spesial">Spesial (+Rp3.000)</option>
+              <select id="color-${p.id}" onchange="updatePrice(${p.id})">
+                ${p.colors.map(c => <option value="${c}">${c}</option>).join('')}
               </select>
-            </label><br/>
-            <button onclick="addToCart(${p.id})">Tambah</button>
+              <button onclick="addToCart(${p.id})">Tambah</button>
+              <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
+            </div>
           </div>
-        `;
+        ;
+
+        container.innerHTML += productHTML;
       });
     }
 
-    function addToCart(id) {
-      const p = products.find(prod => prod.id === id);
-      const variant = document.getElementById(`variant-${id}`).value;
-      const color = document.getElementById(`color-${id}`).value;
+
+    function updatePrice(id) {
+      const p = products.find(p => p.id === id);
+      const variant = document.getElementById(variant-${id}).value;
+      const color = document.getElementById(color-${id}).value;
       let price = p.variantPrices[variant];
       if (color === 'Full Garansi') price += 10000;
       if (color === 'Spesial') price += 3000;
       const discountPrice = price - (price * p.discount / 100);
+      const el = document.getElementById(price-${id});
+      el.innerHTML = ${p.discount ? <span class="original-price">Rp${price.toLocaleString()}</span><br> : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>;
+    }
 
-      const existing = cart.find(i => i.id === id && i.variant === variant && i.color === color);
+   function addToCart(item) {
+      const existing = cart.find(i => i.id === item.id && i.variant === item.variant && i.color === item.color);
       if (existing) {
-        existing.quantity += 1;
+        existing.quantity += item.quantity;
       } else {
-        cart.push({
-          id: p.id,
-          name: p.name,
-          variant,
-          color,
-          price: discountPrice,
-          quantity: 1
-        });
+        cart.push({...item});
       }
-
       updateCartUI();
     }
 
     function updateCartUI() {
-      const cartItems = document.getElementById('cart-items');
+      const list = document.getElementById('cart-items');
+      const checkoutBtn = document.getElementById('checkout-button');
+      const totalItemsEl = document.getElementById('total-items');
       const cartCount = document.getElementById('cart-count');
-      const cartTotal = document.getElementById('cart-total');
-      cartItems.innerHTML = '';
 
-      let total = 0;
+      list.innerHTML = '';
+      let totalItems = 0;
+
+      if (cart.length === 0) {
+        list.innerHTML = '<li>Keranjang kosong.</li>';
+        checkoutBtn.disabled = true;
+        totalItemsEl.textContent = 'Total item: 0';
+        cartCount.textContent = '0';
+        return;
+      }
+
       cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        cartItems.innerHTML += `
-          <div class="cart-item">
-            <span><strong>${item.name}</strong></span>
-            <span>Varian: ${item.variant}</span>
-            <span>Warna: ${item.color}</span>
-            <span>Qty: ${item.quantity}</span>
-            <span>Harga: Rp ${item.price.toLocaleString()}</span>
-          </div>
-        `;
+        totalItems += item.quantity;
+        const li = document.createElement('li');
+        li.innerHTML = 
+          <strong>${item.name}</strong><br>
+          Varian: ${item.variant}, Warna: ${item.color}<br>
+          Qty: 
+          <button onclick="changeQuantity(${item.id}, '${item.variant}', '${item.color}', -1)">-</button>
+          ${item.quantity}
+          <button onclick="changeQuantity(${item.id}, '${item.variant}', '${item.color}', 1)">+</button>
+          <button onclick="removeItem(${item.id}, '${item.variant}', '${item.color}')">🗑️</button>
+          <br>Total: Rp${(item.price * item.quantity).toLocaleString()}
+        ;
+        list.appendChild(li);
       });
 
-      cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-      cartTotal.textContent = total.toLocaleString();
+      checkoutBtn.disabled = false;
+      totalItemsEl.textContent = Total item: ${totalItems};
+      cartCount.textContent = totalItems;
     }
 
-    function toggleCart() {
+    function changeQuantity(id, variant, color, delta) {
+      const item = cart.find(i => i.id === id && i.variant === variant && i.color === color);
+      if (!item) return;
+      item.quantity += delta;
+      if (item.quantity <= 0) removeItem(id, variant, color);
+      updateCartUI();
+    }
+
+    function removeItem(id, variant, color) {
+      cart = cart.filter(i => !(i.id === id && i.variant === variant && i.color === color));
+      updateCartUI();
+    }
+
+    function toggleCartPopup() {
       const popup = document.getElementById('cart-popup');
       popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
     }
 
-    function proceedToCheckout() {
-      localStorage.setItem('cart', JSON.stringify(cart));
-      window.location.href = 'checkout.html';
+    function handleCheckout() {
+      alert('Checkout berhasil!');
+      cart = [];
+      updateCartUI();
     }
 
-    renderProducts();
+    function showLiveReview() {
+      const container = document.getElementById('live-review-container');
+      const comments = [
+        "Kualitasnya luar biasa, nggak nyesel beli ini!",
+        "Baru sampai, langsung dicoba dan suka banget 🥰",
+        "Packing rapi, pengiriman cepat. Makasih seller!",
+        "Warna dan modelnya sesuai foto, keren banget!",
+        "Udah coba sekali, langsung repeat order ✨",
+        "Harganya ramah di kantong, tapi kualitas bintang lima!",
+        "Beli buat hadiah, ternyata disukai banget 😍",
+        "Awalnya ragu, ternyata worth it banget!",
+        "Respons penjual cepat, recommended seller!",
+        "Produk sesuai deskripsi, mantap pokoknya 🔥"
+      ];
+      let index = 0;
+      setInterval(() => {
+        const p = document.createElement('p');
+        p.textContent = comments[index % comments.length];
+        container.innerHTML = '';
+        container.appendChild(p);
+        index++;
+      }, 5000);
+    }
+
+    showLiveReview();
   </script>
 </body>
 </html>
