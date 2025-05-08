@@ -222,14 +222,24 @@
 
     function calculateTotal() {
       total = 0;
-      shippingCost = Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000);
+      let shippingCost = 0;
+
+      const address = localStorage.getItem('address');
+      if (address) {
+        shippingCost = Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000);
+      } else {
+        shippingCost = 0;
+      }
+
       let hasDigital = false;
       for (let id in cart) {
         const item = cart[id];
         total += item.price * item.quantity;
         if (item.category === 'digital') hasDigital = true;
       }
+
       codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
+
       if (selectedPaymentMethod === 'cod' && hasDigital) {
         document.getElementById('payment-warning').style.display = 'block';
         document.getElementById('checkout-button').disabled = true;
@@ -237,6 +247,7 @@
         document.getElementById('payment-warning').style.display = 'none';
         document.getElementById('checkout-button').disabled = false;
       }
+
       updateTotalPrice();
     }
 
@@ -254,15 +265,7 @@
       selectedPaymentMethod = method;
       document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
       element.classList.add('selected');
-      adminFee = method === 'bca' ? 2500 : method === 'ewallet' ? 1500 : method === 'qris' ? Math.round(total * 0.01) : 0;
       calculateTotal();
-    }
-
-    function applyVoucher() {
-      const code = document.getElementById('voucher-code').value.trim().toUpperCase();
-      const vouchers = { 'DISKON10': 0.1, 'HARGA10000': 10000 };
-      discount = vouchers[code] ? (code === 'DISKON10' ? total * 0.1 : 10000) : 0;
-      updateTotalPrice();
     }
 
     function toggleAddressForm() {
@@ -275,36 +278,26 @@
       const phone = document.getElementById('phone-number').value;
       const addr = document.getElementById('full-address').value;
       const note = document.getElementById('courier-note').value;
+
       if (name && phone && addr) {
         const fullAddr = `${name}, ${phone}, ${addr}`;
         document.getElementById('address-display').textContent = fullAddr;
         document.getElementById('address-display').style.display = 'block';
         document.getElementById('address-form').style.display = 'none';
+
+        // Menyimpan alamat dan catatan ke localStorage
         localStorage.setItem('address', fullAddr);
         localStorage.setItem('courierNote', note);
-      } else alert('Harap isi semua informasi alamat');
+
+        // Setelah menyimpan alamat, hitung ulang ongkir
+        calculateTotal();  // Memanggil fungsi untuk menghitung ulang ongkir
+      } else {
+        alert('Harap isi semua informasi alamat');
+      }
     }
 
-    document.getElementById('apply-voucher-btn').addEventListener('click', applyVoucher);
-    document.getElementById('checkout-button').addEventListener('click', () => {
-      if (!selectedPaymentMethod) return alert('Pilih metode pembayaran!');
-      const address = localStorage.getItem('address');
-      if (!address) return alert('Harap tambahkan alamat terlebih dahulu!');
-      const note = localStorage.getItem('courierNote') || '-';
-      const message = encodeURIComponent(`🧾 *Checkout Order*\n\n📦 Produk:\n${Object.values(cart).map(p => `- ${p.name} x${p.quantity}`).join('\n')}\n\n🏠 Alamat: ${address}\n🏷️ Catatan: ${note}\n💳 Metode: ${selectedPaymentMethod}\n📦 Ongkir: Rp ${shippingCost.toLocaleString()}\n💰 Total: Rp ${(total + adminFee + codFee + shippingCost - discount).toLocaleString()}`);
-      window.location.href = `https://wa.me/6285709458101?text=${message}`;
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedAddress = localStorage.getItem('address');
-      const savedNote = localStorage.getItem('courierNote');
-      if (savedAddress) {
-        document.getElementById('address-display').textContent = savedAddress;
-        document.getElementById('address-display').style.display = 'block';
-        document.getElementById('courier-note').value = savedNote || '';
-      }
-      renderCartItems();
-    });
+    // Init render cart items
+    renderCartItems();
   </script>
 </body>
 </html>
