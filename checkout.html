@@ -25,16 +25,21 @@
             text-align: center;
             color: #333;
             margin-bottom: 20px;
+            font-size: 2rem;
         }
 
         h2, h3 {
             color: #333;
             margin-top: 20px;
+            font-size: 1.5rem;
         }
 
         label {
             font-weight: bold;
             color: #333;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1rem;
         }
 
         .address, .cart-items, .payment-methods, .voucher-section {
@@ -48,16 +53,19 @@
             border-radius: 4px;
             font-size: 16px;
             resize: vertical;
+            margin-bottom: 15px;
         }
 
         .cart-items div {
             padding: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             border-bottom: 1px solid #ddd;
         }
 
         .cart-items div p {
             margin: 5px 0;
+            font-size: 1rem;
+            color: #555;
         }
 
         .cart-items button, .voucher-button, .payment-methods input {
@@ -89,6 +97,7 @@
 
         .payment-methods input {
             margin-right: 10px;
+            margin-bottom: 10px;
         }
 
         #total-cost {
@@ -104,11 +113,13 @@
         .voucher-message {
             margin-top: 10px;
             color: green;
+            font-size: 1rem;
         }
 
         .voucher-error {
             margin-top: 10px;
             color: red;
+            font-size: 1rem;
         }
 
         button {
@@ -119,6 +130,7 @@
             margin-top: 20px;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 1rem;
         }
 
         button:hover {
@@ -208,10 +220,10 @@
             cart.forEach(item => {
                 const itemDiv = document.createElement('div');
                 itemDiv.innerHTML = `
-                    <p>Nama Produk: ${item.name}</p>
-                    <p>Color/Garansi: ${item.color || 'N/A'} / ${item.warranty || 'N/A'}</p>
-                    <p>Variant: ${item.variant}</p>
-                    <p>Harga: Rp ${item.price.toLocaleString()}</p>
+                    <p><strong>Nama Produk:</strong> ${item.name}</p>
+                    <p><strong>Color/Garansi:</strong> ${item.color || 'N/A'} / ${item.warranty || 'N/A'}</p>
+                    <p><strong>Variant:</strong> ${item.variant}</p>
+                    <p><strong>Harga:</strong> Rp ${item.price.toLocaleString()}</p>
                     <button onclick="removeFromCart('${item.name}')">Hapus</button>
                     <button onclick="updateQuantity('${item.name}', 'increase')">Tambah</button>
                     <button onclick="updateQuantity('${item.name}', 'decrease')">Kurangi</button>
