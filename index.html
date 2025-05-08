@@ -137,7 +137,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5); /* overlay gelap */
+  background: rgba(0, 0, 0, 0.5); /* overlay gelap */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -146,14 +146,21 @@
 
 .popup-content {
   background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  width: 80%;
-  max-width: 400px;
+  margin: 10% auto;
+  padding: 10px;
+  width: 90%;
+  max-width: 90%;
   text-align: center;
   border-radius: 8px;
   border: 2px solid #0059b3; /* Border lebih tegas */
   position: relative;
+}
+
+.popup img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  object-fit: contain;
 }
 
 .popup-buttons {
@@ -171,37 +178,61 @@
   font-weight: bold;
 }
 
-  .popup button.ok-btn {
-    background-color: #0059b3;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-top: 10px;
-  }
+.popup button.ok-btn {
+  background-color: #0059b3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+}
 
-  .popup button.ok-btn:hover {
-    background-color: #004080;
+.popup button.ok-btn:hover {
+  background-color: #004080;
+}
 
 .popup-buttons .close-btn {
   background-color: #ccc;
   color: #333;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 18px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .popup-buttons .close-btn:hover {
   background-color: #999;
 }
 
+/* Tambahan untuk memastikan popup bekerja dengan baik di perangkat mobile */
+@media (max-width: 600px) {
+  .popup-content {
+    width: 95%;
+    margin: 20% auto;
+  }
+  .popup img {
+    max-width: 100%;
+    height: auto;
+  }
+}
   </style>
 </head>
 <body>
-  <!-- Popup banner dipindah keluar dari <header> -->
-  <div id="banner-popup" class="popup">
-    <div class="popup-content">
-      <span class="close-btn" onclick="closeBannerPopup()">&times;</span>
-      <img src="https://vlonlineshop.github.io/toko/VL.png" alt="Banner Promo">
-<button class="ok-btn" onclick="goToProduct(1)">Oke</button>
+  <div class="popup">
+  <div class="popup-content">
+    <button class="close-btn" onclick="closePopup()">X</button>
+    <img src="/VL_resized_9x16.png" alt="Banner Image">
+    <div class="popup-buttons">
+      <button class="ok-btn">OK</button>
+    </div>
+  </div>
+</div>
+
     </div>
   </div>
   <header>
@@ -244,6 +275,10 @@
   </div>
 <div class="live-review" id="live-review"></div>
    <script>
+function closePopup() {
+  document.querySelector('.popup').style.display = 'none';
+}
+    
 function goToProduct(id) {
   closeBannerPopup(); // tutup banner dulu
   const productElement = document.getElementById('product-' + id);
