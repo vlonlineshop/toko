@@ -112,6 +112,25 @@
       animation: fadeInCart 0.5s ease-out;
     }
 
+    .live-review {
+      position: fixed;
+      bottom: 80px;
+      left: 20px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-size: 0.9rem;
+      z-index: 998;
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
   </style>
 </head>
 <body>
@@ -153,7 +172,7 @@
   <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
     <span>🛒</span>
   </div>
-
+<div class="live-review" id="live-review"></div>
    <script>
     const products = [
       {
@@ -173,7 +192,7 @@
         rating: 4.7,
         available: true,
         category: 'makanan',
-        colors: ['No Garansi', 'Full Garansi'],
+        colors: ['--Pilih--','No Garansi', 'Full Garansi'],
         checkoutUrl: '#'
       },
       {
@@ -215,7 +234,7 @@
         if (filter === 'available' && !p.available) return;
         if (!p.name.toLowerCase().includes(search)) return;
 
-        container.innerHTML += `
+        container.innerHTML += ` 
           <div class="product">
             <div class="badge-container">
               ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : '' }
@@ -254,30 +273,29 @@
       const discountPrice = price - (price * p.discount / 100);
       const el = document.getElementById(`price-${id}`);
       el.innerHTML = `
-        ${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}
-        <span class="price">Rp${discountPrice.toLocaleString()}</span>`;
+        ${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : '' }
+        <span class="price">Rp${discountPrice.toLocaleString()}</span>
+      `;
     }
 
-function addToCart(id) {
-  const product = products.find(p => p.id === id);
-  const variant = document.getElementById(`variant-${id}`).value;
-  const color = document.getElementById(`color-${id}`).value;
-  const price = product.variantPrices[variant];
-  const discountPrice = price - (price * product.discount / 100);
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      const variant = document.getElementById(`variant-${id}`).value;
+      const color = document.getElementById(`color-${id}`).value;
+      const price = product.variantPrices[variant];
+      const discountPrice = price - (price * product.discount / 100);
 
-  const cartItem = cart.find(item => item.id === id && item.variant === variant && item.color === color);
+      const cartItem = cart.find(item => item.id === id && item.variant === variant && item.color === color);
 
-  if (cartItem) {
-    cartItem.quantity++;
-  } else {
-    cart.push({ ...product, variant, color, price: discountPrice, quantity: 1 });
-  }
+      if (cartItem) {
+        cartItem.quantity++;
+      } else {
+        cart.push({ ...product, variant, color, price: discountPrice, quantity: 1 });
+      }
 
-  console.log(cart); // Debugging line: Log the updated cart to the console.
-
-  localStorage.setItem('cart', JSON.stringify(cart));
-  updateCart();
-}
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCart();
+    }
 
     function updateCart() {
       const cartItemsList = document.getElementById('cart-items');
@@ -299,18 +317,32 @@ function addToCart(id) {
     }
 
     function toggleCartPopup() {
-  const p = document.getElementById('cart-popup');
-  console.log('Toggling cart popup'); // Debug log
-  p.style.display = p.style.display === 'block' ? 'none' : 'block';
-}
+      const p = document.getElementById('cart-popup');
+      p.style.display = p.style.display === 'block' ? 'none' : 'block';
+    }
 
     function handleCheckout() {
       window.location.href = 'checkout.html';
     }
 
-    // Render produk dan keranjang setelah halaman dimuat
     renderProducts();
     updateCart();
-  </script>
-</body>
+
+    const reviewProfiles = [
+      '🧑‍💼 Alex', '👩‍🍳 Bunda Tika', '👨‍💻 RudiDev', '👩‍🎓 Nia', '🧔 Om Heri', '👩 Nana', '👨 Bayu', '👩‍🏫 Sarah', '👨‍🔧 Dika', '👨‍🍳 Mas Gibran'
+    ];
+
+    const foodReviews = [
+      "Rasanya enak banget, bikin nagih!🥳", "Harganya pas di kantong! ⭐", "Porsi yang pas, cocok buat makan siang!", "Dikirim cepat, rasa tetap mantap!", "Beneran Best Seller, udah sering beli!", "Wah, suka banget nih!", "Diskonnya oke banget, apalagi buat makanan enak kayak gini!", "Delivery nya cepet, enak banget! 😋", "Pengen lagi! Ulangi terus masakannya!"
+];
+setInterval(() => {
+  const randomReview = Math.floor(Math.random() * foodReviews.length);
+  const randomProfile = Math.floor(Math.random() * reviewProfiles.length);
+  document.getElementById('live-review').innerHTML = `
+    <strong>${reviewProfiles[randomProfile]}</strong>: ${foodReviews[randomReview]}
+  `;
+  document.getElementById('live-review').style.display = 'block';
+}, 3000);
+</script> 
+</body> 
 </html>
