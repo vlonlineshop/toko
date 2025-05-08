@@ -175,66 +175,27 @@
 <div class="live-review" id="live-review"></div>
    <script>
     const products = [
-      {
-        id: 1,
-        name: 'Martabak',
-        description: 'Martabak Saya Suka.',
-        variants: ['Telur Spesial', 'Manis Kacang'],
-        variantPrices: {
-          'Telur Spesial': 40000,
-          'Manis Kacang': 35000,
-        },
-        image: 'https://via.placeholder.com/200x150?text=Martabak',
-        discount: 10,
-        bestSeller: true,
-        delivery: true,
-        sold: 123,
-        rating: 4.7,
-        available: true,
-        category: 'makanan',
-        colors: ['--Pilih--'],
-        checkoutUrl: '#'
-      },
-      {
-        id: 2,
-        name: 'Canva Pro',
-        description: 'Langganan Editing Online.',
-        variants: ['1 Bulan', '1 Tahun'],
-        variantPrices: {
-          '1 Bulan': 40000,
-          '1 Tahun': 120000,
-        },
-        image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-        discount: 5,
-        bestSeller: false,
-        delivery: false,
-        sold: 58,
-        rating: 4.5,
-        available: true,
-        category: 'digital',
-        colors: ['No Garansi', 'Full Garansi'],
-        checkoutUrl: '#'
-      }
-       {
-        id: 3,
-        name: 'Hoodie',
-        description: 'Langganan Editing Online.',
-        variants: ['--Pilih Ukuran--'S','M','L','XL','XXL',],
-        variantPrices: {
-          '1 Bulan': 40000,
-          '1 Tahun': 120000,
-        },
-        image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-        discount: 5,
-        bestSeller: false,
-        delivery: false,
-        sold: 58,
-        rating: 4.5,
-        available: true,
-        category: 'fashion',
-        colors: ['--Pilih Warna--','Hitam'],
-        checkoutUrl: '#'
-      }
+      
+        {
+   id: 1,
+   name: 'Canva Pro',
+   description: 'Langganan Editing Online.',
+   variants: ['1 Bulan', '1 Tahun'],
+   variantPrices: {
+     '1 Bulan': 40000,
+     '1 Tahun': 120000,
+   },
+   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
+   discount: 5,
+   bestSeller: false,
+   delivery: false,
+   sold: 58,
+   rating: 4.5,
+   available: true,
+   category: 'digital',
+   colors: ['No Garansi', 'Full Garansi'],
+   checkoutUrl: '#'
+ }
     ];
 
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
