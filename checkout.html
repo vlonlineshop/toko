@@ -84,16 +84,17 @@
       container.innerHTML = '';
       for (let id in cart) {
         const p = cart[id];
-        container.innerHTML += \
+        container.innerHTML += `
           <div class="cart-item">
-            <p>\${p.name} \${p.variant ? \(\${p.variant})\ : ''} \${p.color ? \- Warna: \${p.color}\ : ''} x \${p.quantity}</p>
+            <p>${p.name} ${p.variant ? `(${p.variant})` : ''} ${p.color ? `- Warna: ${p.color}` : ''} x ${p.quantity}</p>
             <div>
-              <button onclick="updateQuantity('\${id}', -1)">−</button>
-              <span style="margin: 0 8px;">\${p.quantity}</span>
-              <button onclick="updateQuantity('\${id}', 1)">+</button>
+              <button onclick="updateQuantity('${id}', -1)">−</button>
+              <span style="margin: 0 8px;">${p.quantity}</span>
+              <button onclick="updateQuantity('${id}', 1)">+</button>
             </div>
-            <p>Rp \${(p.price * p.quantity).toLocaleString()}</p>
-          </div>\;
+            <p>Rp ${(p.price * p.quantity).toLocaleString()}</p>
+          </div>
+        `;
       }
       calculateTotal();
     }
@@ -109,40 +110,40 @@
     }
 
     function calculateTotal() {
-  total = 0;
-  let hasDigital = false;
-  for (let id in cart) {
-    const item = cart[id];
-    total += item.price * item.quantity;
-    if (item.category === 'digital') hasDigital = true;
-  }
-  
-  // Update biaya admin sesuai dengan metode pembayaran
-  if (selectedPaymentMethod === 'bca') {
-    adminFee = 2500;  // BCA
-  } else if (selectedPaymentMethod === 'qris') {
-    adminFee = Math.round(total * 0.01);  // QRIS 1%
-  } else if (selectedPaymentMethod === 'cod') {
-    adminFee = Math.round(total * 0.02);  // COD 2%
-  } else if (selectedPaymentMethod === 'ewallet') {
-    adminFee = 1500;  // E-Wallet
-  } else {
-    adminFee = 0;  // Jika tidak ada metode yang dipilih
-  }
+      total = 0;
+      let hasDigital = false;
+      for (let id in cart) {
+        const item = cart[id];
+        total += item.price * item.quantity;
+        if (item.category === 'digital') hasDigital = true;
+      }
+      
+      // Update biaya admin sesuai dengan metode pembayaran
+      if (selectedPaymentMethod === 'bca') {
+        adminFee = 2500;  // BCA
+      } else if (selectedPaymentMethod === 'qris') {
+        adminFee = Math.round(total * 0.01);  // QRIS 1%
+      } else if (selectedPaymentMethod === 'cod') {
+        adminFee = Math.round(total * 0.02);  // COD 2%
+      } else if (selectedPaymentMethod === 'ewallet') {
+        adminFee = 1500;  // E-Wallet
+      } else {
+        adminFee = 0;  // Jika tidak ada metode yang dipilih
+      }
 
-  codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
-  document.getElementById('checkout-button').disabled = total === 0;
-  updateTotalPrice();
-}
+      codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
+      document.getElementById('checkout-button').disabled = total === 0;
+      updateTotalPrice();
+    }
 
     function updateTotalPrice() {
       let final = total + shippingCost + adminFee + codFee - discount;
-      document.getElementById('total-price').textContent = \Rp \${final.toLocaleString()}\;
-      document.getElementById('shipping-info').textContent = \Ongkir: Rp \${shippingCost.toLocaleString()}\;
-      document.getElementById('admin-fee-info').textContent = \Biaya Admin: Rp \${adminFee.toLocaleString()}\;
-      document.getElementById('cod-fee-info').textContent = selectedPaymentMethod === 'cod' ? \Biaya COD: Rp \${codFee.toLocaleString()}\ : '';
+      document.getElementById('total-price').textContent = `Rp ${final.toLocaleString()}`;
+      document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingCost.toLocaleString()}`;
+      document.getElementById('admin-fee-info').textContent = `Biaya Admin: Rp ${adminFee.toLocaleString()}`;
+      document.getElementById('cod-fee-info').textContent = selectedPaymentMethod === 'cod' ? `Biaya COD: Rp ${codFee.toLocaleString()}` : '';
       document.getElementById('discount-info').style.display = discount ? 'block' : 'none';
-      document.getElementById('discount-info').textContent = \Diskon: Rp \${discount.toLocaleString()}\;
+      document.getElementById('discount-info').textContent = `Diskon: Rp ${discount.toLocaleString()}`;
     }
 
     function selectPayment(method, element) {
@@ -163,7 +164,7 @@
       const addr = document.getElementById('full-address').value;
       const note = document.getElementById('courier-note').value;
       if (name && phone && addr) {
-        const fullAddr = \\${name}, \${phone}, \${addr}\;
+        const fullAddr = `${name}, ${phone}, ${addr}`;
         document.getElementById('address-display').textContent = fullAddr;
         document.getElementById('address-display').style.display = 'block';
         document.getElementById('address-form').style.display = 'none';
@@ -189,37 +190,26 @@
       message += '*🛒 Daftar Produk:*%0A';
       for (let id in cart) {
         const item = cart[id];
-        message += \• \${item.name} \${item.variant ? '(' + item.variant + ')' : ''} \${item.color ? '- Warna: ' + item.color : ''} x \${item.quantity} = Rp \${(item.price * item.quantity).toLocaleString()}%0A\;
+        message += `• ${item.name} ${item.variant ? '(' + item.variant + ')' : ''} ${item.color ? '- Warna: ' + item.color : ''} x ${item.quantity} = Rp ${(item.price * item.quantity).toLocaleString()}%0A`;
       }
       message += '━━━━━━━━━━━━━━━━━━━%0A';
-      message += \*💳 Metode Pembayaran:* \${getPaymentLabel(selectedPaymentMethod)}%0A\;
-      message += \*💰 Biaya Admin:* Rp \${adminFee.toLocaleString()}%0A\;
+      message += `*💳 Metode Pembayaran:* ${getPaymentLabel(selectedPaymentMethod)}%0A`;
+      message += `*💰 Biaya Admin:* Rp ${adminFee.toLocaleString()}%0A`;
       if (selectedPaymentMethod === 'cod') {
-        message += \*📦 Biaya COD:* Rp \${codFee.toLocaleString()}%0A\;
+        message += `*📦 Biaya COD:* Rp ${codFee.toLocaleString()}%0A`;
       }
-      message += \*🚚 Ongkir:* Rp \${shippingCost.toLocaleString()}%0A\;
-      if (discount) message += \*🎁 Diskon:* Rp \${discount.toLocaleString()}%0A\;
+      message += `*🚚 Ongkir:* Rp ${shippingCost.toLocaleString()}%0A`;
+      if (discount) message += `*🎁 Diskon:* Rp ${discount.toLocaleString()}%0A`;
       const final = total + shippingCost + adminFee + codFee - discount;
-      message += \*💵 Total Bayar:* Rp \${final.toLocaleString()}%0A\;
+      message += `*💵 Total Bayar:* Rp ${final.toLocaleString()}%0A`;
       message += '━━━━━━━━━━━━━━━━━━━%0A';
-      message += \*🏠 Alamat Pengiriman:*%0A\${address}%0A%0A\;
-      message += \📬 *Catatan untuk Kurir:*%0A\${note}%0A\;
+      message += `*🏠 Alamat Pengiriman:*%0A${address}%0A%0A`;
+      message += `📬 *Catatan untuk Kurir:*%0A${note}%0A`;
       const phone = '6285709458101';
-      const waURL = \https://wa.me/\${phone}?text=\${encodeURIComponent(message)}\;
+      const waURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       window.open(waURL, '_blank');
     });
 
     function getPaymentLabel(method) {
       switch (method) {
-        case 'bca': return 'Transfer Bank (BCA/SeaBank)';
-        case 'qris': return 'QRIS';
-        case 'ewallet': return 'E-Wallet';
-        case 'cod': return 'Cash On Delivery (COD)';
-        default: return '-';
-      }
-    }
-
-    renderCartItems();
-  </script>
-</body>
-</html>
+        case 'bca':
