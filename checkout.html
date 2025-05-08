@@ -2,513 +2,212 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VL Online Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - VL Online Shop</title>
   <style>
+    /* Styling halaman di sini */
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
-    header { position: sticky; top: 0; background: linear-gradient(to right, #003366, #0059b3); color: white; padding: 1rem; z-index: 1000; }
-    header h1 { margin: 0; font-size: 1.4rem; font-weight: bold; }
-    .filter-search-wrapper { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; align-items: center; justify-content: space-between; }
-    .search-box { display: flex; flex: 1; max-width: 400px; }
-    .search-box input { flex: 1; padding: 0.6rem; border: none; border-radius: 5px 0 0 5px; }
-    .search-box button { padding: 0.6rem 1rem; border: none; background: #003366; color: white; border-radius: 0 5px 5px 0; cursor: pointer; }
-    .filter-box select { padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc; color: #333; margin-left: 0.5rem; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; margin: 0; }
+    header { background: linear-gradient(to right, #003366, #0059b3); color: white; padding: 1rem 1.5rem; text-align: center; }
     main { padding: 1rem; max-width: 1200px; margin: auto; }
-    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
-    .product { background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding: 1rem; border: 1px solid #ccc; position: relative; }
-    .product img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; }
-    .product h3 { margin: 0.5rem 0; color: #003366; }
-    .product p.description { font-size: 0.9rem; color: #555; margin: 0.5rem 0; }
-    .price { font-weight: bold; color: #0059b3; }
-    .original-price { text-decoration: line-through; color: #888; font-size: 0.9rem; }
-    .actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
-    .actions button, .actions a, .actions select { padding: 0.5rem; font-size: 0.9rem; border-radius: 5px; border: 1px solid #ccc; }
-    .actions button { background: #0059b3; color: white; border: none; cursor: pointer; }
-    .actions button:hover { background: #003366; }
-    .actions a { background: #28a745; color: white; text-align: center; text-decoration: none; }
-    .actions a:hover { background: #1e7e34; }
-
-    .badge-container {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: bold;
-      padding: 4px 8px;
-      border-radius: 5px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .badge.discount { background: red; color: white; }
-    .badge.delivery { background: #00bcd4; color: white; }
-    .badge.best { background: gold; color: black; }
-
-    .keranjang-popup {
-      display: none;
-      position: fixed;
-      right: 20px;
-      bottom: 60px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      width: 300px;
-      max-height: 400px;
-      overflow-y: auto;
-      z-index: 999;
-    }
-
-    .floating-cart {
-      position: fixed;
-      bottom: 10px;
-      right: 20px;
-      background: #0059b3;
-      color: white;
-      padding: 12px;
-      border-radius: 50%;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      font-size: 1.4rem;
-      cursor: pointer;
-      z-index: 1000;
-    }
-
-    .checkout-button {
-      background: #28a745;
-      color: white;
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
-      transition: background 0.3s;
-    }
-
-    .checkout-button:hover {
-      background: #218838;
-    }
-
-    @keyframes fadeInCart {
-      0% { opacity: 0; transform: translateX(50px); }
-      100% { opacity: 1; transform: translateX(0); }
-    }
-
-    .keranjang-popup ul {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    .keranjang-popup li {
-      margin: 10px 0;
-      animation: fadeInCart 0.5s ease-out;
-    }
-
-    .live-review {
-      position: fixed;
-      bottom: 80px;
-      left: 20px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      font-size: 0.9rem;
-      z-index: 998;
-      display: none;
-      animation: fadeIn 0.5s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* overlay gelap */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000; /* pastikan di atas header (1000) dan cart (999) */
-}
-
-.popup-content {
-  background-color: #fff;
-  margin: 10% auto;
-  padding: 10px;
-  width: 90%;
-  max-width: 90%;
-  text-align: center;
-  border-radius: 8px;
-  border: 2px solid #0059b3; /* Border lebih tegas */
-  position: relative;
-}
-
-.popup-image {
-  max-width: 90vw;  /* maksimum 90% dari lebar layar */
-  max-height: 80vh; /* maksimum 80% dari tinggi layar */
-  width: auto;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-
-.popup-buttons {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.popup-buttons button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.popup button.ok-btn {
-  background-color: #0059b3;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-top: 10px;
-}
-
-.popup button.ok-btn:hover {
-  background-color: #004080;
-}
-
-.popup-buttons .close-btn {
-  background-color: #ccc;
-  color: #333;
-  padding: 10px;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 18px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.popup-buttons .close-btn:hover {
-  background-color: #999;
-}
-
-/* Tambahan untuk memastikan popup bekerja dengan baik di perangkat mobile */
-@media (max-width: 600px) {
-  .popup-content {
-    width: 95%;
-    margin: 20% auto;
-  }
-  .popup img {
-    max-width: 100%;
-    height: auto;
-  }
-}
+    .checkout-container { display: flex; flex-direction: column; gap: 1rem; }
+    .address-container, .checkout-box { background-color: #ffffff; padding: 1rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .address-header { display: flex; justify-content: space-between; align-items: center; }
+    .add-address-btn { background-color: #0059b3; color: white; padding: 0.4rem 0.8rem; border: none; border-radius: 5px; cursor: pointer; }
+    .address-form { margin-top: 1rem; display: none; }
+    .address-form input, .address-form textarea { width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; border: 1px solid #ccc; border-radius: 5px; }
+    .address-display { margin-top: 0.5rem; background-color: #f1f1f1; padding: 0.8rem; border-radius: 5px; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: white; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+    .cart-item button { background: #eee; border: 1px solid #ccc; padding: 4px 8px; cursor: pointer; border-radius: 4px; }
+    .voucher-section { margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .voucher-section input { padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc; width: 60%; }
+    .voucher-section button { padding: 0.6rem; background-color: #0059b3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .payment-option { background-color: #f1f1f1; padding: 1rem; margin-bottom: 0.5rem; border-radius: 5px; cursor: pointer; }
+    .payment-option:hover, .payment-option.selected { background-color: #dbe9ff; border-left: 5px solid #0059b3; }
+    .total-section { margin-top: 1rem; padding: 1rem; background: white; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+    .total-section p { margin: 0.5rem 0; }
+    .total-section .total-price { font-size: 1.8rem; font-weight: bold; color: #0059b3; font-family: 'Courier New', Courier, monospace; }
+    .checkout-button { background-color: #28a745; color: white; padding: 0.8rem; font-size: 1.1rem; width: 100%; border: none; border-radius: 5px; cursor: pointer; margin-top: 1rem; }
   </style>
 </head>
 <body>
-  <div class="popup">
-  <div class="popup-content">
-    <button class="close-btn" onclick="closePopup()">X</button>
-    <img src="https://vlonlineshop.github.io/toko/VL_resized_600x600.png" alt="Banner Image">
-    <div class="popup-buttons">
-      <button class="ok-btn" onclick="goToProduct(1)">OK</button>
-    </div>
-  </div>
-</div>
-
-    </div>
-  </div>
-  <header>
-    <h1>VL Online Shop</h1>
-    <div class="filter-search-wrapper">
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Cari produk...">
-        <button onclick="renderProducts()">Cari</button>
-      </div>
-      <div class="filter-box">
-        <label for="categoryFilter">Kategori:</label>
-        <select id="categoryFilter" onchange="renderProducts()">
-          <option value="all">Semua</option>
-          <option value="fashion">Fashion</option>
-          <option value="makanan">Makanan</option>
-          <option value="sembako">Sembako</option>
-          <option value="digital">Digital</option>
-          <option value="best">Best Seller</option>
-          <option value="discount">Diskon</option>
-          <option value="available">Tersedia</option>
-        </select>
-      </div>
-    </div>
-  </header>
+  <header><h1>Checkout - VL Online Shop</h1></header>
   <main>
-    <div class="products" id="product-list"></div>
-  </main>
-
-  <div class="keranjang-popup" id="cart-popup">
-    <h2>Keranjang</h2>
-    <ul id="cart-items"></ul>
-    <div id="cart-total">
-      <p>Total Produk: <span id="total-count">0</span></p>
-      <p>Total Harga: Rp <span id="total-price">0</span></p>
+    <div class="checkout-container">
+      <div class="address-container">
+        <div class="address-header">
+          <h3>Alamat Pengiriman</h3>
+          <button class="add-address-btn" onclick="toggleAddressForm()">Tambah Alamat</button>
+        </div>
+        <div id="address-display" class="address-display" style="display:none;"></div>
+        <div id="address-form" class="address-form">
+          <input type="text" id="full-name" placeholder="Nama Lengkap" />
+          <input type="text" id="phone-number" placeholder="Nomor HP" />
+          <input type="text" id="full-address" placeholder="Alamat Lengkap" />
+          <textarea id="courier-note" placeholder="Catatan untuk kurir (opsional)" rows="3"></textarea>
+          <button class="add-address-btn" onclick="saveAddress()">Simpan Alamat</button>
+        </div>
+      </div>
+      <div class="checkout-box">
+        <h2>Keranjang Anda</h2>
+        <div id="cart-items"></div>
+        <div class="voucher-section">
+          <input type="text" id="voucher-code" placeholder="Masukkan kode voucher..." />
+          <button id="apply-voucher-btn">Terapkan Voucher</button>
+        </div>
+        <div class="payment-section">
+          <h3>Pilih Metode Pembayaran</h3>
+          <div class="payment-option" onclick="selectPayment('bca', this)">Transfer Bank (BCA/SeaBank)</div>
+          <div class="payment-option" onclick="selectPayment('qris', this)">QRIS</div>
+          <div class="payment-option" onclick="selectPayment('ewallet', this)">E-Wallet</div>
+          <div class="payment-option" onclick="selectPayment('cod', this)">Cash On Delivery (COD)</div>
+          <p id="payment-warning" style="color:red; display:none; font-weight:bold;">COD tidak tersedia untuk produk digital!</p>
+        </div>
+        <div class="total-section">
+          <p class="total-price" id="total-price">Rp 0</p>
+          <p id="discount-info" style="color: green; display: none;">Diskon: Rp 0</p>
+          <p id="shipping-info">Ongkir: Rp 0</p>
+          <p id="admin-fee-info">Biaya Admin: Rp 0</p>
+          <p id="cod-fee-info">Biaya COD: Rp 0</p>
+        </div>
+        <button id="checkout-button" class="checkout-button" disabled>Checkout</button>
+      </div>
     </div>
-    <div class="checkout"><button id="checkout-button" class="checkout-button" disabled onclick="handleCheckout()">Checkout</button></div>
-  </div>
-  <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
-    <span>🛒</span>
-  </div>
-<div class="live-review" id="live-review"></div>
-   <script>
-function closePopup() {
-  document.querySelector('.popup').style.display = 'none';
-}
-    
-function goToProduct(id) {
-  closeBannerPopup(); // tutup banner dulu
-  const productElement = document.getElementById('product-' + id);
-  if (productElement) {
-    productElement.scrollIntoView({ behavior: 'smooth' });
-    productElement.style.boxShadow = '0 0 10px 3px gold'; // efek highlight
-    setTimeout(() => {
-      productElement.style.boxShadow = ''; // hilangkan efek setelah 2 detik
-    }, 2000);
-  }
-}
-  const products = [
-      
-        {
-   id: 1,
-   name: 'Canva Pro',
-   description: 'Langganan Editing Online.',
-   variants: ['1 Bulan', '1 Tahun'],
-   variantPrices: {
-     '1 Bulan': 40000,
-     '1 Tahun': 120000,
-   },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
-   bestSeller: false,
-   delivery: false,
-   sold: 58,
-   rating: 4.5,
-   available: true,
-   category: 'digital',
-   colors: ['No Garansi', 'Full Garansi'],
-   checkoutUrl: '#',
- 
-}
-    ];
+  </main>
+  <script>
+    const cart = JSON.parse(localStorage.getItem('cart')) || {};
+    let total = 0, discount = 0, shippingCost = 0, adminFee = 0, codFee = 0;
+    let selectedPaymentMethod = null;
 
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    function renderProducts() {
-      const container = document.getElementById('product-list');
-      const filter = document.getElementById('categoryFilter').value.toLowerCase();
-      const search = document.getElementById('searchInput').value.toLowerCase();
+    function renderCartItems() {
+      const container = document.getElementById('cart-items');
       container.innerHTML = '';
-      products.forEach(p => {
-        const variant = p.variants[0];
-        let price = p.variantPrices[variant];
-        let discountPrice = price - (price * p.discount / 100);
-        if (filter !== 'all' && !['best', 'discount', 'available'].includes(filter) && p.category !== filter) return;
-        if (filter === 'best' && !p.bestSeller) return;
-        if (filter === 'discount' && p.discount === 0) return;
-        if (filter === 'available' && !p.available) return;
-        if (!p.name.toLowerCase().includes(search)) return;
-
-        container.innerHTML += ` 
-         <div class="product" id="product-${p.id}">
-            <div class="badge-container">
-              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : '' }
-              ${p.delivery ? '<span class="badge delivery">Delivery</span>' : '' }
-              ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : '' }
+      for (let id in cart) {
+        const p = cart[id];
+        container.innerHTML += `
+          <div class="cart-item">
+            <p>${p.name} ${p.variant ? `(${p.variant})` : ''} ${p.color ? `- Warna: ${p.color}` : ''} x ${p.quantity}</p>
+            <div>
+              <button onclick="updateQuantity('${id}', -1)">−</button>
+              <span style="margin: 0 8px;">${p.quantity}</span>
+              <button onclick="updateQuantity('${id}', 1)">+</button>
             </div>
-            <img src="${p.image}" alt="${p.name}">
-            <h3>${p.name}</h3>
-            <p class="description">${p.description}</p>
-            <div class="rating-stars">⭐ ${p.rating} &nbsp; <span class="sold-info">(${p.sold} terjual)</span></div>
-            <p id="price-${p.id}">
-              ${p.discount > 0 ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : '' }
-              <span class="price">Rp${discountPrice.toLocaleString()}</span>
-            </p>
-            <div class="actions">
-              <select id="variant-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
-              </select>
-              <select id="color-${p.id}" onchange="updatePrice(${p.id})">
-                ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
-              </select>
-              <button onclick="addToCart(${p.id})">Tambah</button>
-              <a href="${p.checkoutUrl}" target="_blank">Beli Sekarang</a>
-            </div>
+            <p>Rp ${(p.price * p.quantity).toLocaleString()}</p>
           </div>
         `;
-      });
-    }
-
-    function updatePrice(id) {
-      const p = products.find(p => p.id === id);
-      const v = document.getElementById(`variant-${id}`).value;
-      const c = document.getElementById(`color-${id}`).value;
-      let price = p.variantPrices[v];
-      if (c === 'Full Garansi') price += 10000;
-      const discountPrice = price - (price * p.discount / 100);
-      const el = document.getElementById(`price-${id}`);
-      el.innerHTML = `
-        ${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : '' }
-        <span class="price">Rp${discountPrice.toLocaleString()}</span>
-      `;
-    }
-
-    function addToCart(id) {
-  const product = products.find(p => p.id === id);
-  const variant = document.getElementById(`variant-${id}`).value;
-  const color = document.getElementById(`color-${id}`).value;
-  const price = product.variantPrices[variant];
-  const discountPrice = price - (price * product.discount / 100);
-
-  const cartItem = cart.find(item => item.id === id && item.variant === variant && item.color === color);
-
-  if (cartItem) {
-    cartItem.quantity++;
-  } else {
-    cart.push({ ...product, variant, color, price: discountPrice, quantity: 1 });
-  }
-
-  localStorage.setItem('cart', JSON.stringify(cart));
-  updateCart();
-}
-    
-
-    function updateCart() {
-      const cartItemsList = document.getElementById('cart-items');
-      cartItemsList.innerHTML = '';
-      let totalPrice = 0;
-      let totalCount = 0;
-
-      cart.forEach(item => {
-        totalPrice += item.price * item.quantity;
-        totalCount += item.quantity;
-        cartItemsList.innerHTML += `
-          <li>${item.name} (${item.variant}, ${item.color}) x ${item.quantity} - Rp ${item.price * item.quantity}</li>
-        `;
-      });
-
-      document.getElementById('total-price').textContent = totalPrice.toLocaleString();
-      document.getElementById('total-count').textContent = totalCount;
-      document.getElementById('checkout-button').disabled = totalCount === 0;
-    }
-
-    function toggleCartPopup() {
-      const p = document.getElementById('cart-popup');
-      p.style.display = p.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function handleCheckout() {
-      window.location.href = 'checkout.html';
-    }
-
-    renderProducts();
-    updateCart();
-
-     const foodReviews = [
-      "Rasanya enak banget, bikin nagih! 🥳",
-      "Harganya pas di kantong! ⭐",
-      "Porsi yang pas, cocok buat makan siang!",
-      "Dikirim cepat, rasa tetap mantap!",
-      "Beneran Best Seller, udah sering beli!",
-      "Wah, suka banget nih!",
-      "Diskonnya oke banget, apalagi buat makanan enak kayak gini!",
-      "Delivery nya cepet, enak banget! 😋",
-      "Pengen lagi! Ulangi terus masakannya!"
-    ];
-
-    const fashionReviews = [
-      "Desainnya keren banget, stylish!",
-      "Kualitas bahannya sangat bagus, nyaman dipakai.",
-      "Warna dan ukurannya pas, cocok banget buat dipakai.",
-      "Paket cepat sampai dan sesuai dengan deskripsi.",
-      "Baju ini membuat penampilan lebih trendy!"
-    ];
-
-    const digitalReviews = [
-      "Sangat bermanfaat, jadi lebih mudah desainnya!",
-      "Langganan ini membantu saya meningkatkan kreativitas.",
-      "Harga sebanding dengan kualitas yang didapat.",
-      "Sangat cocok untuk pekerjaan desain saya!"
-    ];
-
-    const reviewProfiles = [
-      '🧑‍💼 Alex', '👩‍🍳 Bunda Tika', '👨‍💻 RudiDev', '👩‍🎓 Nia', '🧔 Om Heri', '👩 Nana', '👨 Bayu', '👩‍🏫 Sarah', '👨‍🔧 Dika', '👨‍🍳 Mas Gibran',
-      '👩 Aulia', '👨 Ahmad', '👩 Linda', '👨 Budi', '👩 Yani', '👨 Anton', '👩 Nia', '👨 Tono', '👩 Putri', '👨 Fahmi', '👩 Novi', '👨 Aldi', '👩 Indah',
-      '👨 Surya', '👩 Ira', '👨 Bayu', '👩 Irma', '👨 Ramli', '👩 Fani', '👨 Toni', '👩 Dewi', '👨 Riki', '👩 Sari', '👨 Ismail', '👩 Bella', '👨 Hendri',
-      '👩 Nabila', '👨 Zaki', '👩 Tantri', '👨 Bima', '👩 Tiara', '👨 Sigit', '👩 Nani', '👨 Jimmy', '👩 Dwi', '👨 Firman', '👩 Anggi', '👨 Satria', '👩 Fitri',
-      '👨 Indra', '👩 Reski', '👨 Yudi', '👩 Lilis', '👨 Wira', '👩 Saraswati', '👨 Nando', '👩 Santi', '👨 Gunawan', '👩 Yuliana', '👨 Adi', '👩 Ayu', '👨 Dedi',
-      '👩 Shella', '👨 Farhan', '👩 Eka', '👨 Rio', '👩 April', '👨 Julian', '👩 Rina', '👨 Reza', '👩 Tantri', '👨 Yoga', '👩 Lala', '👨 Dian', '👩 Angga',
-      '👨 Bayu', '👩 Rika', '👨 Anwar', '👩 Alia', '👨 Suryo', '👩 Najwa', '👨 Kevin', '👩 Dina', '👨 Rico', '👩 Erika'
-    ];
-
-    function getRandomReview(product) {
-      const randomProfile = Math.floor(Math.random() * reviewProfiles.length);
-      let reviewText = '';
-      const randomRating = product.rating;
-      const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      const seconds = now.getSeconds().toString().padStart(2, '0');
-      const currentTime = `${hours}:${minutes}:${seconds}`;
-
-      if (product.category === 'makanan') {
-        reviewText = foodReviews[Math.floor(Math.random() * foodReviews.length)];
-      } else if (product.category === 'pakaian') {
-        reviewText = fashionReviews[Math.floor(Math.random() * fashionReviews.length)];
-      } else if (product.category === 'digital') {
-        reviewText = digitalReviews[Math.floor(Math.random() * digitalReviews.length)];
       }
-
-      return {
-        profile: reviewProfiles[randomProfile],
-        productName: product.name,
-        rating: randomRating,
-        reviewText: reviewText,
-        time: currentTime
-      };
+      calculateTotal();
     }
 
-    function showLiveReview() {
-      const randomProduct = products[Math.floor(Math.random() * products.length)];
-      const review = getRandomReview(randomProduct);
-      document.getElementById('live-review').innerHTML = `
-        <strong>${review.profile}</strong> membeli <em>"${review.productName}"</em><br />
-        Rating: ${review.rating} ⭐<br />
-        ${review.reviewText}<br />
-        <small>Waktu: ${review.time}</small>
-      `;
-      document.getElementById('live-review').style.display = 'block';
+    function updateQuantity(productId, delta) {
+      if (!cart[productId]) return;
+      cart[productId].quantity += delta;
+      if (cart[productId].quantity <= 0) {
+        delete cart[productId];
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCartItems();
     }
 
-    setInterval(showLiveReview, 5000);  // Update review setiap 5 detik
+    function calculateTotal() {
+      total = 0;
+      let hasDigital = false;
+      for (let id in cart) {
+        const item = cart[id];
+        total += item.price * item.quantity;
+        if (item.category === 'digital') hasDigital = true;
+      }
+      codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
+      adminFee = ['bca', 'qris', 'ewallet'].includes(selectedPaymentMethod) ? 2500 : 0;
+      document.getElementById('checkout-button').disabled = total === 0;
+      updateTotalPrice();
+    }
 
- 
-</script> 
-</body> 
+    function updateTotalPrice() {
+      let final = total + shippingCost + adminFee + codFee - discount;
+      document.getElementById('total-price').textContent = `Rp ${final.toLocaleString()}`;
+      document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingCost.toLocaleString()}`;
+      document.getElementById('admin-fee-info').textContent = `Biaya Admin: Rp ${adminFee.toLocaleString()}`;
+      document.getElementById('cod-fee-info').textContent = selectedPaymentMethod === 'cod' ? `Biaya COD: Rp ${codFee.toLocaleString()}` : '';
+      document.getElementById('discount-info').style.display = discount ? 'block' : 'none';
+      document.getElementById('discount-info').textContent = `Diskon: Rp ${discount.toLocaleString()}`;
+    }
+
+    function selectPayment(method, element) {
+      selectedPaymentMethod = method;
+      document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+      element.classList.add('selected');
+      calculateTotal();
+    }
+
+    function toggleAddressForm() {
+      const form = document.getElementById('address-form');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function saveAddress() {
+      const name = document.getElementById('full-name').value;
+      const phone = document.getElementById('phone-number').value;
+      const addr = document.getElementById('full-address').value;
+      const note = document.getElementById('courier-note').value;
+      if (name && phone && addr) {
+        const fullAddr = `${name}, ${phone}, ${addr}`;
+        document.getElementById('address-display').textContent = fullAddr;
+        document.getElementById('address-display').style.display = 'block';
+        document.getElementById('address-form').style.display = 'none';
+        localStorage.setItem('address', fullAddr);
+        localStorage.setItem('courierNote', note);
+        shippingCost = calculateShipping();
+        calculateTotal();
+      } else {
+        alert('Harap isi semua informasi alamat');
+      }
+    }
+
+    function calculateShipping() {
+      const address = localStorage.getItem('address');
+      return address ? Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000) : 0;
+    }
+
+    document.getElementById('checkout-button').addEventListener('click', () => {
+      const address = localStorage.getItem('address') || '-';
+      const note = localStorage.getItem('courierNote') || '-';
+      let message = '*📦 Checkout Order - VL Online Shop*%0A';
+      message += '━━━━━━━━━━━━━━━━━━━%0A';
+      message += '*🛒 Daftar Produk:*%0A';
+      for (let id in cart) {
+        const item = cart[id];
+        message += `• ${item.name} ${item.variant ? '(' + item.variant + ')' : ''} ${item.color ? '- Warna: ' + item.color : ''} x ${item.quantity} = Rp ${(item.price * item.quantity).toLocaleString()}%0A`;
+      }
+      message += '━━━━━━━━━━━━━━━━━━━%0A';
+      message += `*💳 Metode Pembayaran:* ${getPaymentLabel(selectedPaymentMethod)}%0A`;
+      message += `*💰 Biaya Admin:* Rp ${adminFee.toLocaleString()}%0A`;
+      if (selectedPaymentMethod === 'cod') {
+        message += `*📦 Biaya COD:* Rp ${codFee.toLocaleString()}%0A`;
+      }
+      message += `*🚚 Ongkir:* Rp ${shippingCost.toLocaleString()}%0A`;
+      if (discount) message += `*🎁 Diskon:* Rp ${discount.toLocaleString()}%0A`;
+      const final = total + shippingCost + adminFee + codFee - discount;
+      message += `*💵 Total Bayar:* Rp ${final.toLocaleString()}%0A`;
+      message += '━━━━━━━━━━━━━━━━━━━%0A';
+      message += `*🏠 Alamat Pengiriman:*%0A${address}%0A%0A`;
+      message += `📬 *Catatan untuk Kurir:*%0A${note}%0A`;
+      const phone = '6285709458101';
+      const waURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      window.open(waURL, '_blank');
+    });
+
+    function getPaymentLabel(method) {
+      switch (method) {
+        case 'bca': return 'Transfer Bank (BCA/SeaBank)';
+        case 'qris': return 'QRIS';
+        case 'ewallet': return 'E-Wallet';
+        case 'cod': return 'Cash On Delivery (COD)';
+        default: return '-';
+      }
+    }
+
+    renderCartItems();
+  </script>
+</body>
 </html>
