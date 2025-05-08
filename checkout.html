@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout - VL Online Shop</title>
   <style>
+    /* Styling untuk elemen halaman */
     * { box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -222,17 +223,9 @@
 
     function calculateTotal() {
       total = 0;
-      shippingCost = 0;
-
-      // Ambil alamat dari localStorage dan hitung ongkir berdasarkan alamat
-      const address = localStorage.getItem('address');
-      if (address) {
-        shippingCost = calculateShipping(address);
-      } else {
-        shippingCost = 0;
-      }
-
       let hasDigital = false;
+
+      // Hitung total belanja
       for (let id in cart) {
         const item = cart[id];
         total += item.price * item.quantity;
@@ -241,25 +234,23 @@
 
       codFee = selectedPaymentMethod === 'cod' ? Math.round(total * 0.02) : 0;
 
-      if (selectedPaymentMethod === 'cod' && hasDigital) {
-        document.getElementById('payment-warning').style.display = 'block';
-        document.getElementById('checkout-button').disabled = true;
-      } else {
-        document.getElementById('payment-warning').style.display = 'none';
-        document.getElementById('checkout-button').disabled = false;
-      }
-
+      // Update total harga dan ongkir
       updateTotalPrice();
     }
 
-    function calculateShipping(address) {
-      // Fungsi ini menghitung ongkir berdasarkan alamat yang disimpan
-      // Misalnya, mengacu pada jarak atau wilayah pengiriman
-      return Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000);
+    function calculateShipping() {
+      const address = localStorage.getItem('address');
+      if (address) {
+        return Math.min(5000 + Math.floor(Math.random() * 6) * 2000, 15000);  // Contoh perhitungan ongkir
+      } else {
+        return 0;
+      }
     }
 
     function updateTotalPrice() {
+      shippingCost = calculateShipping();  // Hitung ulang ongkir setiap kali total diperbarui
       let final = total + shippingCost + adminFee + codFee - discount;
+
       document.getElementById('total-price').textContent = `Rp ${final.toLocaleString()}`;
       document.getElementById('shipping-info').textContent = `Ongkir: Rp ${shippingCost.toLocaleString()}`;
       document.getElementById('admin-fee-info').textContent = `Biaya Admin: Rp ${adminFee.toLocaleString()}`;
@@ -272,7 +263,7 @@
       selectedPaymentMethod = method;
       document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
       element.classList.add('selected');
-      calculateTotal();
+      calculateTotal();  // Perbarui total, tapi jangan hitung ulang ongkir
     }
 
     function toggleAddressForm() {
@@ -297,7 +288,7 @@
         localStorage.setItem('courierNote', note);
 
         // Setelah menyimpan alamat, hitung ulang ongkir
-        calculateTotal();  // Memanggil fungsi untuk menghitung ulang ongkir
+        calculateTotal();  // Hanya menghitung ulang total setelah alamat disimpan
       } else {
         alert('Harap isi semua informasi alamat');
       }
