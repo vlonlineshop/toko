@@ -172,26 +172,27 @@
     document.getElementById('checkout-button').addEventListener('click', () => {
       const address = localStorage.getItem('address') || '-';
       const note = localStorage.getItem('courierNote') || '-';
-let message = '*📦 Checkout Order - VL Online Shop*%0A';
+let message = '*[Checkout Order - VL Online Shop]*%0A';
 message += '━━━━━━━━━━━━━━━━━━━%0A';
-message += '*🛒 Daftar Produk:*%0A';
+message += '*[Daftar Produk]*%0A';
 for (let id in cart) {
   const item = cart[id];
   message += `• ${item.name} ${item.variant ? '(' + item.variant + ')' : ''} ${item.color ? '- Warna: ' + item.color : ''} x ${item.quantity} = Rp ${(item.price * item.quantity).toLocaleString()}%0A`;
 }
 message += '━━━━━━━━━━━━━━━━━━━%0A';
-message += `*💳 Metode Pembayaran:* ${getPaymentLabel(selectedPaymentMethod)}%0A`;
-message += `*💰 Biaya Admin:* Rp ${adminFee.toLocaleString()}%0A`;
+message += `*[Metode Pembayaran]*: ${getPaymentLabel(selectedPaymentMethod)}%0A`;
+message += `*[Biaya Admin]*: Rp ${adminFee.toLocaleString()}%0A`;
 if (selectedPaymentMethod === 'cod') {
-  message += `*📦 Biaya COD:* Rp ${codFee.toLocaleString()}%0A`;
+  message += `*[Biaya COD]*: Rp ${codFee.toLocaleString()}%0A`;
 }
-message += `*🚚 Ongkir:* Rp ${shippingCost.toLocaleString()}%0A`;
-if (discount) message += `*🎁 Diskon:* Rp ${discount.toLocaleString()}%0A`;
+message += `*[Ongkir]*: Rp ${shippingCost.toLocaleString()}%0A`;
+if (discount) message += `*[Diskon]*: Rp ${discount.toLocaleString()}%0A`;
 const final = total + shippingCost + adminFee + codFee - discount;
-message += `*💵 Total Bayar:* Rp ${final.toLocaleString()}%0A`;
+message += `*[Total Bayar]*: Rp ${final.toLocaleString()}%0A`;
 message += '━━━━━━━━━━━━━━━━━━━%0A';
-message += `*📍 Alamat Pengiriman:*%0A${address}%0A%0A`;
-message += `📝 *Catatan Kurir:*%0A${note || '-'}%0A`;
+message += `*[Alamat Pengiriman]*:%0A${address}%0A%0A`;
+message += `*[Catatan untuk Kurir]*:%0A${note}%0A`;
+
 
       const phone = '6285709458101';
       const waURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
