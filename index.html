@@ -171,16 +171,18 @@
   <div class="keranjang-popup" id="cart-popup">
     <h2>Keranjang</h2>
     <ul id="cart-items"></ul>
+    <div class="total-items" id="total-items">Total item: 0</div>
     <div class="checkout">
       <button id="checkout-button" disabled onclick="handleCheckout()">Checkout</button>
     </div>
   </div>
 
   <div class="floating-cart" id="floating-cart" onclick="toggleCartPopup()">
-    🛒
+    🛒<span id="cart-count" style="margin-left:5px;font-size:0.9rem;background:red;color:white;border-radius:50%;padding:2px 6px;">0</span>
   </div>
 
   <div id="live-review-container"></div>
+
 
   <script>
     const products = [
@@ -296,82 +298,105 @@
       el.innerHTML = `${p.discount ? `<span class="original-price">Rp${price.toLocaleString()}</span><br>` : ''}<span class="price">Rp${discountPrice.toLocaleString()}</span>`;
     }
 
-    function addToCart(id) {
-      const p = products.find(p => p.id === id);
-      const variant = document.getElementById(`variant-${id}`).value;
-      const color = document.getElementById(`color-${id}`).value;
-      let price = p.variantPrices[variant];
-      if (color === 'Full Garansi') price += 10000;
-      if (color === 'Spesial') price += 3000;
-      const discounted = price - (price * p.discount / 100);
-
-      const existing = cart.find(i => i.id === id && i.variant === variant && i.color === color);
+   function addToCart(item) {
+      const existing = cart.find(i => i.id === item.id && i.variant === item.variant && i.color === item.color);
       if (existing) {
-        existing.quantity += 1;
+        existing.quantity += item.quantity;
       } else {
-        cart.push({ id, name: p.name, variant, color, price: discounted, quantity: 1 });
+        cart.push({...item});
       }
-
       updateCartUI();
-      toggleCartPopup();
     }
 
     function updateCartUI() {
       const list = document.getElementById('cart-items');
       const checkoutBtn = document.getElementById('checkout-button');
+      const totalItemsEl = document.getElementById('total-items');
+      const cartCount = document.getElementById('cart-count');
+
       list.innerHTML = '';
+      let totalItems = 0;
+
       if (cart.length === 0) {
         list.innerHTML = '<li>Keranjang kosong.</li>';
         checkoutBtn.disabled = true;
+        totalItemsEl.textContent = 'Total item: 0';
+        cartCount.textContent = '0';
         return;
       }
+
       cart.forEach(item => {
+        totalItems += item.quantity;
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${item.name}</strong><br>Varian: ${item.variant}, Warna: ${item.color}<br>Qty: ${item.quantity} | Rp${(item.price * item.quantity).toLocaleString()}`;
+        li.innerHTML = `
+          <strong>${item.name}</strong><br>
+          Varian: ${item.variant}, Warna: ${item.color}<br>
+          Qty: 
+          <button onclick="changeQuantity(${item.id}, '${item.variant}', '${item.color}', -1)">-</button>
+          ${item.quantity}
+          <button onclick="changeQuantity(${item.id}, '${item.variant}', '${item.color}', 1)">+</button>
+          <button onclick="removeItem(${item.id}, '${item.variant}', '${item.color}')">🗑️</button>
+          <br>Total: Rp${(item.price * item.quantity).toLocaleString()}
+        `;
         list.appendChild(li);
       });
+
       checkoutBtn.disabled = false;
+      totalItemsEl.textContent = `Total item: ${totalItems}`;
+      cartCount.textContent = totalItems;
+    }
+
+    function changeQuantity(id, variant, color, delta) {
+      const item = cart.find(i => i.id === id && i.variant === variant && i.color === color);
+      if (!item) return;
+      item.quantity += delta;
+      if (item.quantity <= 0) removeItem(id, variant, color);
+      updateCartUI();
+    }
+
+    function removeItem(id, variant, color) {
+      cart = cart.filter(i => !(i.id === id && i.variant === variant && i.color === color));
+      updateCartUI();
     }
 
     function toggleCartPopup() {
-      const p = document.getElementById('cart-popup');
-      p.style.display = p.style.display === 'block' ? 'none' : 'block';
+      const popup = document.getElementById('cart-popup');
+      popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
     }
 
     function handleCheckout() {
-      localStorage.setItem('cartItems', JSON.stringify(cart));
-      window.location.href = 'checkout.html';
-    }
-
-    function getRandomItem(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
+      alert('Checkout berhasil!');
+      cart = [];
+      updateCartUI();
     }
 
     function showLiveReview() {
-      const highRated = products.filter(p => p.rating > 4.2);
-      if (highRated.length === 0) return;
-      const p = getRandomItem(highRated);
-      const names = ["Aldi", "Rina", "Teguh", "Sari", "Dika", "Lina", "Fajar", "Nina"];
-      const emojis = ["😊", "😁", "👍", "🔥", "😍", "👏", "💯", "🎉"];
+      const container = document.getElementById('live-review-container');
       const comments = [
-        "Kualitas mantap!", "Pelayanan cepat & memuaskan!", "Rekomendasi banget 👍",
-        "Harga terjangkau, produk oke!", "Puas banget belanja di sini 😍",
-        "Produk sesuai deskripsi 💯", "Pengiriman cepat dan aman ✨",
-        "Suka banget sama produknya!", "Repeat order pasti 🔁", "Terbaik pokoknya!"
+        "Kualitasnya luar biasa, nggak nyesel beli ini!",
+        "Baru sampai, langsung dicoba dan suka banget 🥰",
+        "Packing rapi, pengiriman cepat. Makasih seller!",
+        "Warna dan modelnya sesuai foto, keren banget!",
+        "Udah coba sekali, langsung repeat order ✨",
+        "Harganya ramah di kantong, tapi kualitas bintang lima!",
+        "Beli buat hadiah, ternyata disukai banget 😍",
+        "Awalnya ragu, ternyata worth it banget!",
+        "Respons penjual cepat, recommended seller!",
+        "Produk sesuai deskripsi, mantap pokoknya 🔥"
       ];
-
-      const review = document.createElement('div');
-      review.className = 'live-reviews';
-      review.innerHTML = `<strong>${getRandomItem(names)}</strong> membeli <strong>${p.name}</strong><br>
-        Rating: ⭐ ${(4 + Math.random()).toFixed(1)} ${getRandomItem(emojis)}<br>
-        <em>"${getRandomItem(comments)}"</em>`;
-      document.getElementById('live-review-container').appendChild(review);
-      setTimeout(() => review.remove(), 6000);
+      let index = 0;
+      setInterval(() => {
+        const p = document.createElement('p');
+        p.textContent = comments[index % comments.length];
+        container.innerHTML = '';
+        container.appendChild(p);
+        index++;
+      }, 5000);
     }
 
-    setInterval(() => { if (Math.random() > 0.4) showLiveReview(); }, 10000);
-    renderProducts();
+    showLiveReview();
   </script>
 </body>
 </html>
+
 
