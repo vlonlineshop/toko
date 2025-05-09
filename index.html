@@ -306,17 +306,38 @@ function goToProduct(id) {
      'Large [5 pcs]': 13000,
    },
    image: '/pisangaroma.png',
-   discount: 5,
+   discount: 10,
    bestSeller: false,
    delivery: true,
    sold: 50,
    rating: 4.9,
    available: true,
    category: 'makanan',
-   colors: ['Coklat', 'Matcha', 'Vanilla'],
+   colors: ['Coklat', 'Matcha', 'Vanila'],
    checkoutUrl: '#',
  
-}
+},
+        {
+   id: 2,
+   name: 'Chicken Spicy Sauce',
+   description: 'Makanan Homemade by VL Clave.',
+   variants: ['Paket Lengkap', 'Chicken Only'],
+   variantPrices: {
+     'Paket Lengkap': 18000,
+     'Chicken Only': 15000,
+   },
+   image: '/VL_resized_600x600.png',
+   discount: 10,
+   bestSeller: false,
+   delivery: true,
+   sold: 15,
+   rating: 4.9,
+   available: true,
+   category: 'makanan',
+   colors: ['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'],
+   checkoutUrl: '#',
+ 
+},
     ];
 
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -339,7 +360,7 @@ function goToProduct(id) {
         container.innerHTML += ` 
          <div class="product" id="product-${p.id}">
             <div class="badge-container">
-              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : '' }
+              ${p.discount > 0 ? '<span class="badge discount">Diskon 10%</span>' : '' }
               ${p.delivery ? '<span class="badge delivery">Delivery</span>' : '' }
               ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : '' }
             </div>
