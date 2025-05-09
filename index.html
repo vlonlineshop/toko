@@ -251,11 +251,9 @@
           <option value="all">Semua</option>
           <option value="fashion">Fashion</option>
           <option value="makanan">Makanan</option>
-          <option value="sembako">Sembako</option>
           <option value="digital">Digital</option>
           <option value="best">Best Seller</option>
           <option value="discount">Diskon</option>
-          <option value="available">Tersedia</option>
         </select>
       </div>
     </div>
@@ -297,23 +295,23 @@ function goToProduct(id) {
       
         {
    id: 1,
-   name: 'Canva Pro',
-   description: 'Langganan Editing Online.',
-   variants: ['1 Bulan', '1 Tahun'],
+   name: 'Pisang Aroma',
+   description: 'Cemilan Homemade by VL Clave.',
+   variants: ['Small [2 pcs]', 'Large [5 pcs]'],
    variantPrices: {
-     '1 Bulan': 40000,
-     '1 Tahun': 120000,
+     'Small [2 pcs]': 6000,
+     'Large [5 pcs]']': 12000,
    },
-   image: 'https://via.placeholder.com/200x150?text=Canva+Pro',
-   discount: 5,
+   image: '/pisangaroma.png',
+   discount: 10,
    bestSeller: false,
-   delivery: false,
-   sold: 58,
-   rating: 4.5,
+   delivery: true,
+   sold: 3,
+   rating: 5.0,
    available: true,
-   category: 'digital',
-   colors: ['No Garansi', 'Full Garansi'],
-   checkoutUrl: '#',
+   category: 'makanan',
+   colors: ['Coklat', 'Vanilla', 'Matcha'],
+   checkoutUrl: '',
  
 }
     ];
@@ -338,7 +336,7 @@ function goToProduct(id) {
         container.innerHTML += ` 
          <div class="product" id="product-${p.id}">
             <div class="badge-container">
-              ${p.discount > 0 ? '<span class="badge discount">Diskon</span>' : '' }
+              ${p.discount > 0 ? '<span class="badge discount">Diskon 5%</span>' : '' }
               ${p.delivery ? '<span class="badge delivery">Delivery</span>' : '' }
               ${p.bestSeller ? '<span class="badge best">Best Seller</span>' : '' }
             </div>
