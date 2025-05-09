@@ -88,7 +88,7 @@
         const p = cart[id];
         container.innerHTML += `
           <div class="cart-item">
-            <p>${p.name} ${p.variant ? `(${p.variant})` : ''} ${p.color ? `- Warna: ${p.color}` : ''} x ${p.quantity}</p>
+            <p>${p.name} ${p.variant ? `(${p.variant})` : ''} ${p.color ? `- Variant: ${p.color}` : ''} x ${p.quantity}</p>
             <div>
               <button onclick="updateQuantity('${id}', -1)">−</button>
               <span style="margin: 0 8px;">${p.quantity}</span>
