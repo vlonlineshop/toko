@@ -221,8 +221,8 @@
       const final = total + shippingCost + adminFee + codFee - discount;
       message += `*💵 Total Bayar:* Rp ${final.toLocaleString()}\n`;
       message += '━━━━━━━━━━━━━━━━━━━\n';
-      message += `*🏠 Alamat Pengiriman:*%0A${address}\n`;
-      message += `📬 *Catatan untuk Kurir:*%0A${note}\n`;
+      message += `*🏠 Alamat Pengiriman:*\n${address}\n`;
+      message += `📬 *Catatan untuk Kurir:*\n${note}\n`;
       const phone = '6285709458101';
       const waURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       window.open(waURL, '_blank');
