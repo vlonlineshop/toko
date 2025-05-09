@@ -190,7 +190,6 @@
         discount = Math.floor(total * 0.10);
       } else if (code === 'VLCLAVE') {
         const ongkir = calculateShipping();
-        discount = Math.min(10000, ongkir);
         shippingCost = 0;
       } else {
         alert('Kode voucher tidak valid atau belum memenuhi syarat.');
