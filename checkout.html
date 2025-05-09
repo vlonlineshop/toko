@@ -189,9 +189,8 @@
       } else if (code === 'DINO10' && total >= 50000) {
         discount = Math.floor(total * 0.10);
       } else if (code === 'VLCLAVE') {
-    discount = shippingCost;
-    discountInfo.style.display = 'block';
-    discountInfo.textContent = 'DISKON ONGKIR 100%';
+        const ongkir = calculateShipping();
+        discount = Math.min(5000, ongkir);
       } else {
         alert('Kode voucher tidak valid atau belum memenuhi syarat.');
       }
