@@ -208,9 +208,9 @@
       message += '*🛒 Daftar Produk:*\n';
       for (let id in cart) {
         const item = cart[id];
-        message += `• ${item.name} ${item.variant ? '(' + item.variant + ')' : ''} ${item.color ? '- Warna: ' + item.color : ''} x ${item.quantity} = Rp ${(item.price * item.quantity).toLocaleString()}%0A`;
+        message += `• ${item.name} ${item.variant ? '(' + item.variant + ')' : ''} ${item.color ? ' + item.color : ''} x ${item.quantity} = Rp ${(item.price * item.quantity).toLocaleString()}%0A`;
       }
-      message += '━━━━━━━━━━━━━━━━━━━%0A';
+      message += '━━━━━━━━━━━━━━━━━━━\n';
       message += `*💳 Metode Pembayaran:* ${getPaymentLabel(selectedPaymentMethod)}\n`;
       message += `*💰 Biaya Admin:* Rp ${adminFee.toLocaleString()}\n`;
       if (selectedPaymentMethod === 'cod') {
